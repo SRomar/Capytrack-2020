@@ -1,0 +1,27 @@
+html, body{
+    background-color: grey;
+    height: 100%;
+}
+
+
+
+
+.listas, .productos, .informacion{
+    height: 100%;
+    display: inline-block;
+}
+
+.listas{
+    width: 350px;
+    background-color: orange;
+}
+
+.productos{
+    width: 550px;
+    background-color: violet;
+}
+
+.informacion{
+    width: 400px;
+    background: rgb(162, 255, 75);
+}
