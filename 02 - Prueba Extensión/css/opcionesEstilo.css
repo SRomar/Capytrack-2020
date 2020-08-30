@@ -3,13 +3,35 @@ html, body{
     height: 100%;
 }
 
+#contenedor{
+    display: flex;
+    justify-content: center;
+    height: 100%;
+}
+
+#listas, listaDeListas, .elementoLista{
+    display: block;
+}
+
+
+#listaDeListas{
+    list-style-type: none;
+    background-color: green;
+}
+
+.elementoLista{
+    font-size: 15px;
+    margin: 10px;
+    border: black solid 5px;
+    background-color: #fff;
+}
 
 
 
 .listas, .productos, .informacion{
-    height: 100%;
-    display: inline-block;
+    margin: 3px;
 }
+
 
 .listas{
     width: 350px;
