@@ -5,35 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Popup</title>
     <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@100;300;400;500;700;800;900&display=swap" rel="stylesheet">
     <script src="js/jquery-3.5.1.min.js"></script>
     <script src="js/eventPage.js"></script>
     <script src="js/popup.js"></script>
 </head>
 <body>
     <div id=contenedor>
-        <h1>Capytrack</h1>
-        <h3>Lista actual:</h3>
+
+        <header>
+            <h1>CAPYTRACK</h1>
+            <img id="capyPop" src="res/CapyPopUp.png" alt="CapyPop">
+        </header>
+        <form action="options.html" target="blank"> 
+            <button id="btnPopup" type="submit"> 
+               Administrar Seguimientos
+            </button> 
+        </form>
+
+        
+        
 
 
-        <div class="superior">
+        <div id="contenedorLista">
+            <h3>Lista seleccionada:</h3>
             <select id="selectLista">
-            
             </select>
             <button id="nuevaLista">Nueva Lista</button>
+        
         </div>
+
 
           
         
-        <div id="inferior">
+        <div id="contenedorInformacion">
               <h3>Información lista</h3>
               <ul>
-                    <li>Id: <span id="ide">id</span></li>
-                    <li>Nombre: <span id="nombre">nombre</span></li>
-                    <li>Estado: <span id="estado">Estado</span></li>
-                    <li>Precio: <span id="precio">$$$</span></li>
+                    <li>Id: <span id="ide"></span></li>
+                    <li>Nombre: <span id="nombre"></span></li>
+                    <li>Estado: <span id="estado"></span></li>
+                    <li>Precio: <span id="precio"></span></li>
               </ul>
+              
+            <button id="btnAdministrarLista">Administrar Lista</button>
             <button id="btnAgregarLista">Agregar a lista</button>
-            <a href="options.html" target="_blank"><button >Opciones</button></a>
         </div>
 
           

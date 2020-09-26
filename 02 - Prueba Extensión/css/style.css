@@ -1,25 +1,151 @@
 html{
     width: 200px;
     height: 300px;
-    background-color: rgb(255, 238, 0);
+    background-color:  #C4C4C4;
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+    padding: 0px;
+    margin: 0px;
+  
+}
+
+body{
+
+    padding: 0px;
+    margin: 5px;
+    margin-top: 0px;
+    
+ 
+}
+
+h1{
+    font-size: 22px;
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+    font-weight: 700;
+    margin-top: 8px;
+    color: #505050;
+}
+h3{
+    margin: 0px;
+    margin-bottom: 2px;
+    margin-top: 5px;
+    font-size: 15px;
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+    font-weight: 700;
+    color: #505050;
+  
+}
+
+
+
+header{ 
+    text-align: center;
+    width: 100%;
+    height: 40px;
+    margin: 0;
+    padding-left: 0;
+    padding-top: 0px;
+    padding-bottom: 2px;
+    font-weight: 500;
+    border-bottom:3px solid #757575;
+    background: #C4C4C4;
+    /* background: linear-gradient(#FFC907, #FFA63E); */
+    text-align: left;
+    display: flex;
+}
+#capyPop{
+    padding-top: 9px;
+    padding-left: 5px;
 }
 
 
 
 #contenedor{
-    font-family: sans-serif;
+    
     color: rgb(47, 47, 47);
-    margin: 0 auto;
+    display: block;
+    text-align: center;
 
 }
-li{
-    margin-bottom: 20px;
+
+#btnPopup, #nuevaLista, #btnAgregarLista, #btnAdministrarLista{
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+    font-weight: 600;
+    color: #505050;
+    margin-top: 10px;
+    text-decoration: none;
+    border: none;
+    width: 100%;
+    height: 25px;
+    border: 3px solid #757575;
+    margin-left: 0;
+    vertical-align: middle;
 }
+
+#nuevaLista{
+    width: 55%;
+    height: 26px;
+    margin: 0px;
+    margin-bottom: 3px;
+}
+
+#selectLista{
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+    font-weight: 450;
+    font-size: 12px;
+    color: #505050;
+    width: 43%;
+    margin-right: 0;
+    margin-top: 0;
+    height: 26px;
+    border: 3px solid #757575;
+
+}
+
+#contenedorLista{
+    margin: 0px;
+    margin-top: 5px;
+    vertical-align: middle;
+    
+    text-align: left;
+}
+
+#contenedorInformacion{
+    
+    text-align: left;
+    margin-top: 0px;
+
+}
+
+ul{
+
+    text-align: left;
+    list-style-type: none;
+    padding: 5px;
+    margin: 0px;
+}
+
+
+li{
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    color: #505050;
+    margin-bottom: 0px;
+}
+
+
 
 .custom-select {
     position: relative;
     font-family: Arial;
     display: inline;
+  }
+
+  #btnAgregarLista{
+      margin-top: 4px;
+  }
+  #btnAdministrarLista{
+      margin-top: 0px;
   }
   
   button{
