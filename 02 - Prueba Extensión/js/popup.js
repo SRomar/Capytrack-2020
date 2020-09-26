@@ -27,6 +27,8 @@ $(document).ready(function(){
         fetch(linkAPI).then(data => data.text()).then(data =>{
           var i = JSON.parse(data);
           
+          console.log(i);
+          
           ide.innerHTML = i.id;
           nombre.innerHTML = i.title;
           estado.innerHTML = i.status;      

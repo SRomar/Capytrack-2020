@@ -194,6 +194,7 @@ h3{
     align-content: center;
     justify-content: space-between;
     margin-top: 20px;
+    
    
  
 }
@@ -203,7 +204,7 @@ h3{
     outline:5px solid #757575;
     background: #C4C4C4;
     display: block;
-    
+    overflow: hidden;
 
 }
 
