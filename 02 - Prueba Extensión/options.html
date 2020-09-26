@@ -5,26 +5,141 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Capytrack</title>
     <link rel="stylesheet" href="css/opcionesEstilo.css">
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@100;300;400;500;700;800;900&display=swap" rel="stylesheet">
     <script src="js/jquery-3.5.1.min.js"></script>
     <script src="js/options.js"></script>
+
 </head>
 <body>
-    <div id="contenedor">
+
+  
+    <div id="header">
+        <h1>CAPYTRACK</h1>
+        <div id="capyCara">
+            <img src="res/CapyOpciones.png" alt="capyCara">
+        </div>
+
+    </div>
+      
+  
+    
+    <div id="contenedorbotones" >
+        <button class="btn" id="btnSeguimientos" style="background-color: #858585;">Seguimientos</button>
+        <button class="btn"id="btnSuscripciones">Suscripciones</button>
+        <button class="btn" id="btnConfiguracion">Configuración</button>
+        <button class="btn" id="btnContacto">Contacto</button>
+    </div>
+
+    <div id="seguimientosHTML">
         <div class="listas">
-            <h1>Listas</h1>
+            <h3>Listas</h3>
             <ul id="listaDeListas">
+                <li class="elementoLista">Lista1</li>
+                <li class="elementoLista">Lista2</li>
+                <li class="elementoLista">Lista3</li>
+                <li class="elementoLista">Lista1</li>
+                <li class="elementoLista">Lista2</li>
+                <li class="elementoLista">Lista3</li>
+                <li class="elementoLista">Lista1</li>
+                <li class="elementoLista">Lista2</li>
+                <li class="elementoLista">Lista3</li>
+                <li class="elementoLista">Lista1</li>
+                <li class="elementoLista">Lista2</li>
+                <li class="elementoLista">Lista3</li>
+                <li class="elementoLista">Lista1</li>
+                <li class="elementoLista">Lista2</li>
+                <li class="elementoLista">Lista3</li>
+                <li class="elementoLista">Lista1</li>
+                <li class="elementoLista">Lista2</li>
+                <li class="elementoLista">Lista3</li>
             </ul>
         </div>
 
-
-        
         <div class="productos">
-            <h1>Productos</h1>
+            <h3>Productos</h3>
         </div>
         <div class="informacion">
-            <h1>Informacion</h1>
+            <h3>Información</h3>
         </div>
+
     </div>
- 
+
+    
+    <h2 id="h2SuscripcionesHTML">Paquetes de suscripciones</h2> 
+    <div id="suscripcionesHTML">
+        
+        <div class="paquetes">
+            <H2>Paquete 1</H2>
+            <img src="res/paquete.png" alt="paquete">
+
+            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Earum molestiae ullam nobis optio nulla. </p>
+
+            <button>DAME GUITA</button>
+        </div>
+        <div class="paquetes">
+            <H2>Paquete 2</H2>
+            <img src="res/paquete.png" alt="paquete">
+
+            <p><p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Earum molestiae ullam nobis optio nulla. </p>
+            <button>DAME GUITA</button>
+        </div>
+        <div class="paquetes">
+            <H2>Paquete 3</H2>
+            <img src="res/paquete.png" alt="paquete">
+
+            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Earum molestiae ullam nobis optio nulla. </p>
+
+            <button>DAME GUITA</button>
+        </div>
+        <div class="paquetes">
+            <H2>Paquete 4</H2>
+            <img src="res/paquete.png" alt="paquete">
+            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Earum molestiae ullam nobis optio nulla. </p>
+            <button>DAME GUITA</button>
+        </div>
+    
+    </div>
+
+
+    <div id="configuracionContenedor" style="display: none;">
+        <div id="opcionesConfig">
+            <h3>Opciones</h3>
+            <ul id="listaOpcionesConfig">
+                <li class="elementoLista">Opcion 1</li>
+                <li class="elementoLista">Opcion 2</li>
+                <li class="elementoLista">Opcion 3</li>
+                <li class="elementoLista">Opcion 4</li>
+                <li class="elementoLista">Opcion 5</li>
+                <li class="elementoLista">Opcion 6</li>
+                <li class="elementoLista">Opcion 7</li>
+                <li class="elementoLista">Opcion 8</li>
+                <li class="elementoLista">Opcion 9</li>
+                <li class="elementoLista">Opcion 10</li>
+                <li class="elementoLista">Opcion 11</li>
+                <li class="elementoLista">Opcion 12</li>
+            </ul>
+        </div>
+        <div id="configOpciones">
+            <h3>Configuración</h3>
+            <img id="perro" src="res/perro404.jpg" alt="perro">
+            <h4>Estamos trabajando :)</h4>
+        </div>
+
+    </div>
+
+    <div id="contactoContenedor" style="display: none;">
+        
+        <h3>Nuestro e-mail: capytrack.contacto@capysoft.com</h3>
+        <h2>Enviar mensaje</h2>
+        <h3>Ingrese su e-mail</h3>
+        <input type="texto" id="mail" name="mail">
+        <h3>Mensaje</h3>
+        <input type="mensaje" id="mensaje" name="mensaje">
+        <button style="display: block;">Enviar</button>
+
+    </div>
+
+
+
 </body>
 </html>
