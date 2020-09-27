@@ -68,20 +68,26 @@ $(document).ready(function(){
 
 $(document).ready(function(){
   $("#nuevaLista").click(function(){
-    $("#inferior").hide();
-    $("#contenedor").append('<div id="crearLista"> <h4>Nombre de lista</h4><input type="text" id="nombreLista" name="fname"><button id="btnCrearLista">Crear lista</button></div>');    
+    $("#contenedor").hide();
+    $("#contenedorNuevaLista").show();
   });
 });
 
+$(document).ready(function(){
+  $("#retroceso").click(function(){
+    $("#contenedorNuevaLista").hide();
+    $("#contenedor").show();
+  })
+});
+
 $(document).on('click','#btnCrearLista', function() {
-    console.log('Click!');
     var Lista = {};       
     var nombre = document.getElementById('nombreLista').value;  
     console.log(nombre);
     Lista[nombre]= [];
     chrome.storage.sync.set(Lista);
     $("#selectLista").append(new Option(nombre, nombre));
-    $("#crearLista").hide();
-    $("#inferior").show();
+    $("#contenedorNuevaLista").hide();
+    $("#contenedor").show();
 });
   

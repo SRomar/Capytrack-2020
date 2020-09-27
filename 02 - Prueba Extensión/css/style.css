@@ -67,7 +67,7 @@ header{
 
 }
 
-#btnPopup, #nuevaLista, #btnAgregarLista, #btnAdministrarLista{
+#btnPopup, #nuevaLista, #btnAgregarLista, #btnAdministrarLista, #btnCrearLista, #retroceso{
     font-family: 'M PLUS Rounded 1c', sans-serif;
     font-weight: 600;
     color: #505050;
@@ -79,6 +79,11 @@ header{
     border: 3px solid #757575;
     margin-left: 0;
     vertical-align: middle;
+}
+
+#nombreLista{
+    border: 3px solid #757575;
+    width: calc(100% - 10px);
 }
 
 #nuevaLista{

@@ -11,12 +11,14 @@
     <script src="js/popup.js"></script>
 </head>
 <body>
+
+    <header>
+        <h1>CAPYTRACK</h1>
+        <img id="capyPop" src="res/CapyPopUp.png" alt="CapyPop">
+    </header>
     <div id=contenedor>
 
-        <header>
-            <h1>CAPYTRACK</h1>
-            <img id="capyPop" src="res/CapyPopUp.png" alt="CapyPop">
-        </header>
+        
         <form action="options.html" target="blank"> 
             <button id="btnPopup" type="submit"> 
                Administrar Seguimientos
@@ -51,8 +53,17 @@
             <button id="btnAgregarLista">Agregar a lista</button>
         </div>
 
+
           
-          
+    </div>
+
+    <div id="contenedorNuevaLista" style="display: none;">
+        <h3 style="text-align: center;">Crear Lista</h3>
+        <h3>Nombre de la lista</h3>
+        <input type="text" id="nombreLista" name="fname">
+        <button id="retroceso">Atrás</button>
+        <button id="btnCrearLista">Crear lista</button></div>
+
     </div>
 
 </body>
