@@ -7,10 +7,9 @@ html, body{
     
     align-content: center;
     font-family: 'M PLUS Rounded 1c', sans-serif;
-   
-
+    
+    
 }
-
 
 html{
     height: 100%;
@@ -95,11 +94,11 @@ h3{
 
 }
 
-#listas, #listaDeListas, .elementoLista, #productosUl{
+#listas, #listaDeListas, .elementoLista{
     display: block;
     
 }
-#listaDeListas, #productosUl{
+#listaDeListas{
     
     height: calc(100% - 30px);
     overflow-y: scroll;
