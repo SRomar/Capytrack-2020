@@ -10,6 +10,7 @@ $(document).ready(function(){
     }
   });
 
+
   
   $(document).on('click','#btnSeguimientos', function() {
 
