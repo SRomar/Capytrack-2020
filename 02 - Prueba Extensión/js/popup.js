@@ -33,6 +33,7 @@ $(document).ready(function(){
           nombre.innerHTML = i.title;
           estado.innerHTML = i.status;      
           precio.innerHTML = i.price;
+
     
            
           
@@ -40,8 +41,14 @@ $(document).ready(function(){
           //Se agrega a una lista
           if(valorLista !== null){
           
+
+            diccionariofoto = i.pictures;
+            arregloFoto = diccionariofoto[Object.keys(diccionariofoto)[0]];
+            foto = arregloFoto[Object.keys(arregloFoto)[2]];
+           
+
             //Se crea el producto
-            var producto = [i.title, i.price, i.status];
+            var producto = [i.title, i.price, i.status, i.permalink, foto];
        
             var diccionarioProducto = {};       
             var key = i.id;  
