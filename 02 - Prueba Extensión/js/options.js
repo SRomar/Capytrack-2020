@@ -9,40 +9,60 @@ $(document).ready(function(){
       chrome.storage.sync.get(null, function(items) {
           var allKeys = Object.keys(items);
           for (i = 0; i < allKeys.length; i++) {
-              $("#listaDeListas").append('<li><a class="elementoLista" href="#">'+allKeys[i]+'</a></li>');             
+
+              //$("#listaDeListas").append('<li><a class="elementoLista" href="#">'+allKeys[i]+'</a></li>');  
+              $("#listaDeListas").append('<li class="elementoLista" id="'+allKeys[i]+'">'+allKeys[i]+'</li>');  
+
           }
-      });
+         
+        document.querySelectorAll('.elementoLista').forEach(item => {
+          // item.addEventListener('click', event => {
+          $(item).on('click', function() {
+              
+              $('#productosUl').empty()
+                var nombreLista = $(this).text(); //Obtiene el nombre de li
+                listaSeleccionada = nombreLista;
+                chrome.storage.sync.get(nombreLista, function (lista) { //Obtiene la lista
+                
+                  $.map(lista, function(productosEnLista, nombreProducto) { //Obtiene los productos en la lista
+                
+                      $.map(productosEnLista, function(producto, llaveProducto) {  //Separa los productos
+      
+                        $.map(producto, function(datosProducto, categoryID) { //Separa los datos del producto
+
+                          $("#productosUl").append('<li class="productoEnLista" id="'+datosProducto[5]+'">'+datosProducto[0]+'</li>'); //De aca se pueden sacar los datos del producto usando el indice
+                           
+                          var identificacion = "#"+datosProducto[5];
+
+                          $(identificacion).on('click', function() {
+  
+                            $('#contenedorImagen').empty()
+                      
+
+
+                            $("#contenedorImagen").append('<img src="'+datosProducto[4]+'" class="imagenProducto" alt="celular"></img>');
+                            nombre.innerHTML = datosProducto[0];
+                            estado.innerHTML = datosProducto[2];      
+                            precio.innerHTML = datosProducto[1];
+                            urlProducto.innerHTML = '<a href="'+datosProducto[3]+'">ver</a>';
+
+                          });
+
+
+
+                    
+                  });
+                });
+              });
+            });
+          });   
+        });
+      }); 
+  
     }
 
-    document.querySelectorAll('.elementoLista').forEach(item => {
-      item.addEventListener('click', event => {
-      
-        $(function(){
-          $('.elementoLista').click(function(){
+  
 
-            var nombreLista = $(this).text(); //Obtiene el nombre de li
-            listaSeleccionada = nombreLista;
-
-            chrome.storage.sync.get(nombreLista, function (lista) { //Obtiene la lista
-            
-              $.map(lista, function(productosEnLista, nombreLista) { //Obtiene los productos en la lista
-
-                  $.map(productosEnLista, function(producto, llaveProducto) {  //Separa a los productos
-
-                    $.map(producto, function(datosProducto, categoryID) { //Separa a los datos del producto
-
-                      $("#productosUl").append('<li><a class="elementoLista" href="#">'+datosProducto[0]+'</a></li>'); //De aca se pueden sacar los datos del producto usando el indice
-             
-                    });
-                  });
-              });
-
-
-            });
-          });
-        });
-      });
-    });
     
     $("#menu").hide();
 
@@ -52,17 +72,20 @@ $(document).ready(function(){
     });
     
     function comprobacion(){
-      $("#listaDeListas li a").mousedown(function(e){
+
+      $("#listaDeListas").mousedown(function(e){
         if(e.button == 2){
           lista = true;
-          itemLista = e.target.text;
+          itemLista = $(e.target).text();
+
           $("#menu").css({'display':'block', 'left':e.pageX, 'top':e.pageY});
         }
       });
-      $("#productosUl li a").mousedown(function(e){
+
+      $("#productosUl").mousedown(function(e){
         if(e.button == 2){
           producto = true;
-          itemProducto = e.target.text;
+          itemProducto = $(e.target).text();
           $("#menu").css({'display':'block', 'left':e.pageX, 'top':e.pageY});
         }
       });
@@ -71,12 +94,15 @@ $(document).ready(function(){
     
 
     $("#eliminar").click(function(e){
+
       if(lista == true){
         chrome.storage.sync.remove(itemLista);
       }
       else if(producto == true){
         var productosLista = [];
         var listaNueva = {};
+
+
 
         chrome.storage.sync.get(listaSeleccionada, function (lista) { //Obtiene la lista
             
@@ -97,21 +123,24 @@ $(document).ready(function(){
           chrome.storage.sync.remove(listaSeleccionada);
           chrome.storage.sync.set(listaNueva);
         });
+
+        
+
       }
-      $("#menu").hide();
-      location.reload();
+     location.reload();
+     
       lista = false;
       producto = false;
     });
 
 
 
-    
-    $("#menu").mouseleave(function(){
-        lista = false;
-        producto = false;
-        $("#menu").hide();
-    })
+    $(window).click(function() {
+      lista = false;
+      producto = false;
+      producto = false;
+     $("#menu").hide();
+      });
 
   });
 
@@ -123,6 +152,7 @@ $(document).ready(function(){
     $("#h2SuscripcionesHTML").hide();
     $("#configuracionContenedor").hide();
     $("#contactoContenedor").hide();
+    $('#productosUl > li').remove();
 
 
     $("#btnConfiguracion").css("background-color","#C4C4C4");
@@ -139,6 +169,7 @@ $(document).ready(function(){
     $("#seguimientosHTML").hide();
     $("#configuracionContenedor").hide();
     $("#contactoContenedor").hide();
+    $('#productosUl > li').remove();
 
 
     $("#btnSeguimientos").css("background-color","#C4C4C4")
@@ -157,6 +188,7 @@ $(document).on('click','#btnConfiguracion', function() {
   $("#suscripcionesHTML").hide();
   $("#h2SuscripcionesHTML").hide();
   $("#contactoContenedor").hide();
+  $('#productosUl > li').remove();
 
   $("#btnSeguimientos").css("background-color","#C4C4C4");
   $("#btnContacto").css("background-color","#C4C4C4");
@@ -174,6 +206,7 @@ $(document).on('click','#btnContacto', function() {
   $("#suscripcionesHTML").hide();
   $("#h2SuscripcionesHTML").hide();
   $("#configuracionContenedor").hide();
+  $('#productosUl > li').remove();
 
 
   $("#btnSeguimientos").css("background-color","#C4C4C4");
