@@ -11,18 +11,17 @@ $(document).ready(function(){
           for (i = 0; i < allKeys.length; i++) {
 
               //$("#listaDeListas").append('<li><a class="elementoLista" href="#">'+allKeys[i]+'</a></li>');  
-              $("#listaDeListas").append('<li class="elementoLista">'+allKeys[i]+'</li>');  
+              $("#listaDeListas").append('<li class="elementoLista" id="'+allKeys[i]+'">'+allKeys[i]+'</li>');  
 
           }
          
         document.querySelectorAll('.elementoLista').forEach(item => {
-          console.log(item);
           // item.addEventListener('click', event => {
           $(item).on('click', function() {
               
               $('#productosUl').empty()
                 var nombreLista = $(this).text(); //Obtiene el nombre de li
-
+                listaSeleccionada = nombreLista;
                 chrome.storage.sync.get(nombreLista, function (lista) { //Obtiene la lista
                 
                   $.map(lista, function(productosEnLista, nombreProducto) { //Obtiene los productos en la lista
@@ -30,7 +29,6 @@ $(document).ready(function(){
                       $.map(productosEnLista, function(producto, llaveProducto) {  //Separa los productos
       
                         $.map(producto, function(datosProducto, categoryID) { //Separa los datos del producto
-                          console.log(datosProducto);
 
                           $("#productosUl").append('<li class="productoEnLista" id="'+datosProducto[5]+'">'+datosProducto[0]+'</li>'); //De aca se pueden sacar los datos del producto usando el indice
                            
@@ -38,7 +36,6 @@ $(document).ready(function(){
 
                           $(identificacion).on('click', function() {
   
-                            console.log("click!");
                             $('#contenedorImagen').empty()
                       
 
@@ -63,6 +60,7 @@ $(document).ready(function(){
       }); 
   
     }
+
   
 
     
@@ -79,7 +77,6 @@ $(document).ready(function(){
         if(e.button == 2){
           lista = true;
           itemLista = $(e.target).text();
-          console.log(itemLista);
 
           $("#menu").css({'display':'block', 'left':e.pageX, 'top':e.pageY});
         }
@@ -126,8 +123,12 @@ $(document).ready(function(){
           chrome.storage.sync.remove(listaSeleccionada);
           chrome.storage.sync.set(listaNueva);
         });
+
+        
+
       }
-      location.reload();
+     location.reload();
+     
       lista = false;
       producto = false;
     });
