@@ -1,4 +1,8 @@
 var itemLista;
+var itemProducto;
+var lista = false;
+var producto = false;
+var listaSeleccionada;
 
 $(document).ready(function(){
     if($( "#listaDeListas" ).val() !== null){
@@ -17,12 +21,12 @@ $(document).ready(function(){
           $('.elementoLista').click(function(){
 
             var nombreLista = $(this).text(); //Obtiene el nombre de li
-
+            listaSeleccionada = nombreLista;
 
             chrome.storage.sync.get(nombreLista, function (lista) { //Obtiene la lista
             
               $.map(lista, function(productosEnLista, nombreLista) { //Obtiene los productos en la lista
-             
+
                   $.map(productosEnLista, function(producto, llaveProducto) {  //Separa a los productos
 
                     $.map(producto, function(datosProducto, categoryID) { //Separa a los datos del producto
@@ -50,20 +54,62 @@ $(document).ready(function(){
     function comprobacion(){
       $("#listaDeListas li a").mousedown(function(e){
         if(e.button == 2){
+          lista = true;
           itemLista = e.target.text;
+          $("#menu").css({'display':'block', 'left':e.pageX, 'top':e.pageY});
+        }
+      });
+      $("#productosUl li a").mousedown(function(e){
+        if(e.button == 2){
+          producto = true;
+          itemProducto = e.target.text;
           $("#menu").css({'display':'block', 'left':e.pageX, 'top':e.pageY});
         }
       });
     }
     
+    
 
     $("#eliminar").click(function(e){
-      chrome.storage.sync.remove(itemLista);
+      if(lista == true){
+        chrome.storage.sync.remove(itemLista);
+      }
+      else if(producto == true){
+        var productosLista = [];
+        var listaNueva = {};
+
+        chrome.storage.sync.get(listaSeleccionada, function (lista) { //Obtiene la lista
+            
+          $.map(lista, function(productosEnLista, listaSeleccionada) { //Obtiene los productos en la lista
+            
+            
+            $.map(productosEnLista, function(producto, llaveProducto) {  //Separa a los productos
+              
+              
+              $.map(producto, function(datosProducto, categoryID) { //Separa a los datos del producto
+                if(datosProducto[0] !== itemProducto){
+                  productosLista.push(producto);
+                }
+              });
+            });
+          });
+          listaNueva[listaSeleccionada] = productosLista;        
+          chrome.storage.sync.remove(listaSeleccionada);
+          chrome.storage.sync.set(listaNueva);
+        });
+      }
       $("#menu").hide();
       location.reload();
+      lista = false;
+      producto = false;
     });
+
+
+
     
     $("#menu").mouseleave(function(){
+        lista = false;
+        producto = false;
         $("#menu").hide();
     })
 
