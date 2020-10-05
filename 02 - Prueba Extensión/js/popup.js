@@ -48,7 +48,7 @@ $(document).ready(function(){
            console.log(foto);
 
             //Se crea el producto
-            var producto = [i.title, i.price, i.status, i.permalink, foto];
+            var producto = [i.title, i.price, i.status, i.permalink, foto, i.id];
        
             var diccionarioProducto = {};       
             var key = i.id;  

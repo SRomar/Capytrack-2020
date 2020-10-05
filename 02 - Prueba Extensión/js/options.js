@@ -20,7 +20,6 @@ $(document).ready(function(){
           // item.addEventListener('click', event => {
           $(item).on('click', function() {
               
-          
               $('#productosUl').empty()
                 var nombreLista = $(this).text(); //Obtiene el nombre de li
 
@@ -31,13 +30,19 @@ $(document).ready(function(){
                       $.map(productosEnLista, function(producto, llaveProducto) {  //Separa los productos
       
                         $.map(producto, function(datosProducto, categoryID) { //Separa los datos del producto
-      
+                          console.log(datosProducto);
 
-                          $("#productosUl").append('<li class="productoEnLista">'+datosProducto[0]+'</li>'); //De aca se pueden sacar los datos del producto usando el indice
-                          
-                          $('.productoEnLista').click(function(){
-                            
-                            
+                          $("#productosUl").append('<li class="productoEnLista" id="'+datosProducto[5]+'">'+datosProducto[0]+'</li>'); //De aca se pueden sacar los datos del producto usando el indice
+                           
+                          var identificacion = "#"+datosProducto[5];
+
+                          $(identificacion).on('click', function() {
+  
+                            console.log("click!");
+                            $('#contenedorImagen').empty()
+                      
+
+
                             $("#contenedorImagen").append('<img src="'+datosProducto[4]+'" class="imagenProducto" alt="celular"></img>');
                             nombre.innerHTML = datosProducto[0];
                             estado.innerHTML = datosProducto[2];      
@@ -45,7 +50,6 @@ $(document).ready(function(){
                             urlProducto.innerHTML = '<a href="'+datosProducto[3]+'">ver</a>';
 
                           });
-
 
 
 
@@ -93,7 +97,6 @@ $(document).ready(function(){
     
 
     $("#eliminar").click(function(e){
-      console.log(itemLista);
 
       if(lista == true){
         chrome.storage.sync.remove(itemLista);
@@ -101,6 +104,8 @@ $(document).ready(function(){
       else if(producto == true){
         var productosLista = [];
         var listaNueva = {};
+
+
 
         chrome.storage.sync.get(listaSeleccionada, function (lista) { //Obtiene la lista
             
