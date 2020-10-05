@@ -45,7 +45,7 @@ $(document).ready(function(){
             diccionariofoto = i.pictures;
             arregloFoto = diccionariofoto[Object.keys(diccionariofoto)[0]];
             foto = arregloFoto[Object.keys(arregloFoto)[2]];
-           
+           console.log(foto);
 
             //Se crea el producto
             var producto = [i.title, i.price, i.status, i.permalink, foto];
