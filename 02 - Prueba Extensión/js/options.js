@@ -9,40 +9,57 @@ $(document).ready(function(){
       chrome.storage.sync.get(null, function(items) {
           var allKeys = Object.keys(items);
           for (i = 0; i < allKeys.length; i++) {
-              $("#listaDeListas").append('<li><a class="elementoLista" href="#">'+allKeys[i]+'</a></li>');             
+
+              //$("#listaDeListas").append('<li><a class="elementoLista" href="#">'+allKeys[i]+'</a></li>');  
+              $("#listaDeListas").append('<li class="elementoLista">'+allKeys[i]+'</li>');  
+
           }
       });
     }
-
     document.querySelectorAll('.elementoLista').forEach(item => {
       item.addEventListener('click', event => {
-      
+        
+
         $(function(){
           $('.elementoLista').click(function(){
-
+           $('#productosUl').empty()
             var nombreLista = $(this).text(); //Obtiene el nombre de li
-            listaSeleccionada = nombreLista;
 
             chrome.storage.sync.get(nombreLista, function (lista) { //Obtiene la lista
             
-              $.map(lista, function(productosEnLista, nombreLista) { //Obtiene los productos en la lista
-
-                  $.map(productosEnLista, function(producto, llaveProducto) {  //Separa a los productos
-
-                    $.map(producto, function(datosProducto, categoryID) { //Separa a los datos del producto
-
-                      $("#productosUl").append('<li><a class="elementoLista" href="#">'+datosProducto[0]+'</a></li>'); //De aca se pueden sacar los datos del producto usando el indice
+              $.map(lista, function(productosEnLista, nombreProducto) { //Obtiene los productos en la lista
              
+                  $.map(productosEnLista, function(producto, llaveProducto) {  //Separa los productos
+  
+                    $.map(producto, function(datosProducto, categoryID) { //Separa los datos del producto
+  
+                      $("#productosUl").append('<li class="productoEnLista">'+datosProducto[0]+'</li>'); //De aca se pueden sacar los datos del producto usando el indice
+                      
+                      $('.productoEnLista').click(function(){
+                        
+                        
+                        $("#contenedorImagen").append('<img src="'+datosProducto[4]+'" class="imagenProducto" alt="celular"></img>');
+                        nombre.innerHTML = datosProducto[0];
+                        estado.innerHTML = datosProducto[2];      
+                        precio.innerHTML = datosProducto[1];
+                        urlProducto.innerHTML = '<a href="'+datosProducto[3]+'">ver</a>';
+
+                      });
+
+
+
+
                     });
                   });
               });
-
-
+  
+  
             });
           });
         });
       });
     });
+
     
     $("#menu").hide();
 
@@ -113,6 +130,7 @@ $(document).ready(function(){
         $("#menu").hide();
     })
 
+
   });
 
 
@@ -123,6 +141,7 @@ $(document).ready(function(){
     $("#h2SuscripcionesHTML").hide();
     $("#configuracionContenedor").hide();
     $("#contactoContenedor").hide();
+    $('#productosUl > li').remove();
 
 
     $("#btnConfiguracion").css("background-color","#C4C4C4");
@@ -139,6 +158,7 @@ $(document).ready(function(){
     $("#seguimientosHTML").hide();
     $("#configuracionContenedor").hide();
     $("#contactoContenedor").hide();
+    $('#productosUl > li').remove();
 
 
     $("#btnSeguimientos").css("background-color","#C4C4C4")
@@ -157,6 +177,7 @@ $(document).on('click','#btnConfiguracion', function() {
   $("#suscripcionesHTML").hide();
   $("#h2SuscripcionesHTML").hide();
   $("#contactoContenedor").hide();
+  $('#productosUl > li').remove();
 
   $("#btnSeguimientos").css("background-color","#C4C4C4");
   $("#btnContacto").css("background-color","#C4C4C4");
@@ -174,6 +195,7 @@ $(document).on('click','#btnContacto', function() {
   $("#suscripcionesHTML").hide();
   $("#h2SuscripcionesHTML").hide();
   $("#configuracionContenedor").hide();
+  $('#productosUl > li').remove();
 
 
   $("#btnSeguimientos").css("background-color","#C4C4C4");

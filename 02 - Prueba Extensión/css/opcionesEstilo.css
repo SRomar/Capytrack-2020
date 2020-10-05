@@ -140,9 +140,11 @@ h3{
     
     
 }
-.elementoLista{   
+.elementoLista, .productoEnLista, .informacionProducto{   
+    
     
     text-decoration: none;
+    list-style-type: none;
     color: #505050;
     background-color: #eee;
     font-size: 20px;
@@ -158,11 +160,19 @@ h3{
     cursor: pointer;
 }
 
+.informacionProducto{
+    padding: 0px;
+}
+.informacion{
+    overflow: hidden;
+    padding: 0px;
+}
 
 /*Scrollbar lista*/
 * {
     scrollbar-width: thin;
     scrollbar-color: #757575 #C4C4C4;
+    
 }
 
 
@@ -170,6 +180,7 @@ h3{
     margin-top: 20px;
     outline:5px solid #757575;
 }
+
 
 .listas{
     
@@ -186,8 +197,27 @@ h3{
 }
 
 .informacion{
+    display: block;
+    overflow-x: hidden;
+    align-items: center;
+    text-align: center;
     width: 25%;
     background: #C4C4C4;
+    align-content: center;
+
+}
+
+#contenedorImagen{
+    margin: 0 auto; 
+    align-content: center;
+    background-color: #AFAFAF;
+    overflow: hidden;
+    width: 350px;
+    height: 300px;
+}
+
+.imagenProducto{
+    height: 100%;
 }
 
 
