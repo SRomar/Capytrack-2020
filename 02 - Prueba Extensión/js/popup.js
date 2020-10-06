@@ -148,13 +148,28 @@ $(document).ready(function(){
 });
 
 $(document).on('click','#btnCrearLista', function() {
+    var existe = false;
     var Lista = {};       
     var nombre = document.getElementById('nombreLista').value;  
     console.log(nombre);
-    Lista[nombre]= [];
-    chrome.storage.sync.set(Lista);
-    $("#selectLista").append(new Option(nombre, nombre));
-    $("#contenedorNuevaLista").hide();
-    $("#contenedor").show();
+    chrome.storage.sync.get(null, function(items) {
+      var allKeys = Object.keys(items);
+      for (i = 0; i < allKeys.length; i++) {
+          if(nombre == allKeys[i]){
+            existe = true;
+          }
+      }
+      if(existe == false){
+        Lista[nombre]= [];
+        chrome.storage.sync.set(Lista);
+        $("#selectLista").append(new Option(nombre, nombre));
+        $("#contenedorNuevaLista").hide();
+        $("#contenedor").show();
+      }
+      else if(existe == true){
+        alert("Ya hay una lista con ese nombre!");
+      }
+    });
+    
 });
   
