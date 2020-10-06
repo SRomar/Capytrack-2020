@@ -75,17 +75,26 @@ $(document).ready(function(){
 
       $("#listaDeListas").mousedown(function(e){
         if(e.button == 2){
+          producto = false;
           lista = true;
           itemLista = $(e.target).text();
 
+          if(itemLista.toString() == ''){
+            lista = false;
+          }
           $("#menu").css({'display':'block', 'left':e.pageX, 'top':e.pageY});
         }
       });
 
       $("#productosUl").mousedown(function(e){
         if(e.button == 2){
+          lista = false;
           producto = true;
           itemProducto = $(e.target).text();
+
+          if(itemProducto.toString() == ''){
+            producto = false;
+          }
           $("#menu").css({'display':'block', 'left':e.pageX, 'top':e.pageY});
         }
       });
@@ -101,6 +110,7 @@ $(document).ready(function(){
       else if(producto == true){
         var productosLista = [];
         var listaNueva = {};
+        var existe = false;
 
 
 
@@ -116,12 +126,18 @@ $(document).ready(function(){
                 if(datosProducto[0] !== itemProducto){
                   productosLista.push(producto);
                 }
+                else if(datosProducto[0] == itemProducto){
+                  existe = true;
+                }
               });
             });
           });
-          listaNueva[listaSeleccionada] = productosLista;        
-          chrome.storage.sync.remove(listaSeleccionada);
-          chrome.storage.sync.set(listaNueva);
+          if(existe == true){
+            listaNueva[listaSeleccionada] = productosLista;        
+            chrome.storage.sync.remove(listaSeleccionada);
+            chrome.storage.sync.set(listaNueva);
+          }
+          
         });
 
         
@@ -133,7 +149,9 @@ $(document).ready(function(){
       producto = false;
     });
 
-
+    /*$("#menu").mouseleave(function(){
+      $("#menu").hide();
+    });*/
 
     $(window).click(function() {
       lista = false;
