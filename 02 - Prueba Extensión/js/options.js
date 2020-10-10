@@ -78,7 +78,7 @@ $(document).ready(function(){
           producto = false;
           lista = true;
           itemLista = $(e.target).text();
-
+          document.getElementById("cambiarNombreLista").style.display = "inline";
           if(itemLista.toString() == ''){
             lista = false;
           }
@@ -91,7 +91,7 @@ $(document).ready(function(){
           lista = false;
           producto = true;
           itemProducto = $(e.target).text();
-
+          document.getElementById("cambiarNombreLista").style.display = "none";
           if(itemProducto.toString() == ''){
             producto = false;
           }
@@ -100,7 +100,56 @@ $(document).ready(function(){
       });
     }
     
-    
+    $("#cambiarNombreLista").click(function(e){
+      var resp = window.prompt("Nuevo nombre:");
+      var existe = false;
+      
+      if(resp != null && resp != ""){
+
+        chrome.storage.sync.get(null, function(items) {
+          var allKeys = Object.keys(items);
+          for (i = 0; i < allKeys.length; i++) {
+              if(resp == allKeys[i]){
+                existe = true;
+              }
+          }
+          if(existe == false){
+            var productosLista = [];
+            var listaNueva = {};
+
+            chrome.storage.sync.get(itemLista, function (lista) { //Obtiene la lista
+                
+              $.map(lista, function(productosEnLista, itemLista) { //Obtiene los productos en la lista
+                
+                
+                $.map(productosEnLista, function(producto, llaveProducto) {  //Separa a los productos
+                  
+                  
+                  $.map(producto, function(datosProducto, categoryID) { //Separa a los datos del producto
+                      productosLista.push(producto);
+                  });
+                });
+              });
+              
+              listaNueva[resp] = productosLista;        
+              chrome.storage.sync.remove(itemLista);
+              chrome.storage.sync.set(listaNueva);
+              
+              
+            });
+            location.reload();
+          }
+          else if(existe == true){
+            alert("Ya hay una lista con ese nombre!");
+          }
+        });
+      }
+      
+     
+      lista = false;
+      producto = false;
+
+    });
 
     $("#eliminar").click(function(e){
 
@@ -149,9 +198,6 @@ $(document).ready(function(){
       producto = false;
     });
 
-    /*$("#menu").mouseleave(function(){
-      $("#menu").hide();
-    });*/
 
     $(window).click(function() {
       lista = false;
