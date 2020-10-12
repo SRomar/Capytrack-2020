@@ -158,8 +158,7 @@ function Comprobacion(){
 
   $(".elementoLista").mousedown(function(e){
     if(e.button == 2){
-      producto = false;
-      lista = true;
+   
       itemLista = $(e.target).text();
       itemSeleccionado.innerHTML = " "+itemLista;
       document.getElementById("cambiarNombreLista").style.display = "inline";
@@ -169,16 +168,12 @@ function Comprobacion(){
   });
 
   $(".productoEnLista").mousedown(function(e){
-
     if(e.button == 2){
-      lista = false;
-      producto = true;
+
       itemProducto = $(e.target).text();
       itemSeleccionado.innerHTML = " "+itemProducto;
       document.getElementById("cambiarNombreLista").style.display = "none";
-      E
-    ventoEliminarProducto(itemProducto);
-
+      EventoEliminarProducto(itemProducto);
       $("#menu").css({'display':'block', 'left':e.pageX, 'top':e.pageY});
     }
   });
@@ -271,7 +266,7 @@ function EventoEliminarProducto(itemProducto){
       setTimeout(function (){
         $('#productosUl').empty();
         DesplegarProductos(listaSeleccionada);
-      }, 100);
+      }, 200);
 
     lista = false;
     producto = false;
