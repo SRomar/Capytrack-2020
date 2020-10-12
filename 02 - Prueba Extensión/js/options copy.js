@@ -1,7 +1,3 @@
-var itemLista;
-var itemProducto;
-var lista = false;
-var producto = false;
 var listaSeleccionada;
 
 $(document).ready(function(){
@@ -154,7 +150,6 @@ function CrearContextMenu(){
   $(document).bind("contextmenu", function(e){
     eventoOcultarMenu();
     comprobacion();
-    eventoEliminar();
     eventoCambiarNombreLista();
     return false;
   });
@@ -169,9 +164,7 @@ function comprobacion(){
       itemLista = $(e.target).text();
       itemSeleccionado.innerHTML = " "+itemLista;
       document.getElementById("cambiarNombreLista").style.display = "inline";
-      if(itemLista.toString() == ''){
-        lista = false;
-      }
+      eventoEliminarLista(itemLista);
       $("#menu").css({'display':'block', 'left':e.pageX, 'top':e.pageY});
     }
   });
@@ -184,14 +177,12 @@ function comprobacion(){
       itemProducto = $(e.target).text();
       itemSeleccionado.innerHTML = " "+itemProducto;
       document.getElementById("cambiarNombreLista").style.display = "none";
-      if(itemProducto.toString() == ''){
-        producto = false;
-      }
+      eventoEliminarProducto(itemProducto);
+
       $("#menu").css({'display':'block', 'left':e.pageX, 'top':e.pageY});
     }
   });
 }
-
 
 function eventoCambiarNombreLista(){ 
   $("#cambiarNombreLista").click(function(e){
@@ -239,21 +230,14 @@ function eventoCambiarNombreLista(){
           }
         });
       }
-      lista = false;
-      producto = false;
+     
 
   });
 }
 
 
-function eventoEliminar(){
+function eventoEliminarProducto(itemProducto){
   $("#eliminar").click(function(e){
-    if(lista == true){
-      chrome.storage.sync.remove(itemLista);
-      $('#listasUl').empty();
-      DesplegarListas();
-    }
-    else if(producto == true){
       var productosLista = [];
       var listaNueva = {};
       var existe = false;
@@ -289,12 +273,20 @@ function eventoEliminar(){
         $('#productosUl').empty();
         desplegarProductos(listaSeleccionada);
       }, 100);
-      
-    }
+
     lista = false;
     producto = false;
   });
 }
+
+function eventoEliminarLista(itemLista){
+  $("#eliminar").click(function(e){
+      chrome.storage.sync.remove(itemLista);
+      $('#listasUl').empty();
+      DesplegarListas();
+  });
+}
+
 
 function eventoOcultarMenu(){
   $(window).click(function() {
