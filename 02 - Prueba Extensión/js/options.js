@@ -9,7 +9,6 @@ $(document).ready(function(){
 
 });
 
-
 function EventosBotones(){
   $(document).on('click','#btnSeguimientos', function() {
 
@@ -109,13 +108,13 @@ function EventoListas(){
       $('#productosUl').empty()
       var nombreLista = $(this).text(); //Obtiene el nombre de li
       listaSeleccionada = nombreLista;
-      desplegarProductos(nombreLista);
+      DesplegarProductos(nombreLista);
     });  
   });
   });
 }
 
-function desplegarProductos(nombreLista){
+function DesplegarProductos(nombreLista){
   chrome.storage.sync.get(nombreLista, function (lista) { //Obtiene la lista
 
     $.map(lista, function(productosEnLista, nombreProducto) { //Obtiene los productos en la lista
@@ -148,14 +147,14 @@ function EventoProducto(idProducto, datosProducto){
 
 function CrearContextMenu(){
   $(document).bind("contextmenu", function(e){
-    eventoOcultarMenu();
-    comprobacion();
-    eventoCambiarNombreLista();
+    EventoOcultarMenu();
+    Comprobacion();
+    EventoCambiarNombreLista();
     return false;
   });
 }
 
-function comprobacion(){
+function Comprobacion(){
 
   $(".elementoLista").mousedown(function(e){
     if(e.button == 2){
@@ -164,7 +163,7 @@ function comprobacion(){
       itemLista = $(e.target).text();
       itemSeleccionado.innerHTML = " "+itemLista;
       document.getElementById("cambiarNombreLista").style.display = "inline";
-      eventoEliminarLista(itemLista);
+      EventoEliminarLista(itemLista);
       $("#menu").css({'display':'block', 'left':e.pageX, 'top':e.pageY});
     }
   });
@@ -177,14 +176,15 @@ function comprobacion(){
       itemProducto = $(e.target).text();
       itemSeleccionado.innerHTML = " "+itemProducto;
       document.getElementById("cambiarNombreLista").style.display = "none";
-      eventoEliminarProducto(itemProducto);
+      E
+    ventoEliminarProducto(itemProducto);
 
       $("#menu").css({'display':'block', 'left':e.pageX, 'top':e.pageY});
     }
   });
 }
 
-function eventoCambiarNombreLista(){ 
+function EventoCambiarNombreLista(){ 
   $("#cambiarNombreLista").click(function(e){
 
       var resp = window.prompt("Nuevo nombre:");
@@ -235,8 +235,7 @@ function eventoCambiarNombreLista(){
   });
 }
 
-
-function eventoEliminarProducto(itemProducto){
+function EventoEliminarProducto(itemProducto){
   $("#eliminar").click(function(e){
       var productosLista = [];
       var listaNueva = {};
@@ -271,7 +270,7 @@ function eventoEliminarProducto(itemProducto){
     
       setTimeout(function (){
         $('#productosUl').empty();
-        desplegarProductos(listaSeleccionada);
+        DesplegarProductos(listaSeleccionada);
       }, 100);
 
     lista = false;
@@ -279,7 +278,7 @@ function eventoEliminarProducto(itemProducto){
   });
 }
 
-function eventoEliminarLista(itemLista){
+function EventoEliminarLista(itemLista){
   $("#eliminar").click(function(e){
       chrome.storage.sync.remove(itemLista);
       $('#listasUl').empty();
@@ -287,8 +286,7 @@ function eventoEliminarLista(itemLista){
   });
 }
 
-
-function eventoOcultarMenu(){
+function EventoOcultarMenu(){
   $(window).click(function() {
     lista = false;
     producto = false;

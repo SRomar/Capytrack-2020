@@ -1,5 +1,12 @@
 //Llenar select
 $(document).ready(function(){
+  DesplegarListas();
+  EventoAgregarProductoLista();
+  EventoPanelNuevaLista();
+});
+
+
+function DesplegarListas(){
   if($( "#selectLista" ).val() === null){
     chrome.storage.sync.get(null, function(items) {
         var allKeys = Object.keys(items);
@@ -8,14 +15,10 @@ $(document).ready(function(){
         }
     });
   }
-});
+}
 
-
-
-
- $(document).ready(function(){
+function EventoAgregarProductoLista(){
   $("#btnAgregarLista").click(function(){
-  
       //Obtener enlace
       chrome.tabs.getSelected(null,function(tab) {
         var category_id = tab.url;
@@ -70,30 +73,33 @@ $(document).ready(function(){
       });
     });
   });
-});
+}
 
-
-$(document).ready(function(){
+function EventoPanelNuevaLista(){
   $("#nuevaLista").click(function(){
     $("#contenedor").hide();
     $("#contenedorNuevaLista").show();
+    EventoBotonRetroceso();
+    EventoCrearLista();
   });
-});
+}
 
-$(document).ready(function(){
+function EventoBotonRetroceso(){
   $("#retroceso").click(function(){
     $("#contenedorNuevaLista").hide();
     $("#contenedor").show();
   })
-});
+}
 
-$(document).on('click','#btnCrearLista', function() {
-    var Lista = {};       
-    var nombre = document.getElementById('nombreLista').value;  
-    console.log(nombre);
-    Lista[nombre]= [];
-    chrome.storage.sync.set(Lista);
-    $("#selectLista").append(new Option(nombre, nombre));
-    $("#contenedorNuevaLista").hide();
-    $("#contenedor").show();
-});
+function EventoCrearLista(){
+  $(document).on('click','#btnCrearLista', function() {
+      var Lista = {};       
+      var nombre = document.getElementById('nombreLista').value;  
+      console.log(nombre);
+      Lista[nombre]= [];
+      chrome.storage.sync.set(Lista);
+      $("#selectLista").append(new Option(nombre, nombre));
+      $("#contenedorNuevaLista").hide();
+      $("#contenedor").show();
+  });
+}
