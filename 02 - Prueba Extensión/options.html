@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/opcionesEstilo.css">
     <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@100;300;400;500;700;800;900&display=swap" rel="stylesheet">
     <script src="js/jquery-3.5.1.min.js"></script>
-    <script src="js/options.js"></script>
+    <script src="js/options copy.js"></script>
 
 </head>
 <body>
@@ -33,7 +33,7 @@
     <div id="seguimientosHTML">
         <div class="listas">
             <h3>Listas</h3>
-            <ul id="listaDeListas"></ul>    
+            <ul id="listasUl"></ul>    
         </div>
 
         <div class="productos">
@@ -52,16 +52,16 @@
             <ul style="padding: 0px;">
             <li class="informacionProducto">Precio: <span id="precio"></span></li>
             <li class="informacionProducto">Estado: <span id="estado"></span></li>
-            <li class="informacionProducto">Url: <span id="urlProducto"></span></li>;
+            <li class="informacionProducto">Url: <span id="urlProducto"></span></li>
           
             </ul>
         </div>
 
     </div>
 
-    <div id="menu" class="Menu">
+    <div id="menu" class="Menu" style="display: none;">
         <ul class="contextMenu">
-            <li id="eliminar" class="menuItem">Eliminar</li>
+            <li id="eliminar" class="menuItem">Eliminar<span id="itemSeleccionado"></span></li>
             <li id="cambiarNombreLista" class="menuItem">Cambiar Nombre</li>
         </ul>
   </div>

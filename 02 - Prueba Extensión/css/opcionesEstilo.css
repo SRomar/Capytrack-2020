@@ -124,11 +124,11 @@ h3{
 
 }
 
-#listas, #listaDeListas, .elementoLista, #productosUl{
+#listas, #listasUl, .elementoLista, #productosUl{
     display: block;
     
 }
-#listaDeListas, #productosUl{
+#listasUl, #productosUl{
     
     height: calc(100% - 30px);
     overflow-y: scroll;
