@@ -11,77 +11,19 @@ $(document).ready(function(){
 
 function EventosBotones(){
   $(document).on('click','#btnSeguimientos', function() {
-
-      
-      $("#suscripcionesHTML").hide();
-      $("#h2SuscripcionesHTML").hide();
-      $("#configuracionContenedor").hide();
-      $("#contactoContenedor").hide();
-      $('#productosUl > li').remove();
-
-
-      $("#btnConfiguracion").css("background-color","#C4C4C4");
-      $("#btnSuscripciones").css("background-color","#C4C4C4");
-      $("#btnContacto").css("background-color","#C4C4C4");
-      $("#btnSeguimientos").css("background-color","#858585");
-
-
-      $("#seguimientosHTML").show();
+      window.location.replace("options.html");
     });
     
   $(document).on('click','#btnSuscripciones', function() {
-      
-      $("#seguimientosHTML").hide();
-      $("#configuracionContenedor").hide();
-      $("#contactoContenedor").hide();
-      $('#productosUl > li').remove();
-
-
-      $("#btnSeguimientos").css("background-color","#C4C4C4")
-      $("#btnConfiguracion").css("background-color","#C4C4C4");
-      $("#btnContacto").css("background-color","#C4C4C4");
-      $("#btnSuscripciones").css("background-color","#858585");
-
-      $("#h2SuscripcionesHTML").show();
-      $("#suscripcionesHTML").show();
-    
+      window.location.replace("suscripciones.html");
   });
 
   $(document).on('click','#btnConfiguracion', function() {
-
-    $("#seguimientosHTML").hide();
-    $("#suscripcionesHTML").hide();
-    $("#h2SuscripcionesHTML").hide();
-    $("#contactoContenedor").hide();
-    $('#productosUl > li').remove();
-
-    $("#btnSeguimientos").css("background-color","#C4C4C4");
-    $("#btnContacto").css("background-color","#C4C4C4");
-    $("#btnSuscripciones").css("background-color","#C4C4C4");
-    $("#btnConfiguracion").css("background-color","#858585");
-
-
-    $("#configuracionContenedor").show();
-
+    window.location.replace("configuracion.html");
   });
     
   $(document).on('click','#btnContacto', function() {
-
-  $("#seguimientosHTML").hide();
-  $("#suscripcionesHTML").hide();
-  $("#h2SuscripcionesHTML").hide();
-  $("#configuracionContenedor").hide();
-  $('#productosUl > li').remove();
-
-
-  $("#btnSeguimientos").css("background-color","#C4C4C4");
-  $("#btnContacto").css("background-color","#858585");
-  $("#btnSuscripciones").css("background-color","#C4C4C4");
-  $("#btnConfiguracion").css("background-color","#C4C4C4");
-
-
-  $("#contactoContenedor").show();
-
+    window.location.replace("contacto.html");
 });
 }
 
