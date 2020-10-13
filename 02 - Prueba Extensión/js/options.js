@@ -122,11 +122,11 @@ function Comprobacion(){
 }
 
 function EventoCambiarNombreLista(){ 
-  $("#cambiarNombreLista").click(function(e){
+  $("#cambiarNombreLista").unbind().click(function(e){
 
       var resp = window.prompt("Nuevo nombre:");
       var existe = false;
-      
+
       if(resp != null && resp != ""){
 
         chrome.storage.sync.get(null, function(items) {
@@ -173,7 +173,7 @@ function EventoCambiarNombreLista(){
 }
 
 function EventoEliminarProducto(itemProducto){
-  $("#eliminar").click(function(e){
+  $("#eliminar").unbind().click(function(e){
       var productosLista = [];
       var listaNueva = {};
       var existe = false;
