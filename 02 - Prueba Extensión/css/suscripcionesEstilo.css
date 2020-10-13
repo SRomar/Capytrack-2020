@@ -24,6 +24,7 @@ body{
     overflow-x: hidden;
     width: 95%;
     margin:0 auto;
+    text-align: center;
 }
 
 
@@ -117,7 +118,13 @@ h3{
 
 /* Suscripciones */
 
+#h2SuscripcionesHTML{
+    text-align: left;
+}
+
 #suscripcionesHTML{
+    width: 100%;
+  
     text-align: center;
     align-content: center;
     justify-content: center;
