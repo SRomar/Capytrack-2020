@@ -6,6 +6,7 @@ $(document).ready(function(){
   DesplegarListas();
   EventoListas();
   CrearContextMenu();
+  obtenerProductos();
 
 });
 
@@ -230,4 +231,47 @@ function EventoOcultarMenu(){
     producto = false;
   $("#menu").hide();
     });
+}
+
+
+function obtenerProductos(){
+  var todosLosProductos = [];
+  chrome.storage.sync.get(null, function(items) {
+    $.map(items, function (nombreLista, lista) { //Obtiene la lista
+  
+      $.map(nombreLista, function(productosEnLista, nombreProducto) { //Obtiene los productos en la lista
+        
+        todosLosProductos.push(productosEnLista);
+  
+          $.map(productosEnLista, function(producto, llaveProducto) {  //Separa los productos
+  
+            $.map(producto, function(datosProducto, categoryID) { //Separa los datos del producto
+               
+          });
+        });
+      });
+    });
+
+    //console.log(todosLosProductos);
+
+    var objeto = {prods: todosLosProductos};
+    console.log(objeto);
+
+    fetch('http://127.0.0.1:3000/api', {
+      method: 'POST',
+      mode: "no-cors",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: "Taylor",
+        surname: "Swift"
+      })
+    })
+    .then(response => console.log(JSON.stringify(response)))
+    .catch(error => console.log(error));
+
+  });
+
+  
 }
