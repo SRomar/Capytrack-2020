@@ -124,11 +124,11 @@ h3{
 
 }
 
-#listas, #listaDeListas, .elementoLista, #productosUl{
+#listas, #listasUl, .elementoLista, #productosUl{
     display: block;
     
 }
-#listaDeListas, #productosUl{
+#listasUl, #productosUl{
     
     height: calc(100% - 30px);
     overflow-y: scroll;
@@ -221,100 +221,3 @@ h3{
 
 
 
-/* Suscripciones */
-
-#suscripcionesHTML{
-    text-align: center;
-    align-content: center;
-    justify-content: space-between;
-    display: flex;
-}
-#suscripcionesHTML, #h2SuscripcionesHTML{
-    display: none;
-}
-.paquetes{
-    display: inline-block;
-    margin: 20px;
-    margin-top: 0;
-    width: 300px;
-    height: 400px;
-    outline:5px solid #757575;
-    background: #C4C4C4;
-}
-
-/* Configuracion */
-
-
-#configuracionContenedor{
-    width: 100%;
-    height: calc(100% - 20px);
-    display: flex;
-    text-align: center;
-    align-content: center;
-    justify-content: space-between;
-    margin-top: 20px;
-    
-   
- 
-}
-
-
-#opcionesConfig, #configOpciones{
-    outline:5px solid #757575;
-    background: #C4C4C4;
-    display: block;
-    overflow: hidden;
-
-}
-
-
-
-#opcionesConfig{
-    width: 25%;
-    height: 100%;
-
-}
-
-#configOpciones{
-    width: 75%;
-    height: 100%;
-
-}
-
-#listaOpcionesConfig{
-    margin-top: 5px;
-    padding: 0px;
-    width: 100%;
-}
-
-#perro{
-    width: 500px;
-    height: 400px;
-}
-
-
-#contactoContenedor{
-    width: calc(100% - 80px);
-    height: calc(100% - 90px);
-    display: block;
-    text-align: left;
-    align-content: center;
-    justify-content: space-between;
-    margin-top: 20px;
-    outline:5px solid #757575;
-    color: #505050;
-    background: #C4C4C4;
-    padding: 40px;
-    padding-top: 20px;
-}
-
-#mail, #mensaje{
-    margin-top: 10px;
-    margin-bottom: 10px;
-    width: 450px;
-}
-
-#mensaje{
-    height: 25%;
-
-}

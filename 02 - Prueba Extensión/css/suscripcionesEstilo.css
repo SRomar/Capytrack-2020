@@ -1,0 +1,142 @@
+html, body{
+    background-color: white;
+    
+    margin: 0;
+    border: 0;
+    
+    
+    align-content: center;
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+   
+
+}
+
+
+html{
+    height: 100%;
+    padding: 0px;
+    width: 100%;
+}
+
+body{
+    height: 75%;
+    padding: 20px;
+    overflow-x: hidden;
+    width: 95%;
+    margin:0 auto;
+    text-align: center;
+}
+
+
+
+h1{
+    margin: 0;
+    color:#505050;
+    font-size: 65px;
+}
+
+h3{
+    margin: 0;
+    color:#505050;
+    font-size: 20px;
+}
+#header{ 
+    text-align: center;
+    width: calc(100% - 20px);
+    height: 125px;
+    margin-bottom: 20px;
+    padding-left: 20px;
+    padding-top: 15px;
+    font-weight: 500;
+    outline:5px solid #757575;
+    background: #C4C4C4;
+    /* background: linear-gradient(#FFC907, #FFA63E); */
+    text-align: left;
+    display: flex;
+}
+#capyCara{
+    padding-top: 9px;
+    padding-left: 25px;
+}
+
+
+
+#contenedorbotones{
+    height: 50px;
+    text-align: center;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+
+}
+.btn{
+    font-size: 30px;
+    width: 25%;
+    border: none;
+    color: #3b3b3b;
+    background-color: #C4C4C4;
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+    font-weight: bold;  
+    cursor: pointer;
+    display: table-cell;
+    vertical-align: middle;
+    outline:5px solid #757575;
+
+}
+
+.Menu{
+    width:200px;
+    position:absolute;      
+    border:1px solid rgb(100, 100, 100);
+    background-color: #ffffff;
+    -moz-box-shadow: 0 0 5px #888;
+    -webkit-box-shadow: 0 0 5px#888;
+    box-shadow: 0 0 5px #888;
+}
+
+.contextMenu{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.menuItem{
+    line-height: 30px;
+    font-size: 14px;
+    cursor:pointer;
+    font-family: Arial, Helvetica, sans-serif;
+    text-decoration: none;
+    text-align: left;
+    vertical-align: middle;
+    padding-top: 10px;
+    padding-left: 10px;
+    margin-bottom: 5px;
+}
+
+
+
+
+/* Suscripciones */
+
+#h2SuscripcionesHTML{
+    text-align: left;
+}
+
+#suscripcionesHTML{
+    width: 100%;
+  
+    text-align: center;
+    align-content: center;
+    justify-content: center;
+    display: flex;
+}
+
+.paquetes{
+    display: block;
+    margin: 20px;
+    margin-top: 0;
+    width: 300px;
+    height: 400px;
+    outline:5px solid #757575;
+    background: #C4C4C4;
+}
