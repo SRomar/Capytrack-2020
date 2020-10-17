@@ -11,8 +11,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-app.post('/api', function(req, res, next){
+app.post('/', function(req, res){
+
     console.log(req.body);
+
     res.json({
       status: 'success',
       productos: req.body

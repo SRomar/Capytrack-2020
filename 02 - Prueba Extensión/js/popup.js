@@ -53,10 +53,19 @@ function EventoAgregarProductoLista(){
             //Se crea el producto
             var producto = [i.title, i.price, i.status, i.permalink, foto, i.id];
        
+            $.ajax({
+              type: "POST",
+              url: "http://localhost:3000/",
+              data: JSON.stringify(producto)
+            });
+
             var diccionarioProducto = {};       
             var key = i.id;  
             diccionarioProducto[key]= producto;   
-       
+            
+            
+
+            
             
 
             chrome.storage.sync.get(function(cfg) {
