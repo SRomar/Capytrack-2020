@@ -1,22 +1,23 @@
 {
-    "manifest_version": 2,
-  
-    "name": "extension",
-    "description": "extension description.",
-    "version": "0.1",
-    "icons": {
-      "128": "res/icon128.png",
-      "48": "res/icon48.png",
-      "16": "res/icon16.png"
-    },
-  
-    "page_action": {
-      "default_icon": "res/icon16.png",
-      "default_title": "Capytrack",
-      "default_popup": "popup.html"
-    },
+  "manifest_version": 2,
 
-    "content_scripts": [
+  "name": "extension",
+  "description": "extension description.",
+  "version": "0.1",
+  "icons": {
+    "128": "res/icon128.png",
+    "48": "res/icon48.png",
+    "16": "res/icon16.png"
+  },
+
+  "page_action": {
+    "default_icon": "res/icon16.png",
+    "default_title": "Capytrack",
+    "default_popup": "./popup.html"
+  },
+
+
+  "content_scripts": [
       {
         "matches": [
           "https://articulo.mercadolibre.com.ar/*",
@@ -25,7 +26,7 @@
           "https://articulo.mercadolibre.com.cl/*",
           "https://articulo.mercadolibre.com.co/*",
           "https://articulo.mercadolibre.com.ec/*",
-          "https://articulo.mercadolibre.com.do/*"
+          "https://articulo.mercadolibre.com.do/*"           
         ],
         "js": ["js/content.js", "js/jquery-3.5.1.min.js"]
       }
@@ -51,4 +52,4 @@
           ],
   
     "options_page": "options.html"
-  }
+}
