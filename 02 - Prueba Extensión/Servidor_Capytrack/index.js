@@ -7,8 +7,8 @@ const mysql = require('mysql2');
 
 const conexion = mysql.createConnection({
   host: 'localhost',
-  user: 'root',
-  password: '123456',
+  user: 'Velnias',
+  password: '/Velnias7',
   database: 'capytrack'
 });
 

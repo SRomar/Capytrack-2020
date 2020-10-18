@@ -32,6 +32,7 @@ function DesplegarListas(){
   if($( "#listasUl" ).val() !== null){
     chrome.storage.sync.get(null, function(items) {
         var allKeys = Object.keys(items);
+        $('#listasUl').empty();
         for (i = 0; i < allKeys.length; i++) {
 
             $("#listasUl").append('<li class="elementoLista" id="'+allKeys[i]+'">'+allKeys[i]+'</li>');  
@@ -216,7 +217,6 @@ function EventoEliminarProducto(itemProducto){
         
       });
       
-    
       setTimeout(function (){
         $('#productosUl').empty();
         DesplegarProductos(listaSeleccionada);
@@ -230,8 +230,7 @@ function EventoEliminarProducto(itemProducto){
 function EventoEliminarLista(itemLista){
   $("#eliminar").click(function(e){
       chrome.storage.sync.remove(itemLista);
-      $('#listasUl').empty();
-      DesplegarListas();
+        DesplegarListas();
   });
 }
 
