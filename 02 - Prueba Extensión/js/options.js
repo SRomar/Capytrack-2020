@@ -85,6 +85,7 @@ function EventoProducto(idProducto, datosProducto){
     });
 }
 
+
 function CrearContextMenu(){
   $(document).bind("contextmenu", function(e){
     EventoOcultarMenu();
