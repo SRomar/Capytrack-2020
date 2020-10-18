@@ -71,6 +71,26 @@ app.post('/bajaProducto', function(req, res){
     });
 
 });
+
+
+app.post('/bajaLista', function(req, res){
+    console.log(req.body);
+
+    var nombrelista = req.body.nombre;
+
+    conexion.query('DELETE FROM productos WHERE nombre_lista = ?;', nombrelista, (err,result)=>{
+      if(err) throw err;
+    });
+
+    conexion.query('DELETE FROM listas WHERE nombre = ?;', nombrelista, (err,result)=>{
+      if(err) throw err;
+    });
+    
+    res.json({
+      status: 'success',
+      productos: req.body
+    });
+});
   
 
 app.listen(3000, () => {
