@@ -7,8 +7,8 @@ const mysql = require('mysql2');
 
 const conexion = mysql.createConnection({
   host: 'localhost',
-  user: 'root',
-  password: '123456',
+  user: 'Velnias',
+  password: '/Velnias7',
   database: 'capytrack'
 });
 
@@ -70,6 +70,26 @@ app.post('/bajaProducto', function(req, res){
       productos: req.body
     });
 
+});
+
+
+app.post('/bajaLista', function(req, res){
+    console.log(req.body);
+
+    var nombrelista = req.body.nombre;
+
+    conexion.query('DELETE FROM productos WHERE nombre_lista = ?;', nombrelista, (err,result)=>{
+      if(err) throw err;
+    });
+
+    conexion.query('DELETE FROM listas WHERE nombre = ?;', nombrelista, (err,result)=>{
+      if(err) throw err;
+    });
+    
+    res.json({
+      status: 'success',
+      productos: req.body
+    });
 });
   
 

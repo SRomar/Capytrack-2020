@@ -7,14 +7,15 @@ $(document).ready(function(){
 
 
 function DesplegarListas(){
-  if($( "#selectLista" ).val() === null){
+  
     chrome.storage.sync.get(null, function(items) {
         var allKeys = Object.keys(items);
+        $('#selectLista').empty();
         for (i = 0; i < allKeys.length; i++) {
             $("#selectLista").append(new Option(allKeys[i], allKeys[i]));
         }
     });
-  }
+  
 }
 
 function EventoAgregarProductoLista(){
@@ -89,7 +90,6 @@ function EventoAgregarProductoLista(){
             fetch(linkAPI).then(data => data.text()).then(data =>{
               var i = JSON.parse(data);
               
-              console.log(i);
 
               
               var valorLista = $( "#selectLista" ).val(); //Lista seleccionada
@@ -172,7 +172,6 @@ function EventoCrearLista(){
       var existe = false;
       var Lista = {};       
       var nombre = document.getElementById('nombreLista').value;  
-      console.log(nombre);
       chrome.storage.sync.get(null, function(items) {
         var allKeys = Object.keys(items);
         for (i = 0; i < allKeys.length; i++) {
@@ -183,7 +182,7 @@ function EventoCrearLista(){
         if(existe == false){
           Lista[nombre]= [];
           chrome.storage.sync.set(Lista);
-
+          DesplegarListas();  
           var listaServidor = {
             nombre: nombre
           }
@@ -194,9 +193,9 @@ function EventoCrearLista(){
             data: listaServidor
           });
 
-          $("#selectLista").append(new Option(nombre, nombre));
           $("#contenedorNuevaLista").hide();
-          $("#contenedor").show();
+          $("#contenedor").show();        
+         
         }
         else if(existe == true){
           alert("Ya hay una lista con ese nombre!");
