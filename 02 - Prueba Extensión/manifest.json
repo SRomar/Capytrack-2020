@@ -19,13 +19,6 @@
     "content_scripts": [
       {
         "matches": [
-          "https://www.mercadolibre.com.ar/*", 
-          "https://www.mercadolibre.com.bo/*", 
-          "https://www.mercadolibre.com.br/*",
-          "https://www.mercadolibre.com.cl/*",
-          "https://www.mercadolibre.com.co/*",
-          "https://www.mercadolibre.com.ec/*",
-          "https://www.mercadolibre.com.do/*",
           "https://articulo.mercadolibre.com.ar/*",
           "https://articulo.mercadolibre.com.bo/*", 
           "https://articulo.mercadolibre.com.br/*",
@@ -48,13 +41,6 @@
             "notifications",
             "contextMenus",
             "tabs",
-            "https://www.mercadolibre.com.ar/*", 
-            "https://www.mercadolibre.com.bo/*", 
-            "https://www.mercadolibre.com.br/*",
-            "https://www.mercadolibre.com.cl/*",
-            "https://www.mercadolibre.com.co/*",
-            "https://www.mercadolibre.com.ec/*",
-            "https://www.mercadolibre.com.do/*",
             "https://articulo.mercadolibre.com.ar/*",
             "https://articulo.mercadolibre.com.bo/*", 
             "https://articulo.mercadolibre.com.br/*",
