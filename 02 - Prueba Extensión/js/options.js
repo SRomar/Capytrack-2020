@@ -214,7 +214,6 @@ function EventoEliminarProducto(itemProducto){
         
       });
       
-    
       setTimeout(function (){
         $('#productosUl').empty();
         DesplegarProductos(listaSeleccionada);
@@ -238,8 +237,7 @@ function EventoEliminarLista(itemLista){
       });
 
       chrome.storage.sync.remove(itemLista);
-      $('#listasUl').empty();
-      DesplegarListas();
+        DesplegarListas();
   });
 }
 
