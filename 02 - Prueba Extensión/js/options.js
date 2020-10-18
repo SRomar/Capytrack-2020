@@ -156,6 +156,16 @@ function EventoCambiarNombreLista(){
               chrome.storage.sync.remove(itemLista);
               chrome.storage.sync.set(listaNueva);
               
+              var listaServidor = {
+                nombreViejo: itemLista,
+                nombreNuevo: resp
+              }
+    
+              $.ajax({
+                type: "POST",
+                url: "http://localhost:3000/modificarLista",
+                data: listaServidor
+              });
               
             });
             location.reload();

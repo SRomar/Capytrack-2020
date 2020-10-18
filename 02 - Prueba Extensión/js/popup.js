@@ -73,78 +73,89 @@ function EventoAgregarProductoLista(){
         }
         bandera = false;
         var valorLista = $( "#selectLista" ).val();
-        chrome.storage.sync.get(valorLista, function (lista) { //Obtiene la lista
-            
-          $.map(lista, function(productosEnLista, valorLista) { //Obtiene los productos en la lista
-              $.map(productosEnLista, function(producto, llaveProducto) {  //Separa a los productos
-                $.map(producto, function(datosProducto, categoryID) { //Separa a los datos del producto
-                  if(categoryID == category_id){
-                    bandera = true;
-                  }
+        chrome.storage.sync.get(null, function(items) { //Obtiene Items   
+          var allKeys = Object.keys(items);      
+
+          for (i = 0; i < allKeys.length; i++) { //Obtiene lista
+            chrome.storage.sync.get(allKeys[i], function (lista) {
+              $.map(lista, function(productosEnLista, valorLista) { //Obtiene los productos en la lista
+                $.map(productosEnLista, function(producto, llaveProducto) {  //Separa a los productos
+                  $.map(producto, function(datosProducto, categoryID) { //Separa a los datos del producto
+                    if(categoryID == category_id){
+                      bandera = true;
+                      console.log(bandera);
+                    }
+                  });
                 });
               });
-          });
-          if(bandera == false){
-            var linkAPI = "https://api.mercadolibre.com/items/" + category_id + "?include_attributes=all";
-        
-            fetch(linkAPI).then(data => data.text()).then(data =>{
-              var i = JSON.parse(data);
               
+              if((i+1) >= allKeys.length){
 
+                if(bandera == false){
+                  var linkAPI = "https://api.mercadolibre.com/items/" + category_id + "?include_attributes=all";
               
-              var valorLista = $( "#selectLista" ).val(); //Lista seleccionada
-              //Se agrega a una lista
-              if(valorLista !== null){
-              
-                ide.innerHTML = i.id;
-                nombre.innerHTML = i.title;
-                estado.innerHTML = i.status;      
-                precio.innerHTML = i.price;
-
-                diccionariofoto = i.pictures;
-                arregloFoto = diccionariofoto[Object.keys(diccionariofoto)[0]];
-                foto = arregloFoto[Object.keys(arregloFoto)[2]];
-                console.log(foto);
-
-                //Se crea el producto
-                var producto = [i.title, i.price, i.status, i.permalink, foto, i.id];
-          
-                var productoServidor = {
-                  title: i.title,
-                  price: i.price,
-                  status: i.status,
-                  permalink: i.permalink,
-                  id: i.id,
-                  nombrelista: valorLista
-                }
-    
-                $.ajax({
-                  type: "POST",
-                  url: "http://localhost:3000/altaProducto",
-                  data: productoServidor
-                });
-
-                var diccionarioProducto = {};       
-                var key = i.id;  
-                diccionarioProducto[key]= producto;   
-          
+                  fetch(linkAPI).then(data => data.text()).then(data =>{
+                    var i = JSON.parse(data);
+                    
+      
+                    
+                    var valorLista = $( "#selectLista" ).val(); //Lista seleccionada
+                    //Se agrega a una lista
+                    if(valorLista !== null){
+                    
+                      ide.innerHTML = i.id;
+                      nombre.innerHTML = i.title;
+                      estado.innerHTML = i.status;      
+                      precio.innerHTML = i.price;
+      
+                      diccionariofoto = i.pictures;
+                      arregloFoto = diccionariofoto[Object.keys(diccionariofoto)[0]];
+                      foto = arregloFoto[Object.keys(arregloFoto)[2]];
+                      console.log(foto);
+      
+                      //Se crea el producto
+                      var producto = [i.title, i.price, i.status, i.permalink, foto, i.id];
                 
-  
-                chrome.storage.sync.get(function(cfg) {
-                  if(typeof(cfg[valorLista]) !== 'undefined' && cfg[valorLista] instanceof Array) { 
-                    cfg[valorLista].push(diccionarioProducto);
-                  } 
-                  chrome.storage.sync.set(cfg); 
-                });
-  
-              } else{
-                alert('No hay listas!');
-              }
+                      var productoServidor = {
+                        title: i.title,
+                        price: i.price,
+                        status: i.status,
+                        permalink: i.permalink,
+                        id: i.id,
+                        nombrelista: valorLista
+                      }
           
+                      $.ajax({
+                        type: "POST",
+                        url: "http://localhost:3000/altaProducto",
+                        data: productoServidor
+                      });
+      
+                      var diccionarioProducto = {};       
+                      var key = i.id;  
+                      diccionarioProducto[key]= producto;   
+                
+                      
+        
+                      chrome.storage.sync.get(function(cfg) {
+                        if(typeof(cfg[valorLista]) !== 'undefined' && cfg[valorLista] instanceof Array) { 
+                          cfg[valorLista].push(diccionarioProducto);
+                        } 
+                        chrome.storage.sync.set(cfg); 
+                      });
+        
+                    } else{
+                      alert('No hay listas!');
+                    }
+                
+                  });
+                }
+                else if(bandera == true){
+                  alert("El producto ya se encuentra en una lista!");
+                }
+              }
+
             });
-          }
-          else if(bandera == true){
-            alert("El producto ya se encuentra en la lista!");
           }
         });
       });

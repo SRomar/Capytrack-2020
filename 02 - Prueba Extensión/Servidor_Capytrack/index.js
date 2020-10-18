@@ -7,8 +7,8 @@ const mysql = require('mysql2');
 
 const conexion = mysql.createConnection({
   host: 'localhost',
-  user: 'Velnias',
-  password: '/Velnias7',
+  user: 'root',
+  password: '123456',
   database: 'capytrack'
 });
 
@@ -92,6 +92,22 @@ app.post('/bajaLista', function(req, res){
     });
 });
   
+
+app.post('/modificarLista', function(req, res){
+    console.log(req.body);
+
+    var nombreViejo = req.body.nombreViejo;
+    var nombreNuevo = req.body.nombreNuevo;
+
+    conexion.query('UPDATE listas SET nombre = ? WHERE nombre = ?;', [nombreNuevo, nombreViejo], (err,result)=>{
+      if(err) throw err;
+    });
+    
+    res.json({
+      status: 'success',
+      productos: req.body
+    });
+});
 
 app.listen(3000, () => {
     console.log('Server listening on localhost:3000');
