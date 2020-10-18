@@ -12,7 +12,6 @@ function DesplegarListas(){
         var allKeys = Object.keys(items);
         $('#selectLista').empty();
         for (i = 0; i < allKeys.length; i++) {
-            console.log(allKeys[i]);
             $("#selectLista").append(new Option(allKeys[i], allKeys[i]));
         }
     });
@@ -91,7 +90,6 @@ function EventoAgregarProductoLista(){
             fetch(linkAPI).then(data => data.text()).then(data =>{
               var i = JSON.parse(data);
               
-              console.log(i);
 
               
               var valorLista = $( "#selectLista" ).val(); //Lista seleccionada
