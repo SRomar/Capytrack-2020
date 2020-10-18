@@ -16,33 +16,10 @@
     "default_popup": "./popup.html"
   },
 
+
   "content_scripts": [
-    {
-      "matches": [
-
-        "https://articulo.mercadolibre.com.ar/*",
-        "https://articulo.mercadolibre.com.bo/*", 
-        "https://articulo.mercadolibre.com.br/*",
-        "https://articulo.mercadolibre.com.cl/*",
-        "https://articulo.mercadolibre.com.co/*",
-        "https://articulo.mercadolibre.com.ec/*",
-        "https://articulo.mercadolibre.com.do/*"
-      ],
-      "js": ["js/content.js", "js/jquery-3.5.1.min.js"]
-    }
-  ],
-
-  "background": {
-    "scripts": ["js/eventPage.js"],
-    "persistent": false
-  },
-
-  "permissions": [
-          "storage",
-          "notifications",
-          "contextMenus",
-          "tabs",
-
+      {
+        "matches": [
           "https://articulo.mercadolibre.com.ar/*",
           "https://articulo.mercadolibre.com.bo/*", 
           "https://articulo.mercadolibre.com.br/*",
@@ -51,6 +28,28 @@
           "https://articulo.mercadolibre.com.ec/*",
           "https://articulo.mercadolibre.com.do/*"           
         ],
-
-  "options_page": "options.html"
+        "js": ["js/content.js", "js/jquery-3.5.1.min.js"]
+      }
+    ],
+  
+    "background": {
+      "scripts": ["js/eventPage.js"],
+      "persistent": false
+    },
+  
+    "permissions": [
+            "storage",
+            "notifications",
+            "contextMenus",
+            "tabs",
+            "https://articulo.mercadolibre.com.ar/*",
+            "https://articulo.mercadolibre.com.bo/*", 
+            "https://articulo.mercadolibre.com.br/*",
+            "https://articulo.mercadolibre.com.cl/*",
+            "https://articulo.mercadolibre.com.co/*",
+            "https://articulo.mercadolibre.com.ec/*",
+            "https://articulo.mercadolibre.com.do/*"           
+          ],
+  
+    "options_page": "options.html"
 }
