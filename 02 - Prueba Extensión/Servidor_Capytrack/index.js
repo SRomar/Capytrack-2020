@@ -54,6 +54,23 @@ app.post('/altaLista', function(req, res){
     });
     
 });
+
+
+app.post('/bajaProducto', function(req, res){
+    console.log(req.body);
+
+    var categoryID = req.body.id;
+
+    conexion.query('DELETE FROM productos WHERE id = ?;', categoryID, (err,result)=>{
+      if(err) throw err;
+    });
+    
+    res.json({
+      status: 'success',
+      productos: req.body
+    });
+
+});
   
 
 app.listen(3000, () => {

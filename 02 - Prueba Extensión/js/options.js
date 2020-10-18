@@ -177,6 +177,7 @@ function EventoEliminarProducto(itemProducto){
       var productosLista = [];
       var listaNueva = {};
       var existe = false;
+      var id;
 
       chrome.storage.sync.get(listaSeleccionada, function (lista) { //Obtiene la lista
           
@@ -192,11 +193,22 @@ function EventoEliminarProducto(itemProducto){
               }
               else if(datosProducto[0] == itemProducto){
                 existe = true;
+                id = categoryID;
               }
             });
           });
         });
         if(existe == true){
+          var productoServidor = {            
+            id: id
+          }
+
+          $.ajax({
+            type: "POST",
+            url: "http://localhost:3000/bajaProducto",
+            data: productoServidor
+          });
+          
           listaNueva[listaSeleccionada] = productosLista;        
           chrome.storage.sync.remove(listaSeleccionada);
           chrome.storage.sync.set(listaNueva);
