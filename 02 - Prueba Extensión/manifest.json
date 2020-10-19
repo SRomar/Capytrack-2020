@@ -41,7 +41,6 @@
     "permissions": [
             "storage",
             "declarativeContent", 
-            "activeTab",
             "notifications",
             "contextMenus",
             "tabs",
