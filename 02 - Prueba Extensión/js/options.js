@@ -241,14 +241,18 @@ function EventoEliminarLista(itemLista){
         nombre: itemLista
       }
 
-      $.ajax({
-        type: "POST",
-        url: "http://localhost:3000/bajaLista",
-        data: listaServidor
-      });
+      // $.ajax({
+      //   type: "POST",
+      //   url: "http://localhost:3000/bajaLista",
+      //   data: listaServidor
+      // });
 
       chrome.storage.sync.remove(itemLista);
+
+       setTimeout(function (){
         DesplegarListas();
+        EventoListas();
+      }, 200);
   });
 }
 
