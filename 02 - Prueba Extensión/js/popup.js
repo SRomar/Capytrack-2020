@@ -18,6 +18,7 @@ function DesplegarListas(){
   
 }
 
+
 function CapturaCategoryID(url){
     
     var category_id = url.toString();
@@ -178,6 +179,7 @@ function EventoAgregarProductoLista(){
   });
   
 }
+
 
 function EventoPanelNuevaLista(){
   $("#nuevaLista").click(function(){
