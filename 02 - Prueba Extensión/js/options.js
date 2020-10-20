@@ -91,6 +91,7 @@ function CrearContextMenu(){
     EventoOcultarMenu();
     Comprobacion();
     EventoCambiarNombreLista();
+    EventoFondo();
     return false;
   });
 }
@@ -241,14 +242,18 @@ function EventoEliminarLista(itemLista){
         nombre: itemLista
       }
 
-      $.ajax({
-        type: "POST",
-        url: "http://localhost:3000/bajaLista",
-        data: listaServidor
-      });
+      // $.ajax({
+      //   type: "POST",
+      //   url: "http://localhost:3000/bajaLista",
+      //   data: listaServidor
+      // });
 
       chrome.storage.sync.remove(itemLista);
+
+       setTimeout(function (){
         DesplegarListas();
+        EventoListas();
+      }, 200);
   });
 }
 
@@ -261,3 +266,17 @@ function EventoOcultarMenu(){
     });
 }
 
+function EventoFondo(){
+  $("#eliminar").mouseover(function(){
+    $("#eliminar").css("background-color", "#757575");
+    $("#cambiarNombreLista").css("background-color", "#ffffff");
+  });
+  $("#cambiarNombreLista").mouseover(function(){
+    $("#eliminar").css("background-color", "#ffffff");
+    $("#cambiarNombreLista").css("background-color", "#757575");
+  });
+  $(".contextMenu").mouseleave(function(){
+    $("#eliminar").css("background-color", "#ffffff");
+    $("#cambiarNombreLista").css("background-color", "#ffffff");
+  });
+}

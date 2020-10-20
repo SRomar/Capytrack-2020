@@ -8,6 +8,7 @@
     "128": "res/icon128.png",
     "48": "res/icon48.png",
     "16": "res/icon16.png"
+
   },
 
   "page_action": {
@@ -39,6 +40,7 @@
   
     "permissions": [
             "storage",
+            "declarativeContent", 
             "notifications",
             "contextMenus",
             "tabs",

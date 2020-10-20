@@ -179,6 +179,7 @@ function EventoAgregarProductoLista(){
   
 }
 
+
 function EventoPanelNuevaLista(){
   $("#nuevaLista").click(function(){
     $("#contenedor").hide();
