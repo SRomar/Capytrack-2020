@@ -4,11 +4,14 @@ const bodyParser = require('body-parser');
 const app = express();
 const mysql = require('mysql2');
  
+var http = require('http');
+var request = require('request');
+
 
 const conexion = mysql.createConnection({
   host: 'localhost',
-  user: 'root',
-  password: '123456',
+  user: 'Velnias',
+  password: '/Velnias7',
   database: 'capytrack'
 });
 
@@ -112,3 +115,19 @@ app.post('/modificarLista', function(req, res){
 app.listen(3000, () => {
     console.log('Server listening on localhost:3000');
 });
+
+// request({
+//   url: "https://api.mercadolibre.com/items/MLA847875608",
+//   method: "GET",
+//   timeout: 30000,
+//   followRedirect: true,
+//   maxRedirects: 10
+// },function(error, response, body){
+//   if(!error && response.statusCode == 200){
+//     console.log('Exito!');
+//     console.log(response.body);
+//   }else{
+//       console.log('SERGIO TORRES');
+//       console.log('error' + response.statusCode);
+//   }
+// });
