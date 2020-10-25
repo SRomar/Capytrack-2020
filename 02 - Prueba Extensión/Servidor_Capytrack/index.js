@@ -116,51 +116,30 @@ app.listen(3000, () => {
     console.log('Server listening on localhost:3000');
 });
 
-// request({
-//   url: "https://api.mercadolibre.com/items/MLA847875608",
-//   method: "GET",
-//   timeout: 30000,
-//   followRedirect: true,
-//   maxRedirects: 10
-// },function(error, response, body){
-//   if(!error && response.statusCode == 200){
-//     console.log('Exito!');
-//     console.log(response.body);
-//   }else{
-//       console.log('SERGIO TORRES');
-//       console.log('error' + response.statusCode);
+
+//ENVIO DE MAIL NO BORRAR
+// var nodemailer = require('nodemailer');
+
+// var transporter = nodemailer.createTransport({
+//   service: 'gmail',
+//   auth: {
+//     user: 'capytrack@gmail.com',
+//     pass: '/Capytrack20'
 //   }
 // });
 
-var Storage = require("./index.js");
- 
-// optionally set storage configuration
-Storage.configure({
-    scope: "sync", // or "local"
-});
- 
-// load the existing storage into memory
-Storage.load(function() {
-    // set a storage key
-    // Storage.set("installtime", Date.now());
-    // set storage keys
-    // Storage.set({
-    //     installtime: Date.now(),
-    //     type: "referral",
-    // });
-    // get a storage key
-    // Storage.get("installtime", 0); // outputs key's value or 0 if undefined
-    // // get storage keys
-    // Storage.get(["installtime", "type"]); // outputs an object of key/values
-    // clear some keys from storage
-    // Storage.remove(["installtime", "otherkey"]);
-    // // clear all storage
-    // Storage.clear();
+// var mailOptions = {
+//   from: 'capytrack@gmail.com',
+//   to: 'iaraazulfryc@gmail.com',
+//   subject: 'CAPYTRACK',
+//   text: 'jaja re caro el dólar'
+// };
 
-    chrome.storage.sync.get(null, function(items) {
-      var allKeys = Object.keys(items);
-      for (i = 0; i < allKeys.length; i++) {
-          console.log(allKeys[i]);
-      }
-  });
-});
+// transporter.sendMail(mailOptions, function(error, info){
+//   if (error) {
+//     console.log(error);
+//   } else {
+//     console.log('Email sent: ' + info.response);
+//   }
+// });
+//ENVIO DE MAIL NO BORRAR
