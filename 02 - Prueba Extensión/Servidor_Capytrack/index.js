@@ -147,7 +147,6 @@ app.post('/enviarMail', function(req, res){
 });
 
 app.post('/reciboMail', function(req, res){
-  console.log(req.body);
   transporter.sendMail(req.body, function(error, info){
     if (error) {
       console.log(error);
