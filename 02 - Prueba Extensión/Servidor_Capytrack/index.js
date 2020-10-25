@@ -118,28 +118,60 @@ app.listen(3000, () => {
 
 
 //ENVIO DE MAIL NO BORRAR
-// var nodemailer = require('nodemailer');
+var nodemailer = require('nodemailer');
 
-// var transporter = nodemailer.createTransport({
-//   service: 'gmail',
-//   auth: {
-//     user: 'capytrack@gmail.com',
-//     pass: '/Capytrack20'
-//   }
-// });
+app.post('/enviarMail', function(req, res){
 
-// var mailOptions = {
-//   from: 'capytrack@gmail.com',
-//   to: 'iaraazulfryc@gmail.com',
-//   subject: 'CAPYTRACK',
-//   text: 'jaja re caro el dólar'
-// };
+  var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'capytrack@gmail.com',
+      pass: '/Capytrack20'
+    }
+  });
 
-// transporter.sendMail(mailOptions, function(error, info){
-//   if (error) {
-//     console.log(error);
-//   } else {
-//     console.log('Email sent: ' + info.response);
-//   }
-// });
+  var mailOptions = {
+    from: 'capytrack@gmail.com',
+    to: 'iaraazulfryc@gmail.com',
+    subject: 'CAPYTRACK',
+    text: 'jaja re caro el dólar'
+  };
+  
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  });
+
+  res.json({
+    status: 'success'
+  });
+});
+
+app.post('/recivoMail', function(req, res){
+
+  var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'capytrack@gmail.com',
+      pass: '/Capytrack20'
+    }
+  });
+
+
+  console.log(req.body);
+  transporter.sendMail(req.body, function(error, info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  });
+  res.json({
+    status: 'success'
+  });
+});
+
 //ENVIO DE MAIL NO BORRAR
