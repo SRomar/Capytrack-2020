@@ -131,3 +131,36 @@ app.listen(3000, () => {
 //       console.log('error' + response.statusCode);
 //   }
 // });
+
+var Storage = require("./index.js");
+ 
+// optionally set storage configuration
+Storage.configure({
+    scope: "sync", // or "local"
+});
+ 
+// load the existing storage into memory
+Storage.load(function() {
+    // set a storage key
+    // Storage.set("installtime", Date.now());
+    // set storage keys
+    // Storage.set({
+    //     installtime: Date.now(),
+    //     type: "referral",
+    // });
+    // get a storage key
+    // Storage.get("installtime", 0); // outputs key's value or 0 if undefined
+    // // get storage keys
+    // Storage.get(["installtime", "type"]); // outputs an object of key/values
+    // clear some keys from storage
+    // Storage.remove(["installtime", "otherkey"]);
+    // // clear all storage
+    // Storage.clear();
+
+    chrome.storage.sync.get(null, function(items) {
+      var allKeys = Object.keys(items);
+      for (i = 0; i < allKeys.length; i++) {
+          console.log(allKeys[i]);
+      }
+  });
+});
