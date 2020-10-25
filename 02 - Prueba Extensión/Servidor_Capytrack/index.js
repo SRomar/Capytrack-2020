@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const app = express();
 const mysql = require('mysql2');
 const cron = require('node-cron');
+const fetch = require('node-fetch');
  
 
 const conexion = mysql.createConnection({
@@ -119,38 +120,54 @@ app.post('/modificarLista', function(req, res){
     });
 });
 
-/*
-cron.schedule("*1 * * * *", function(){
-  console.log("schedule running...");
-  var productos;
 
-  conexion.query('SELECT id, precio FROM productos;', (err,result)=>{
-    if(err) throw err;
-    else{
-      if(result != null){
-        productos = result;
+cron.schedule("*/1 * * * *", function(){
+  console.log("schedule running...");
+  
+  verificarPrecios();
+  
+});
+
+
+async function verificarPrecios(){
+  var prods;
+  var p1 = new Promise(function(resolve, reject){
+    conexion.query('SELECT id, precio FROM productos;', (err,result)=>{
+      if(err) throw err;
+      else{
+        if(result != null){
+          prods = result;
+        }     
       }
-      
-    }
+      resolve(prods);
+    });
   });
+
+  const productos = await p1;
+  
   if(productos != null){
-    for(i=0; i<productos.length; i++){
+    for(var i=0; i<productos.length; i++){
         var linkAPI = "https://api.mercadolibre.com/items/" + productos[i].id + "?include_attributes=all";
-                      
-        fetch(linkAPI).then(data => data.text()).then(data =>{
-          var j = JSON.parse(data);
-          if(j.price == productos[i].precio){
-            console.log("el precio sigue igual perri");
-          }
-          else{
-            console.log("el precio cambio y es este: " + j.price);
-          }
+             
+        var p2 = new Promise(function(resolve, reject){
+          fetch(linkAPI).then(data => data.text()).then(data =>{
+            var j = JSON.parse(data);
+            resolve(j.price);   
+          });
         });
+        
+        const precioActual = await p2;
+
+        if(precioActual == productos[i].precio){
+          console.log("el precio de " + productos[i].id + " sigue igual perri y es: " + precioActual); 
+        }
+        else{
+          console.log("el precio de " + productos[i].id + " cambio y es este: " + precioActual);  
+        }
     }
   }
-  
-});*/
 
+}
 
 app.listen(3000, () => {
     console.log('Server listening on localhost:3000');
