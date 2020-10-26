@@ -66,8 +66,6 @@ function AgregarProducto(category_id){
   fetch(linkAPI).then(data => data.text()).then(data =>{
     var i = JSON.parse(data);
     
-
-    
     var valorLista = $( "#selectLista" ).val(); //Lista seleccionada
     //Se agrega a una lista
     if(valorLista !== null){

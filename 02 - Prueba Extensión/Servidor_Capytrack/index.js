@@ -23,11 +23,14 @@ io.on('connection', function(socket){
 
 });
  
+var http = require('http');
+var request = require('request');
+
 
 const conexion = mysql.createConnection({
   host: 'localhost',
-  user: 'root',
-  password: '123456',
+  user: 'Velnias',
+  password: '/Velnias7',
   database: 'capytrack'
 });
 
@@ -224,3 +227,47 @@ app.post('/altaUsuario', function(req, res){
 app.listen(3000, () => {
     console.log('Server listening on localhost:3000');
 });
+
+
+//Envio de mail
+var nodemailer = require('nodemailer');
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'capytrack@gmail.com',
+    pass: '/Capytrack20'
+  }
+});
+
+app.post('/enviarMail', function(req, res){
+  var mailOptions = {
+    from: 'capytrack@gmail.com',
+    to: 'iaraazulfryc@gmail.com',
+    subject: 'CAPYTRACK',
+    text: 'jaja re caro el dólar'
+  };
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  });
+  res.json({
+    status: 'success'
+  });
+});
+
+app.post('/reciboMail', function(req, res){
+  transporter.sendMail(req.body, function(error, info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  });
+  res.json({
+    status: 'success'
+  });
+});
+
