@@ -1,6 +1,8 @@
+
 $(document).ready(function(){
 
     EventosBotones();
+    EventoEnviar();
   
   });
 
@@ -21,5 +23,36 @@ $(document).ready(function(){
     $(document).on('click','#btnContacto', function() {
       window.location.replace("contacto.html");
   });
+  }
+
+  function EventoEnviar(){
+      $(document).on('click','#botonEnviar', function() {
+
+        var mail = $('#mail').val();
+        var mensaje = $('#mensaje').val();
+
+        if(mail === "" || mensaje === ""){
+          alert("Complete todos los campos!");
+        }
+        else{
+
+          var mailOptions = {
+            from: 'capytrack@gmail.com',
+            to: 'capytrack@gmail.com',
+            subject: 'CONTACTO',
+            text: 'Mensaje de: '+mail+'\n\nMensaje: '+mensaje
+          };
+
+          $.ajax({
+            type: "POST",
+            url: "http://localhost:3000/reciboMail",
+            data: mailOptions
+          });
+  
+        }
+      
+  
+      
+      });
   }
   
