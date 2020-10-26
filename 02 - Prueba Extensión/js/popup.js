@@ -3,8 +3,15 @@ $(document).ready(function(){
   DesplegarListas();
   EventoAgregarProductoLista();
   EventoPanelNuevaLista();
+  conexionSocket();
 });
 
+function conexionSocket(){
+  var socket = io.connect('http://localhost:3002');
+  socket.on('connect', function() {
+  console.log('Client connected');
+});
+}
 
 function DesplegarListas(){
   

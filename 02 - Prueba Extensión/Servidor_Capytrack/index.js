@@ -5,6 +5,20 @@ const app = express();
 const mysql = require('mysql2');
 const cron = require('node-cron');
 const fetch = require('node-fetch');
+const socketServer = require('http').createServer(app);
+const io = require('socket.io')(socketServer);
+
+socketServer.listen(3002, function(){
+  console.log('Socket server listening on: 3002');
+});
+
+io.on('connection', function(socket){
+  console.log('Socket connection established');
+  var socketId = socket.id;
+  var clientIp = socket.request.connection.remoteAddress;
+
+  console.log("clienteIp: " + clientIp);
+});
  
 
 const conexion = mysql.createConnection({
