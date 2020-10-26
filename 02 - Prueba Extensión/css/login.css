@@ -23,19 +23,27 @@ h1{
     font-family: 'M PLUS Rounded 1c', sans-serif;
     font-weight: 700;
     margin-top: 8px;
+    margin-left: 690px;
     color: #505050;
 }
 h3{
     margin: 0px;
     margin-bottom: 2px;
-    margin-top: 5px;
+    margin-top: 70px;
+    margin-left: 145px;
     font-size: 15px;
     font-family: 'M PLUS Rounded 1c', sans-serif;
     font-weight: 700;
-    color: #505050;
-  
+    color: #353535;
 }
+/*
+#usuarioLabel{
+    
+}*/
 
+#contrasenaLabel{
+    margin-top: 30px;
+}
 
 
 header{ 
@@ -55,10 +63,60 @@ header{
 }
 
 
+
 #contenedorLogin{
     margin: 0 auto;
-    margin-top: 100px;
+    margin-top: 30px;
+    margin-left: 535px;
     width: 450px;
     height: 500px;
+    text-align: center;
+
+    display: table-cell;
+    vertical-align: middle;
+    display: inline-block;
+    text-align: left;
+
     background-color: grey;
+}
+
+#retroceso{
+    margin-top: 15px;
+}
+
+.button{
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+    font-weight: 600;
+    color: #353535;
+    margin-top: 110px;
+    margin-left: 25px;
+    text-decoration: none;
+    border: none;
+    width: 400px;
+    height: 30px;
+    border: 3px solid #757575;
+    vertical-align: middle;
+}
+
+#contrasena{
+    margin-top: 10px;
+}
+
+.textBox{
+    height: 25px;
+    margin-top: 10px;
+    margin-left: 145px;
+    vertical-align: middle;
+}
+
+#capyLogin{
+    padding-left: 710px;
+}
+
+#problema{
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+    font-weight: 600;
+    color: #c41919;
+    margin-top: 20px;
+    margin-left: 165px;
 }

@@ -120,8 +120,8 @@ app.post('/modificarLista', function(req, res){
     });
 });
 
-
-cron.schedule("*/1 * * * *", function(){
+/*
+cron.schedule("*1 * * * *", function(){
   console.log("schedule running...");
   
   verificarPrecios();
@@ -168,6 +168,41 @@ async function verificarPrecios(){
   }
 
 }
+
+*/
+
+app.post('/altaUsuario', function(req, res){
+    console.log(req.body);
+
+    var usuario = req.body.usuario;
+    var contrasena = req.body.contrasena;
+
+    conexion.query('INSERT INTO usuarios (usuario, contrasena) VALUES (?, ?)', [usuario, contrasena], (err,result)=>{
+      if(err) throw err;
+    });
+
+    /*conexion.query('SELECT usuario FROM usuarios WHERE usuario = ?', [usuario], (err,result)=>{
+      if(err) throw err;
+      else{
+        if(result == null){
+          conexion.query('INSERT INTO usuarios (usuario, contrasena) VALUES (?, ?)', [usuario, contrasena], (err,result)=>{
+            if(err) throw err;
+          });
+        }
+        else{
+          //responder que el usuario ya esta en uso
+          console.log("usuario ya ingresado");
+        }
+      }
+    });*/
+
+    
+
+    res.json({
+      status: 'success',
+      productos: req.body
+    });
+});
 
 app.listen(3000, () => {
     console.log('Server listening on localhost:3000');
