@@ -14,10 +14,13 @@ socketServer.listen(3002, function(){
 
 io.on('connection', function(socket){
   console.log('Socket connection established');
-  var socketId = socket.id;
-  var clientIp = socket.request.connection.remoteAddress;
+  var clienteId = socket.id;
+  console.log("clienteId: " + clienteId);
 
-  console.log("clienteIp: " + clientIp);
+  conexion.query('INSERT INTO clientes (conexion_socket) VALUES (?)', [clienteId], (err,result)=>{
+    if(err) throw err;
+  });
+
 });
  
 
