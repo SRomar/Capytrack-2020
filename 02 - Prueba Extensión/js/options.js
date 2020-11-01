@@ -1,11 +1,11 @@
 var listaSeleccionada;
 
 $(document).ready(function(){
-
-  EventosBotones();
-  DesplegarListas();
-  EventoListas();
-  CrearContextMenu();
+  Animacion();
+  // EventosBotones();
+  // DesplegarListas();
+  // EventoListas();
+  // CrearContextMenu();
 
 });
 
@@ -278,5 +278,46 @@ function EventoFondo(){
   $(".contextMenu").mouseleave(function(){
     $("#eliminar").css("background-color", "#ffffff");
     $("#cambiarNombreLista").css("background-color", "#ffffff");
+  });
+}
+
+function Animacion(){
+  $('.productos').hide();
+  $('.informacion').hide();
+
+  $('.listas').click(function() {
+    
+    $('.productos').show();
+
+    $(".listas").addClass('animacion');
+    $(".productos").addClass('animacion');
+
+    setTimeout(function() {
+      $(".listas").removeClass('animacion');
+    }, 9000);
+  
+    setTimeout(function() {
+      $(".productos").removeClass('animacion');
+    }, 11000);
+  });
+
+  $('.productos').click(function() {
+    
+    $('.informacion').show();
+    $(".listas").addClass('animacion2');
+    $(".productos").addClass('animacion2');
+    $(".informacion").addClass('animacion2');
+
+    setTimeout(function() {
+      $(".listas").removeClass('animacion2');
+    }, 9000);
+  
+    setTimeout(function() {
+      $(".productos").removeClass('animacion2');
+    }, 11000);
+
+    setTimeout(function() {
+      $(".informacion").removeClass('animacion2');
+    }, 11000);
   });
 }

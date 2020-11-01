@@ -268,3 +268,81 @@ h3{
 
 
 
+
+@keyframes animacion1productos{
+    0%{
+        transform: translateX(500%);
+        }
+    100%{
+        transform: translateX(0px);
+        }
+}
+
+.productos.animacion{
+    animation: animacion1productos 0.4s forwards 0s linear;
+}
+
+
+@keyframes animacion1listas{
+    0%{
+        transform: translateX(100%);
+    }
+    50%{
+        transform: translateX(120%);
+    }
+    100%{
+        transform: translateX(0px);
+    }
+}
+
+.listas.animacion{
+    animation: animacion1listas 0.4s forwards 0s linear;
+}
+
+@keyframes animacion2productos{
+    0%{
+        transform: translateX(24.9%);
+    }
+    50%{
+        transform: translateX(26%);
+    }
+   
+    100%{
+        transform: translateX(0px);
+    }
+}
+
+.productos.animacion2{
+    animation: animacion2productos 0.4s forwards 0s linear;
+}
+
+
+@keyframes animacion2listas{
+    0%{
+        transform: translateX(50%);
+    }
+    50%{
+        transform: translateX(52%);
+    }
+    100%{
+        transform: translateX(0px);
+    }
+}
+
+.listas.animacion2{
+    animation: animacion2listas 0.4s forwards 0s linear;
+}
+
+
+@keyframes animacion2informacion{
+    0%{
+        transform: translateX(500%);
+        }
+    100%{
+        transform: translateX(0px);
+        }
+}
+
+.informacion.animacion2{
+    animation: animacion2informacion 0.4s forwards 0s linear;
+}
