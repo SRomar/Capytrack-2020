@@ -304,7 +304,7 @@ h3{
         transform: translateX(24.9%);
     }
     50%{
-        transform: translateX(26%);
+        transform: translateX(35%);
     }
    
     100%{
@@ -322,7 +322,7 @@ h3{
         transform: translateX(50%);
     }
     50%{
-        transform: translateX(52%);
+        transform: translateX(70%);
     }
     100%{
         transform: translateX(0px);
