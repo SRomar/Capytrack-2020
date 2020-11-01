@@ -85,7 +85,6 @@ function EventoProducto(idProducto, datosProducto){
     });
 }
 
-
 function CrearContextMenu(){
   $(document).bind("contextmenu", function(e){
     EventoOcultarMenu();
@@ -170,7 +169,11 @@ function EventoCambiarNombreLista(){
               });
               
             });
-            location.reload();
+            
+            setTimeout(function (){
+              DesplegarListas();
+              EventoListas();
+            }, 200);
           }
           else if(existe == true){
             alert("Ya hay una lista con ese nombre!");
@@ -282,42 +285,49 @@ function EventoFondo(){
 }
 
 function Animacion(){
+  
   $('.productos').hide();
   $('.informacion').hide();
+  var executed = false;
 
   $('.listas').click(function() {
+    if (!executed) {    
+      $('.productos').show();
+
+      $(".listas").addClass('animacion');
+      $(".productos").addClass('animacion');
+
+      setTimeout(function() {
+        $(".listas").removeClass('animacion');
+      }, 500);
     
-    $('.productos').show();
-
-    $(".listas").addClass('animacion');
-    $(".productos").addClass('animacion');
-
-    setTimeout(function() {
-      $(".listas").removeClass('animacion');
-    }, 9000);
-  
-    setTimeout(function() {
-      $(".productos").removeClass('animacion');
-    }, 11000);
+      setTimeout(function() {
+        $(".productos").removeClass('animacion');
+      }, 500);
+    }
   });
 
   $('.productos').click(function() {
+    if (!executed) {
+      $('.informacion').show();
+      $(".listas").addClass('animacion2');
+      $(".productos").addClass('animacion2');
+      $(".informacion").addClass('animacion2');
+
+      setTimeout(function() {
+        $(".listas").removeClass('animacion2');
+        $(".informacion").removeClass('animacion2');
+        $(".productos").removeClass('animacion2');
+      }, 500);
     
-    $('.informacion').show();
-    $(".listas").addClass('animacion2');
-    $(".productos").addClass('animacion2');
-    $(".informacion").addClass('animacion2');
+      setTimeout(function() {
+        $(".productos").removeClass('animacion2');
+      }, 500);
 
-    setTimeout(function() {
-      $(".listas").removeClass('animacion2');
-    }, 9000);
-  
-    setTimeout(function() {
-      $(".productos").removeClass('animacion2');
-    }, 11000);
-
-    setTimeout(function() {
-      $(".informacion").removeClass('animacion2');
-    }, 11000);
+      setTimeout(function() {
+        $(".informacion").removeClass('animacion2');
+      }, 500);
+      executed=true;
+    }
   });
 }
