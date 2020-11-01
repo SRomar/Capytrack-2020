@@ -27,8 +27,8 @@
     --texto: #3a3a3a;
   }  */
 
-/* Azul */  
-:root {
+/* Verde */  
+/*:root {
     --fondoPag: radial-gradient(50% 50% at 50% 50%, #201C24 0%, #08070A 100%);
     --borde: #757575;
     --secundario: #4c7463a1;
@@ -40,6 +40,25 @@
     --fuente: 'Spinnaker';
     --fuente2: 'Spartan', sans-serif;
   } 
+*/
+
+/* Violeta */  
+:root {
+    --fondoPag: radial-gradient(50% 50% at 50% 50%, #292929 0%, #0f0f0f 100%);
+    --borde: #757575;
+    --secundario: #4c7463a1;
+    --contenedor: linear-gradient(180deg, #783CC5 0%, #2F3DB7 100%), linear-gradient(270deg, #FFFFFF 0%, #E4EAFF 100%);
+    --complementario: #ff0000;
+    --lineas: #ffffff0a;
+    --texto: #ffffff;
+    --texto2: #ffffff;
+    --fuente: 'Spinnaker';
+    --fuente2: 'Spartan', sans-serif;
+  } 
+
+
+
+  
 
 
 html, body{
@@ -77,7 +96,7 @@ h1{
     color:var(--texto);
     font-family:  var(--fuente);
     font-size: 65px;
-    color: #d3caae;
+    
     font-weight: 400;
 }
 
