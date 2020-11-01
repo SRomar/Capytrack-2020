@@ -3,6 +3,7 @@ $(document).ready(function(){
   DesplegarListas();
   EventoAgregarProductoLista();
   EventoPanelNuevaLista();
+  EventoAdministrarLista();
   conexionSocket();
 });
 
@@ -235,5 +236,16 @@ function EventoCrearLista(){
           alert("Ya hay una lista con ese nombre!");
         }
       });
+  });
+}
+
+function EventoAdministrarLista(){
+  $(document).on('click','#btnAdministrarLista', function() {
+
+    $.ajax({
+      type: "GET",
+      url: "http://localhost:3000/",
+    });
+
   });
 }

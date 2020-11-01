@@ -1,5 +1,15 @@
+:root {
+    --fondoPag: #FFFFFF;
+    --borde: #757575;
+    --contenedor: #C4C4C4;
+    --lineas: #AFAFAF;
+    --texto: #3a3a3a;
+  } 
+
+
+
 html, body{
-    background-color: white;
+    background-color: var(--fondoPag);
     
     margin: 0;
     border: 0;
@@ -30,13 +40,13 @@ body{
 
 h1{
     margin: 0;
-    color:#505050;
+    color:var(--texto);
     font-size: 65px;
 }
 
 h3{
     margin: 0;
-    color:#505050;
+    color:var(--texto);
     font-size: 20px;
 }
 #header{ 
@@ -47,8 +57,8 @@ h3{
     padding-left: 20px;
     padding-top: 15px;
     font-weight: 500;
-    outline:5px solid #757575;
-    background: #C4C4C4;
+    outline:5px solid var(--borde);
+    background: var(--contenedor);
     /* background: linear-gradient(#FFC907, #FFA63E); */
     text-align: left;
     display: flex;
@@ -72,44 +82,15 @@ h3{
     font-size: 30px;
     width: 25%;
     border: none;
-    color: #3b3b3b;
-    background-color: #C4C4C4;
+    color: var(--texto);
+    background-color: var(--contenedor);
     font-family: 'M PLUS Rounded 1c', sans-serif;
     font-weight: bold;  
     cursor: pointer;
     display: table-cell;
     vertical-align: middle;
-    outline:5px solid #757575;
+    outline:5px solid var(--borde);
 
-}
-
-.Menu{
-    width:200px;
-    position:absolute;      
-    border:1px solid rgb(100, 100, 100);
-    background-color: #ffffff;
-    -moz-box-shadow: 0 0 5px #888;
-    -webkit-box-shadow: 0 0 5px#888;
-    box-shadow: 0 0 5px #888;
-}
-
-.contextMenu{
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-}
-
-.menuItem{
-    line-height: 30px;
-    font-size: 14px;
-    cursor:pointer;
-    font-family: Arial, Helvetica, sans-serif;
-    text-decoration: none;
-    text-align: left;
-    vertical-align: middle;
-    padding-top: 10px;
-    padding-left: 10px;
-    margin-bottom: 5px;
 }
 
 
@@ -126,17 +107,18 @@ h3{
     align-content: center;
     justify-content: space-between;
     margin-top: 20px;
-    
-   
+    outline:5px solid var(--borde);
+
  
 }
 
 
 #opcionesConfig, #configOpciones{
-    outline:5px solid #757575;
-    background: #C4C4C4;
+    outline: var(--borde);
+    background: var(--contenedor);
     display: block;
     overflow: hidden;
+    outline:5px solid var(--borde);
 
 }
 
@@ -169,17 +151,22 @@ h3{
     
     text-decoration: none;
     list-style-type: none;
-    color: #505050;
-    background-color: #eee;
+    color: var(--texto);
     font-size: 20px;
     font-weight: 500;
     width: 100%;
     height: 40px;
     padding-top: 10px;
     padding-left: 10px;
-    background-color: #AFAFAF;
+    background-color:  var(--lineas);
     margin-bottom: 5px;
     text-align: left;
     vertical-align: middle;
     cursor: pointer;
+}
+
+#listaColores{
+    list-style-type: none;
+    text-decoration: none;
+    text-align: left;
 }

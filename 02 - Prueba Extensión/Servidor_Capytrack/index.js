@@ -191,6 +191,12 @@ async function verificarPrecios(){
 
 */
 
+
+app.get('/', (req, res)=>{
+  console.log(req.body);
+  console.log(req.sessionID);
+});
+
 app.post('/altaUsuario', function(req, res){
     console.log(req.body);
 
