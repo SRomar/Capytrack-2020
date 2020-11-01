@@ -18,27 +18,40 @@
   }  */
 
 /* Gris */  
-:root {
+/* :root {
     --fondoPag: #FFFFFF;
     --borde: #757575;
     --contenedor: #C4C4C4;
     --complementario: #757575;
     --lineas: #AFAFAF;
     --texto: #3a3a3a;
+  }  */
+
+/* Azul */  
+:root {
+    --fondoPag: radial-gradient(50% 50% at 50% 50%, #201C24 0%, #08070A 100%);
+    --borde: #757575;
+    --secundario: #4c7463a1;
+    --contenedor: linear-gradient(360deg, rgba(47,50,57,1) 1%, var(--secundario) 100%);
+    --complementario: #ff0000;
+    --lineas: #ffffff0a;
+    --texto: #d3caae;
+    --texto2: #d3caae;
+    --fuente: 'Spinnaker';
+    --fuente2: 'Spartan', sans-serif;
   } 
 
 
-
 html, body{
-    background-color: var(--fondoPag);
-    
+    background: var(--fondoPag);    
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     margin: 0;
     border: 0;
     
     
     align-content: center;
-    font-family: 'M PLUS Rounded 1c', sans-serif;
-   
+
 
 }
 
@@ -62,27 +75,35 @@ body{
 h1{
     margin: 0;
     color:var(--texto);
+    font-family:  var(--fuente);
     font-size: 65px;
+    color: #d3caae;
+    font-weight: 400;
 }
 
 h3{
     margin: 0;
     color:var(--texto);
+    font-family:  var(--fuente2);
+    font-weight: 300;
+    margin-top: 10px;
     font-size: 20px;
 }
 #header{ 
     text-align: center;
     width: calc(100% - 20px);
-    height: 125px;
+    height: 90px;
     margin-bottom: 20px;
     padding-left: 20px;
     padding-top: 15px;
-    font-weight: 500;
-    outline:5px solid var(--borde);
+    font-family:  var(--fuente1);
+    /* outline:5px solid var(--borde);
+    background: var(--contenedor); */
+    border-radius: 10px;
     background: var(--contenedor);
     /* background: linear-gradient(#FFC907, #FFA63E); */
-    text-align: left;
-    display: flex;
+    /* text-align: left; */
+    /* display: flex; */
 }
 #capyCara{
     padding-top: 9px;
@@ -100,24 +121,31 @@ h3{
 
 }
 .btn{
-    font-size: 30px;
+    border-radius: 10px;
+    font-size: 25px;
     width: 25%;
     border: none;
     color: var(--texto);
-    background-color: var(--contenedor);
-    font-family: 'M PLUS Rounded 1c', sans-serif;
-    font-weight: bold;  
+    margin-right: 10px;
+    background: var(--contenedor);
+    font-family:  var(--fuente2);
+    font-weight: 400;
     cursor: pointer;
     display: table-cell;
     vertical-align: middle;
-    outline:5px solid var(--borde);
+    /* outline:5px solid var(--borde); */
 
+}
+
+#btnContacto{
+    margin: 0;
 }
 
 .Menu{
     width:200px;
     position:absolute;      
-    border:3px solid var(--borde);
+    /* border:3px solid var(--borde); */
+    border-radius: 10px;
     background-color: var(--complementario);
 }
 
@@ -142,7 +170,7 @@ h3{
     font-size: 14px;
     color: var(--texto);
     cursor:pointer;
-    font-family: 'M PLUS Rounded 1c', sans-serif;
+    font-family:  var(--fuente2);
     font-weight: 600;
     text-decoration: none;
     text-align: left;
@@ -153,6 +181,19 @@ h3{
     padding-right: 78px;
 }
 
+::-webkit-scrollbar {
+    width: 12px;
+}
+ 
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.24); 
+    border-radius: 10px;
+}
+ 
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.267); 
+}
 
 /* Seguimientos */
 
@@ -166,6 +207,7 @@ h3{
 }
 
 #listas, #listasUl, .elementoLista, #productosUl{
+    font-family:  var(--fuente2);
     display: block;
     
 }
@@ -182,11 +224,11 @@ h3{
     
 }
 .elementoLista, .productoEnLista, .informacionProducto, #contenedorInformacion{   
-    
+    font-family:  var(--fuente2);
     text-decoration: none;
     list-style-type: none;
-    color: var(--texto);
-    background-color: var(--lineas);
+    color: var(--texto2);
+    background: var(--lineas);
     font-size: 20px;
     font-weight: 500;
     width: 100%;
@@ -206,9 +248,7 @@ h3{
     height: 60px;
 }
 
-.informacionProducto{
-    padding: 0px;
-}
+
 .informacion{
     overflow: hidden;
     padding: 0px;
@@ -224,7 +264,8 @@ h3{
 
 .listas, .productos, .informacion{
     margin-top: 20px;
-    outline:5px solid var(--borde);
+    /* outline:5px solid var(--borde); */
+    border-radius: 10px;
 }
 
 
@@ -232,14 +273,14 @@ h3{
     
     width: 25%;
     margin-right: 30px;
-    background-color: var(--contenedor);
+    background: var(--contenedor);
     
 }
 
 .productos{
     width: 50%;
     margin-right: 30px;
-    background-color: var(--contenedor);
+    background: var(--contenedor);
 }
 
 .informacion{
@@ -251,6 +292,9 @@ h3{
     background: var(--contenedor);
     align-content: center;
 
+}
+.informacionProducto{
+    padding-top: 10px;
 }
 
 #contenedorImagen{

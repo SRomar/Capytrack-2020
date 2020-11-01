@@ -1,10 +1,12 @@
 var listaSeleccionada;
 
 $(document).ready(function(){
-  Animacion();
+
   EventosBotones();
   DesplegarListas();
+  Animacion();
   EventoListas();
+  
   CrearContextMenu();
 
 });
