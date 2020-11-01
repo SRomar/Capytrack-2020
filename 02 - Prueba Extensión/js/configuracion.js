@@ -38,14 +38,13 @@ $(document).ready(function(){
       $('#contenidoOpcion').empty();
       nombreOpcion = "#"+nombreOpcion+"Contenido";
       $('#contenidoOpcion').append($(nombreOpcion).html());
-
       funcion = "Evento" + funcion;
-      window[funcion](); //Se agrega la funcion del li
+      window[funcion](); //Se agrega la funcion del li aca, ya que si esta el elemento oculto no se puede agregar 
     });
 
   }
 
-  function EventoTemas(){
+  function EventoTemas(){ //Cambio de color 
     document.getElementById("fondoPagInput").addEventListener("change", function() {
       console.log($(this).val());
       document.documentElement.style.setProperty('--fondoPag', $(this).val());
