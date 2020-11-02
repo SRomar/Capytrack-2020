@@ -1,4 +1,6 @@
 var listaSeleccionada;
+var animacion1Ejecutada = false;
+var animacion2Ejecutada = false; 
 
 $(document).ready(function(){
 
@@ -304,10 +306,8 @@ function Animacion(idElemento){
   
   $('.productos').hide();
   $('.informacion').hide();
-  var executed = false;
-
   $(idElemento).click(function() {
-    if (!executed) {    
+    if (!animacion1Ejecutada) {    
       $('.productos').show();
 
       $(".listas").addClass('animacion');
@@ -321,36 +321,12 @@ function Animacion(idElemento){
         $(".productos").removeClass('animacion');
       }, 500);
     }
+    animacion1Ejecutada = true;
   });
-
-  // $(idElemento).click(function() {
-  //   if (!executed) {
-  //     $('.informacion').show();
-  //     $(".listas").addClass('animacion2');
-  //     $(".productos").addClass('animacion2');
-  //     $(".informacion").addClass('animacion2');
-
-  //     setTimeout(function() {
-  //       $(".listas").removeClass('animacion2');
-  //       $(".informacion").removeClass('animacion2');
-  //       $(".productos").removeClass('animacion2');
-  //     }, 500);
-    
-  //     setTimeout(function() {
-  //       $(".productos").removeClass('animacion2');
-  //     }, 500);
-
-  //     setTimeout(function() {
-  //       $(".informacion").removeClass('animacion2');
-  //     }, 500);
-  //     executed=true;
-  //   }
-  // });
 }
 function Animacion2(idElemento){
-  var executed = false;
   $(idElemento).click(function() {
-    if (!executed) {
+    if (!animacion2Ejecutada) {
       $('.informacion').show();
       $(".listas").addClass('animacion2');
       $(".productos").addClass('animacion2');
@@ -369,7 +345,9 @@ function Animacion2(idElemento){
       setTimeout(function() {
         $(".informacion").removeClass('animacion2');
       }, 500);
-      executed=true;
     }
+    animacion2Ejecutada = true;
+
   });
+ 
 }
