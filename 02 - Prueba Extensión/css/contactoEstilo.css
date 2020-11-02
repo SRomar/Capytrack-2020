@@ -221,7 +221,7 @@ h3{
 
 #contactoContenedor{
     width: calc(100% - 80px);
-    height: calc(100% - 90px);
+    height: calc(100% - 80px);
     display: block;
     text-align: left;
     align-content: center;

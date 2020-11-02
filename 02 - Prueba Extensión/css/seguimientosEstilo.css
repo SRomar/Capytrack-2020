@@ -280,15 +280,14 @@ h3{
 
 .listas, .productos, .informacion{
     margin-top: 20px;
-
     overflow-y: hidden;
+    overflow-x: hidden;
     /* outline:5px solid var(--borde); */
     border-radius: 10px;
 }
 
 
 .listas{
-    
     width: 24.75%;
     margin-right: 30px;
     background: var(--contenedor);
