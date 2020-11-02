@@ -278,6 +278,7 @@ h3{
 
 .listas, .productos, .informacion{
     margin-top: 20px;
+
     overflow-y: hidden;
     /* outline:5px solid var(--borde); */
     border-radius: 10px;
@@ -286,16 +287,18 @@ h3{
 
 .listas{
     
-    width: 25%;
+    width: 24.75%;
     margin-right: 30px;
     background: var(--contenedor);
-    
+    margin-right: 15px;
 }
 
 .productos{
-    width: 50%;
+    width: 50.35%;
     margin-right: 30px;
     background: var(--contenedor);
+    margin-right: 15px;
+  
 }
 
 .informacion{
@@ -304,7 +307,7 @@ h3{
  
     align-items: center;
     text-align: center;
-    width: 25%;
+    width: 24.75%;
     background: var(--contenedor);
     align-content: center;
 
