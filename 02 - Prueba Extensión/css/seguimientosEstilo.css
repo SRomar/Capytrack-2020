@@ -162,20 +162,22 @@ h3{
 
 
 .Menu{
+    border-radius: 10px;
+
     height: 50px;
     width: 220px;
     position:absolute;      
     /* border:3px solid var(--borde); */
-    background: var(--complementario);
+    background: #3f3f3f;
 }
 
 .contextMenu{
+    border-radius: 10px;
     width: 100%;
     height: 100%;
     list-style-type: none;
     margin: 0;
     padding: 0;
-    background: var(--complementario);
     overflow-x: hidden;
     overflow-y: hidden;
     display: block;

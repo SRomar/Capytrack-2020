@@ -273,16 +273,16 @@ function EventoOcultarMenu(){
 
 function EventoFondo(){
   $("#eliminar").mouseover(function(){
-    $("#eliminar").css("background-color", "#757575");
-    $("#cambiarNombreLista").css("background-color", "#ececec");
+    $("#eliminar").css("background-color", "#ffffff0a");
+    $("#cambiarNombreLista").css("background-color", "#3f3f3f");
   });
   $("#cambiarNombreLista").mouseover(function(){
-    $("#eliminar").css("background-color", "#ececec");
-    $("#cambiarNombreLista").css("background-color", "#757575");
+    $("#eliminar").css("background-color", "#3f3f3f");
+    $("#cambiarNombreLista").css("background-color", "#ffffff0a");
   });
   $(".contextMenu").mouseleave(function(){
-    $("#eliminar").css("background-color", "#ececec");
-    $("#cambiarNombreLista").css("background-color", "#ececec");
+    $("#eliminar").css("background-color", "#3f3f3f");
+    $("#cambiarNombreLista").css("background-color", "#3f3f3f");
   });
 }
 
