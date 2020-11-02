@@ -28,22 +28,22 @@
   }  */
 
 /* Verde */  
-/*:root {
+:root {
     --fondoPag: radial-gradient(50% 50% at 50% 50%, #201C24 0%, #08070A 100%);
     --borde: #757575;
     --secundario: #4c7463a1;
     --contenedor: linear-gradient(360deg, rgba(47,50,57,1) 1%, var(--secundario) 100%);
-    --complementario: #ff0000;
+    --complementario: #ececec;
     --lineas: #ffffff0a;
     --texto: #d3caae;
     --texto2: #d3caae;
     --fuente: 'Spinnaker';
     --fuente2: 'Spartan', sans-serif;
   } 
-*/
+
 
 /* Violeta */  
-:root {
+/* :root {
     --fondoPag: radial-gradient(50% 50% at 50% 50%, #292929 0%, #0f0f0f 100%);
     --borde: #757575;
     --secundario: #4c7463a1;
@@ -54,7 +54,7 @@
     --texto2: #ffffff;
     --fuente: 'Spinnaker';
     --fuente2: 'Spartan', sans-serif;
-  } 
+  }  */
 
 
 
@@ -96,7 +96,6 @@ h1{
     color:var(--texto);
     font-family:  var(--fuente);
     font-size: 65px;
-    
     font-weight: 400;
 }
 
@@ -108,6 +107,7 @@ h3{
     margin-top: 10px;
     font-size: 20px;
 }
+
 #header{ 
     text-align: center;
     width: calc(100% - 20px);
@@ -145,7 +145,7 @@ h3{
     width: 25%;
     border: none;
     color: var(--texto);
-    margin-right: 10px;
+    margin-right: 15px;
     background: var(--contenedor);
     font-family:  var(--fuente2);
     font-weight: 400;
@@ -157,15 +157,16 @@ h3{
 }
 
 #btnContacto{
-    margin: 0;
+    margin-right: 0;
 }
 
+
 .Menu{
-    width:200px;
+    height: 50px;
+    width: 220px;
     position:absolute;      
     /* border:3px solid var(--borde); */
-    border-radius: 10px;
-    background-color: var(--complementario);
+    background: var(--complementario);
 }
 
 .contextMenu{
@@ -174,7 +175,7 @@ h3{
     list-style-type: none;
     margin: 0;
     padding: 0;
-    background-color: var(--contenedor);
+    background: var(--complementario);
     overflow-x: hidden;
     overflow-y: hidden;
     display: block;
@@ -183,9 +184,9 @@ h3{
 .menuItem{
     display: block;
     width: 100%;
-    height: 20px;
     padding-left: 10px;
     margin: 0px;
+    margin-top: 10px;
     font-size: 14px;
     color: var(--texto);
     cursor:pointer;
@@ -261,7 +262,7 @@ h3{
 }
 
 #contenedorInformacion{
-    
+    overflow-y: scroll;
     padding-top: 10px;
     padding-bottom: 10px;
     height: 60px;
@@ -273,16 +274,11 @@ h3{
     padding: 0px;
 }
 
-/*Scrollbar lista*/
-* {
-    scrollbar-width: thin;
-    scrollbar-color: #757575 #C4C4C4;
-    
-}
 
 
 .listas, .productos, .informacion{
     margin-top: 20px;
+    overflow-y: hidden;
     /* outline:5px solid var(--borde); */
     border-radius: 10px;
 }
@@ -305,6 +301,7 @@ h3{
 .informacion{
     display: block;
     overflow-x: hidden;
+ 
     align-items: center;
     text-align: center;
     width: 25%;
@@ -313,6 +310,7 @@ h3{
 
 }
 .informacionProducto{
+    
     padding-top: 10px;
 }
 
@@ -331,6 +329,10 @@ h3{
 
 
 
+
+
+
+/* Animacion */
 
 @keyframes animacion1productos{
     0%{

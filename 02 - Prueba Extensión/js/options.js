@@ -274,15 +274,15 @@ function EventoOcultarMenu(){
 function EventoFondo(){
   $("#eliminar").mouseover(function(){
     $("#eliminar").css("background-color", "#757575");
-    $("#cambiarNombreLista").css("background-color", "#ffffff");
+    $("#cambiarNombreLista").css("background-color", "#ececec");
   });
   $("#cambiarNombreLista").mouseover(function(){
-    $("#eliminar").css("background-color", "#ffffff");
+    $("#eliminar").css("background-color", "#ececec");
     $("#cambiarNombreLista").css("background-color", "#757575");
   });
   $(".contextMenu").mouseleave(function(){
-    $("#eliminar").css("background-color", "#ffffff");
-    $("#cambiarNombreLista").css("background-color", "#ffffff");
+    $("#eliminar").css("background-color", "#ececec");
+    $("#cambiarNombreLista").css("background-color", "#ececec");
   });
 }
 
