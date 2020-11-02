@@ -30,7 +30,7 @@
 /* Verde */  
 :root {
     --fondoPag: radial-gradient(50% 50% at 50% 50%, #201C24 0%, #08070A 100%);
-    --borde: #757575;
+    --borde: #ffffff05;
     --secundario: #4c7463a1;
     --contenedor: linear-gradient(360deg, rgba(47,50,57,1) 1%, var(--secundario) 100%);
     --complementario: #ececec;

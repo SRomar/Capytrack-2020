@@ -4,11 +4,11 @@ $(document).ready(function(){
 
   EventosBotones();
   DesplegarListas();
-  Animacion();
+  // Animacion();
   EventoListas();
   
   CrearContextMenu();
-
+  EventoIluminar();
 });
 
 function EventosBotones(){
@@ -36,6 +36,8 @@ function DesplegarListas(){
         $("#listasUl").empty();
         for (i = 0; i < allKeys.length; i++) {
             $("#listasUl").append('<li class="elementoLista" id="'+allKeys[i]+'">'+allKeys[i]+'</li>');
+            EventoIluminar("#"+allKeys[i]);
+            Animacion("#"+allKeys[i]);
         }
 
     });
@@ -66,8 +68,10 @@ function DesplegarProductos(nombreLista){
           $.map(producto, function(datosProducto, categoryID) { //Separa los datos del producto
 
             $("#productosUl").append('<li class="productoEnLista" id="'+datosProducto[5]+'">'+datosProducto[0]+'</li>'); //De aca se pueden sacar los datos del producto usando el indice
-        
+            
             var idProducto = "#"+datosProducto[5];
+            EventoIluminar(idProducto);
+            Animacion2(idProducto);
             EventoProducto(idProducto, datosProducto);
             
         });
@@ -92,7 +96,7 @@ function CrearContextMenu(){
     EventoOcultarMenu();
     Comprobacion();
     EventoCambiarNombreLista();
-    EventoFondo();
+    EventoContextMenu();
     return false;
   });
 }
@@ -103,6 +107,7 @@ function Comprobacion(){
     if(e.button == 2){
    
       itemLista = $(e.target).text();
+  
       itemSeleccionado.innerHTML = " "+itemLista;
       document.getElementById("cambiarNombreLista").style.display = "inline";
       EventoEliminarLista(itemLista);
@@ -271,7 +276,7 @@ function EventoOcultarMenu(){
     });
 }
 
-function EventoFondo(){
+function EventoContextMenu(){
   $("#eliminar").mouseover(function(){
     $("#eliminar").css("background-color", "#ffffff0a");
     $("#cambiarNombreLista").css("background-color", "#3f3f3f");
@@ -286,13 +291,22 @@ function EventoFondo(){
   });
 }
 
-function Animacion(){
+function EventoIluminar(idElemento){
+    $(idElemento).mouseover(function(){
+      $(idElemento).css("background", "#ffffff05");
+    });
+    $(idElemento).mouseleave(function(){
+      $(idElemento).css("background", "#ffffff0a");
+    });
+}
+
+function Animacion(idElemento){
   
   $('.productos').hide();
   $('.informacion').hide();
   var executed = false;
 
-  $('.listas').click(function() {
+  $(idElemento).click(function() {
     if (!executed) {    
       $('.productos').show();
 
@@ -309,7 +323,33 @@ function Animacion(){
     }
   });
 
-  $('.productos').click(function() {
+  // $(idElemento).click(function() {
+  //   if (!executed) {
+  //     $('.informacion').show();
+  //     $(".listas").addClass('animacion2');
+  //     $(".productos").addClass('animacion2');
+  //     $(".informacion").addClass('animacion2');
+
+  //     setTimeout(function() {
+  //       $(".listas").removeClass('animacion2');
+  //       $(".informacion").removeClass('animacion2');
+  //       $(".productos").removeClass('animacion2');
+  //     }, 500);
+    
+  //     setTimeout(function() {
+  //       $(".productos").removeClass('animacion2');
+  //     }, 500);
+
+  //     setTimeout(function() {
+  //       $(".informacion").removeClass('animacion2');
+  //     }, 500);
+  //     executed=true;
+  //   }
+  // });
+}
+function Animacion2(idElemento){
+  var executed = false;
+  $(idElemento).click(function() {
     if (!executed) {
       $('.informacion').show();
       $(".listas").addClass('animacion2');
