@@ -140,9 +140,13 @@ h3{
 
 }
 .btn{
+
     border-radius: 10px;
     font-size: 25px;
     width: 25%;
+    outline:none;
+    box-shadow: none;
+
     border: none;
     color: var(--texto);
     margin-right: 15px;

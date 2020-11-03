@@ -300,7 +300,7 @@ function EventoContextMenu(){
 function EventoIluminar(idElemento){
     $(idElemento).mouseover(function(){
       if(elementoAnterior != idElemento){
-      $(idElemento).css("background", "#b1b1b156");
+      $(idElemento).css("background", "#b1b1b12c");
       }
     });
     $(idElemento).mouseleave(function(){
@@ -322,7 +322,7 @@ function EventoIluminar(idElemento){
 function EventoIluminarProductos(idElemento){
   $(idElemento).mouseover(function(){
     if(productoAnterior != idElemento){
-    $(idElemento).css("background", "#b1b1b156");
+    $(idElemento).css("background", "#b1b1b12c");
     }
   });
   $(idElemento).mouseleave(function(){

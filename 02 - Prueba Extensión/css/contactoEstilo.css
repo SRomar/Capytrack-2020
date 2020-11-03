@@ -29,7 +29,7 @@
 /* Verde */  
 :root {
     --fondoPag: radial-gradient(50% 50% at 50% 50%, #201C24 0%, #08070A 100%);
-    --borde: #b1b1b156;
+    --borde: #b1b1b12c;
     --secundario: #4c7463a1;
     --contenedor: linear-gradient(360deg, rgba(47,50,57,1) 1%, var(--secundario) 100%);
     --complementario: #ececec;
@@ -142,6 +142,8 @@ h3{
     border-radius: 10px;
     font-size: 25px;
     width: 25%;
+    box-shadow: none;
+    outline:none;
     border: none;
     color: var(--texto);
     margin-right: 15px;
@@ -254,6 +256,8 @@ h3{
     height: 6%;
     border: none;
     color: var(--texto);
+    box-shadow: none;
+    outline:none;
     margin-right: 10px;
     background: var(--contenedor);
     font-family:  var(--fuente2);
@@ -262,5 +266,10 @@ h3{
     display: table-cell;
     vertical-align: middle;
     /* outline:5px solid var(--borde); */
+
+}
+
+@media (max-width: 960px) and (min-width: 501px) {
+    .btnEnviar {width: 10%;}
 
 }
