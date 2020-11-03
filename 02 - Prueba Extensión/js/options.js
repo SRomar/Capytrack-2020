@@ -1,6 +1,9 @@
 var listaSeleccionada;
 var animacion1Ejecutada = false;
 var animacion2Ejecutada = false; 
+var elementoAnterior = "";
+var productoAnterior = "";
+
 
 $(document).ready(function(){
 
@@ -51,6 +54,7 @@ function EventoListas(){
   document.querySelectorAll('.elementoLista').forEach(item => {
 
     $(item).on('click', function() {      
+      
       $('#productosUl').empty()
       var nombreLista = $(this).text(); //Obtiene el nombre de li
       listaSeleccionada = nombreLista;
@@ -72,7 +76,7 @@ function DesplegarProductos(nombreLista){
             $("#productosUl").append('<li class="productoEnLista" id="'+datosProducto[5]+'">'+datosProducto[0]+'</li>'); //De aca se pueden sacar los datos del producto usando el indice
             
             var idProducto = "#"+datosProducto[5];
-            EventoIluminar(idProducto);
+            EventoIluminarProductos(idProducto);
             Animacion2(idProducto);
             EventoProducto(idProducto, datosProducto);
             
@@ -295,11 +299,46 @@ function EventoContextMenu(){
 
 function EventoIluminar(idElemento){
     $(idElemento).mouseover(function(){
+      if(elementoAnterior != idElemento){
       $(idElemento).css("background", "#b1b1b156");
+      }
     });
     $(idElemento).mouseleave(function(){
+      if(elementoAnterior != idElemento){
       $(idElemento).css("background", "#ffffff0a");
+      }
+    
     });
+    $(idElemento).click(function(){
+      $(idElemento).css("background", "#b1b1b156");     
+      if(elementoAnterior != idElemento){
+        $(elementoAnterior).css("background", "#ffffff0a");
+        elementoAnterior = idElemento;
+      }
+      
+    });
+}
+
+function EventoIluminarProductos(idElemento){
+  $(idElemento).mouseover(function(){
+    if(productoAnterior != idElemento){
+    $(idElemento).css("background", "#b1b1b156");
+    }
+  });
+  $(idElemento).mouseleave(function(){
+    if(productoAnterior != idElemento){
+    $(idElemento).css("background", "#ffffff0a");
+    }
+  
+  });
+  $(idElemento).click(function(){
+    $(idElemento).css("background", "#b1b1b156");     
+    if(productoAnterior != idElemento){
+      $(productoAnterior).css("background", "#ffffff0a");
+      productoAnterior = idElemento;
+    }
+    
+  });
 }
 
 function Animacion(idElemento){
