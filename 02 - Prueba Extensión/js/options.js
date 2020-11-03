@@ -295,7 +295,7 @@ function EventoContextMenu(){
 
 function EventoIluminar(idElemento){
     $(idElemento).mouseover(function(){
-      $(idElemento).css("background", "#ffffff05");
+      $(idElemento).css("background", "#b1b1b156");
     });
     $(idElemento).mouseleave(function(){
       $(idElemento).css("background", "#ffffff0a");

@@ -257,6 +257,7 @@ h3{
     height: 40px;
     padding-top: 10px;
     padding-left: 10px;
+
     margin-bottom: 5px;
     text-align: left;
     vertical-align: middle;
@@ -281,7 +282,6 @@ h3{
 .listas, .productos, .informacion{
     margin-top: 20px;
     overflow-y: hidden;
-    overflow-x: hidden;
     /* outline:5px solid var(--borde); */
     border-radius: 10px;
 }
@@ -319,7 +319,8 @@ h3{
 }
 
 #contenedorImagen{
-    margin: 0 auto; 
+    margin: 0 auto;
+    border-radius: 10px; 
     align-content: center;
     background-color: var(--lineas);
     overflow: hidden;
@@ -328,7 +329,8 @@ h3{
 }
 
 .imagenProducto{
-    height: 100%;
+    width: 105%;
+    height: 105%;
 }
 
 
@@ -414,4 +416,11 @@ h3{
 
 .informacion.animacion2{
     animation: animacion2informacion 0.4s forwards 0s linear;
+}
+
+@media (max-width: 960px) and (min-width: 501px) {
+    #productosUl li {font-size: 15px;  width: 98%;}
+    #contenedorInformacion h3 {font-size: 14px;  width: 100%;}
+    #contenedorImagen {  width: 150px; height: 150px;}
+
 }
