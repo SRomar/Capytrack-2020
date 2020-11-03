@@ -96,7 +96,10 @@ function AgregarProducto(category_id){
       $.ajax({
         type: "POST",
         url: "http://localhost:3000/altaProducto",
-        data: productoServidor
+        data: productoServidor,
+        error: function(xhr, status, error){
+          console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+      }
       });
 
       var diccionarioProducto = {};       
@@ -225,7 +228,10 @@ function EventoCrearLista(){
           $.ajax({
             type: "POST",
             url: "http://localhost:3000/altaLista",
-            data: listaServidor
+            data: listaServidor,
+            error: function(xhr, status, error){
+              console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+          }
           });
 
           $("#contenedorNuevaLista").hide();
@@ -241,11 +247,5 @@ function EventoCrearLista(){
 
 function EventoAdministrarLista(){
   $(document).on('click','#btnAdministrarLista', function() {
-
-    $.ajax({
-      type: "GET",
-      url: "http://localhost:3000/",
-    });
-
   });
 }
