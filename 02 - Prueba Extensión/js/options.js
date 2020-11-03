@@ -6,8 +6,71 @@ $(document).ready(function(){
   DesplegarListas();
   EventoListas();
   CrearContextMenu();
-
+  obtenerSessionId();
 });
+
+async function getearSessionId(){
+  var p = new Promise(function(resolve, reject){
+    chrome.storage.local.get(['sessionId_NUEVO'], function(result){
+      var id = result.sessionId_NUEVO;
+      resolve(id); 
+    });
+  });
+  const id = await(p);
+  return id;
+}
+
+function obtenerSessionIdABM(id){
+  chrome.storage.local.get(['sessionId_NUEVO'], function(result){
+    var sessionId_anterior = result.sessionId_NUEVO;
+    console.log("sessionId_anterior: " + sessionId_anterior);
+    chrome.storage.local.set({'sessionId_NUEVO': id}, function(){
+      console.log("sessionId_NUEVO: " + id);
+    });
+    var sessionIds = {
+      idAnterior: sessionId_anterior,
+      idNuevo: id
+    }
+
+    $.ajax({
+      type: "POST",
+      url: "http://localhost:3000/updateSessionId",
+      data: sessionIds
+    });
+
+  });
+ 
+
+} 
+
+function obtenerSessionId(){
+  fetch('http://localhost:3000/session').then(data => data.text()).then(data =>{
+    var i = data;
+    console.log("i: " + i);
+    chrome.storage.local.get(['sessionId_NUEVO'], function(result){
+      var sessionId_anterior = "";
+      if(result.sessionId_NUEVO !== undefined){
+        sessionId_anterior = result.sessionId_NUEVO;
+        console.log("sessionId_anterior: " + sessionId_anterior);
+      }
+      chrome.storage.local.set({'sessionId_NUEVO': i}, function() {
+        console.log('sessionId_NUEVO: ' + i);
+      });
+      var sessionIds = {
+        idAnterior: sessionId_anterior,
+        idNuevo: i 
+      }
+
+      $.ajax({
+        type: "POST",
+        url: "http://localhost:3000/updateSessionId",
+        data: sessionIds
+      });
+    });
+     
+  });
+}
+
 
 function EventosBotones(){
   $(document).on('click','#btnSeguimientos', function() {
@@ -158,15 +221,22 @@ function EventoCambiarNombreLista(){
               chrome.storage.sync.remove(itemLista);
               chrome.storage.sync.set(listaNueva);
               
-              var listaServidor = {
-                nombreViejo: itemLista,
-                nombreNuevo: resp
-              }
-    
-              $.ajax({
-                type: "POST",
-                url: "http://localhost:3000/modificarLista",
-                data: listaServidor
+              getearSessionId().then(id => {
+                var listaServidor = {
+                  nombreViejo: itemLista,
+                  nombreNuevo: resp,
+                  sessionId: id
+                }
+      
+                var request = $.ajax({
+                  type: "POST",
+                  url: "http://localhost:3000/modificarLista",
+                  data: listaServidor
+                });
+                request.done(function(response) {
+                  console.log(response);
+                  obtenerSessionIdABM(response.sessionId);
+                });
               });
               
             });
@@ -209,14 +279,21 @@ function EventoEliminarProducto(itemProducto){
           });
         });
         if(existe == true){
-          var productoServidor = {            
-            id: id
-          }
+          getearSessionId().then(idsession => {
+            var productoServidor = {            
+              id: id,
+              sessionId: idsession
+            }
 
-          $.ajax({
-            type: "POST",
-            url: "http://localhost:3000/bajaProducto",
-            data: productoServidor
+            var request = $.ajax({
+              type: "POST",
+              url: "http://localhost:3000/bajaProducto",
+              data: productoServidor
+            });
+            request.done(function(response) {
+              console.log(response);
+              obtenerSessionIdABM(response.sessionId);
+            });
           });
 
           listaNueva[listaSeleccionada] = productosLista;        
@@ -238,15 +315,22 @@ function EventoEliminarProducto(itemProducto){
 
 function EventoEliminarLista(itemLista){
   $("#eliminar").click(function(e){
-      var listaServidor = {            
-        nombre: itemLista
-      }
+      getearSessionId().then(id => {
+        var listaServidor = {            
+          nombre: itemLista,
+          sessionId: id
+        }
 
-      // $.ajax({
-      //   type: "POST",
-      //   url: "http://localhost:3000/bajaLista",
-      //   data: listaServidor
-      // });
+        var request = $.ajax({
+          type: "POST",
+          url: "http://localhost:3000/bajaLista",
+          data: listaServidor
+        });
+        request.done(function(response) {
+          console.log(response);
+          obtenerSessionIdABM(response.sessionId);
+        });
+      });
 
       chrome.storage.sync.remove(itemLista);
 
