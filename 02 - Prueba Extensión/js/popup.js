@@ -1,3 +1,4 @@
+
 //Llenar select
 $(document).ready(function(){
   DesplegarListas();
@@ -5,13 +6,70 @@ $(document).ready(function(){
   EventoPanelNuevaLista();
   EventoAdministrarLista();
   conexionSocket();
+  obtenerSessionId();
 });
 
-function conexionSocket(){
-  var socket = io.connect('http://localhost:3002');
-  socket.on('connect', function() {
-  console.log('Client connected');
-});
+function obtenerSessionIdABM(id){
+  chrome.storage.local.get(['sessionId_NUEVO'], function(result){
+    var sessionId_anterior = result.sessionId_NUEVO;
+    console.log("sessionId_anterior: " + sessionId_anterior);
+    chrome.storage.local.set({'sessionId_NUEVO': id}, function(){
+      console.log("sessionId_NUEVO: " + id);
+    });
+    var sessionIds = {
+      idAnterior: sessionId_anterior,
+      idNuevo: id
+    }
+
+    $.ajax({
+      type: "POST",
+      url: "http://localhost:3000/updateSessionId",
+      data: sessionIds
+    });
+
+  });
+ 
+
+} 
+
+function obtenerSessionId(){
+  fetch('http://localhost:3000/session').then(data => data.text()).then(data =>{
+    var i = data;
+    console.log("i: " + i);
+    chrome.storage.local.get(['sessionId_NUEVO'], function(result){
+      var sessionId_anterior = "";
+      if(result.sessionId_NUEVO !== undefined){
+        sessionId_anterior = result.sessionId_NUEVO;
+        console.log("sessionId_anterior: " + sessionId_anterior);
+      }
+      chrome.storage.local.set({'sessionId_NUEVO': i}, function() {
+        console.log('sessionId_NUEVO: ' + i);
+      });
+      var sessionIds = {
+        idAnterior: sessionId_anterior,
+        idNuevo: i 
+      }
+
+      $.ajax({
+        type: "POST",
+        url: "http://localhost:3000/updateSessionId",
+        data: sessionIds
+      });
+    });
+     
+  });
+  
+}
+
+async function getearSessionId(){
+  var p = new Promise(function(resolve, reject){
+    chrome.storage.local.get(['sessionId_NUEVO'], function(result){
+      var id = result.sessionId_NUEVO;
+      resolve(id); 
+    });
+  });
+  const id = await(p);
+  return id;
 }
 
 function DesplegarListas(){
@@ -84,23 +142,30 @@ function AgregarProducto(category_id){
       //Se crea el producto
       var producto = [i.title, i.price, i.status, i.permalink, foto, i.id];
 
-      var productoServidor = {
-        title: i.title,
-        price: i.price,
-        status: i.status,
-        permalink: i.permalink,
-        id: i.id,
-        nombrelista: valorLista
-      }
-
-      $.ajax({
-        type: "POST",
-        url: "http://localhost:3000/altaProducto",
-        data: productoServidor,
-        error: function(xhr, status, error){
-          console.log("Error al contactar con el servidor, xhr: " + xhr.status);
-      }
+      getearSessionId().then(id => {
+        var productoServidor = {
+          title: i.title,
+          price: i.price,
+          status: i.status,
+          permalink: i.permalink,
+          id: i.id,
+          nombrelista: valorLista,
+          sessionId: id
+        }
+        var request = $.ajax({
+          type: "POST",
+          url: "http://localhost:3000/altaProducto",
+          data: productoServidor,
+          error: function(xhr, status, error){
+            console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+          }
+        });
+        request.done(function(response) {
+          console.log(response);
+          obtenerSessionIdABM(response.sessionId);
+        });
       });
+      
 
       var diccionarioProducto = {};       
       var key = i.id;  
@@ -206,7 +271,7 @@ function EventoBotonRetroceso(){
 }
 
 function EventoCrearLista(){
-  $(document).on('click','#btnCrearLista', function() {
+  $("#btnCrearLista").unbind().click(function() {
       var existe = false;
       var Lista = {};       
       var nombre = document.getElementById('nombreLista').value;  
@@ -220,20 +285,27 @@ function EventoCrearLista(){
         if(existe == false){
           Lista[nombre]= [];
           chrome.storage.sync.set(Lista);
-          DesplegarListas();  
-          var listaServidor = {
-            nombre: nombre
-          }
+          DesplegarListas(); 
 
-          $.ajax({
-            type: "POST",
-            url: "http://localhost:3000/altaLista",
-            data: listaServidor,
-            error: function(xhr, status, error){
-              console.log("Error al contactar con el servidor, xhr: " + xhr.status);
-          }
+          getearSessionId().then(id => {
+            var listaServidor = {
+              nombre: nombre,
+              sessionId: id
+            }
+
+            var request = $.ajax({
+              type: "POST",
+              url: "http://localhost:3000/altaLista",
+              data: listaServidor,
+              error: function(xhr, status, error){
+                console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+            }
+            });
+            request.done(function(response) {
+              console.log(response);
+              obtenerSessionIdABM(response.sessionId);
+            });
           });
-
           $("#contenedorNuevaLista").hide();
           $("#contenedor").show();        
          

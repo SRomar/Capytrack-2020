@@ -14,7 +14,72 @@ $(document).ready(function(){
   
   CrearContextMenu();
   EventoIluminar();
+  obtenerSessionId();
+
 });
+
+async function getearSessionId(){
+  var p = new Promise(function(resolve, reject){
+    chrome.storage.local.get(['sessionId_NUEVO'], function(result){
+      var id = result.sessionId_NUEVO;
+      resolve(id); 
+    });
+  });
+  const id = await(p);
+  return id;
+}
+
+function obtenerSessionIdABM(id){
+  chrome.storage.local.get(['sessionId_NUEVO'], function(result){
+    var sessionId_anterior = result.sessionId_NUEVO;
+    console.log("sessionId_anterior: " + sessionId_anterior);
+    chrome.storage.local.set({'sessionId_NUEVO': id}, function(){
+      console.log("sessionId_NUEVO: " + id);
+    });
+    var sessionIds = {
+      idAnterior: sessionId_anterior,
+      idNuevo: id
+    }
+
+    $.ajax({
+      type: "POST",
+      url: "http://localhost:3000/updateSessionId",
+      data: sessionIds
+    });
+
+  });
+ 
+
+} 
+
+function obtenerSessionId(){
+  fetch('http://localhost:3000/session').then(data => data.text()).then(data =>{
+    var i = data;
+    console.log("i: " + i);
+    chrome.storage.local.get(['sessionId_NUEVO'], function(result){
+      var sessionId_anterior = "";
+      if(result.sessionId_NUEVO !== undefined){
+        sessionId_anterior = result.sessionId_NUEVO;
+        console.log("sessionId_anterior: " + sessionId_anterior);
+      }
+      chrome.storage.local.set({'sessionId_NUEVO': i}, function() {
+        console.log('sessionId_NUEVO: ' + i);
+      });
+      var sessionIds = {
+        idAnterior: sessionId_anterior,
+        idNuevo: i 
+      }
+
+      $.ajax({
+        type: "POST",
+        url: "http://localhost:3000/updateSessionId",
+        data: sessionIds
+      });
+    });
+     
+  });
+}
+
 
 function EventosBotones(){
   $(document).on('click','#btnSeguimientos', function() {
@@ -160,71 +225,94 @@ function Comprobacion(){
 }
 
 function EventoCambiarNombreLista(){ 
-  try {
-    $("#cambiarNombreLista").unbind().click(function(e){
-        var resp = window.prompt("Nuevo nombre:");
-        var existe = false;
-        if(resp != null && resp != ""){
-  
-          chrome.storage.sync.get(null, function(items) {
-            var allKeys = Object.keys(items);
-            for (i = 0; i < allKeys.length; i++) {
-                if(resp == allKeys[i]){
-                  existe = true;
-                }
-            }
-            if(existe == false){
-              var productosLista = [];
-              var listaNueva = {};
-  
-              chrome.storage.sync.get(itemLista, function (lista) { //Obtiene la lista
-                  
-                $.map(lista, function(productosEnLista, itemLista) { //Obtiene los productos en la lista
-                  
-                  
-                  $.map(productosEnLista, function(producto, llaveProducto) {  //Separa a los productos
+
+   try {
+      $("#cambiarNombreLista").unbind().click(function(e){
+          var resp = window.prompt("Nuevo nombre:");
+          var existe = false;
+          if(resp != null && resp != ""){
+    
+            chrome.storage.sync.get(null, function(items) {
+              var allKeys = Object.keys(items);
+              for (i = 0; i < allKeys.length; i++) {
+                  if(resp == allKeys[i]){
+                    existe = true;
+                  }
+              }
+              if(existe == false){
+                var productosLista = [];
+                var listaNueva = {};
+    
+                chrome.storage.sync.get(itemLista, function (lista) { //Obtiene la lista
+                    
+                  $.map(lista, function(productosEnLista, itemLista) { //Obtiene los productos en la lista
                     
                     
-                    $.map(producto, function(datosProducto, categoryID) { //Separa a los datos del producto
-                        productosLista.push(producto);
+                    $.map(productosEnLista, function(producto, llaveProducto) {  //Separa a los productos
+                      
+                      
+                      $.map(producto, function(datosProducto, categoryID) { //Separa a los datos del producto
+                          productosLista.push(producto);
+                      });
                     });
                   });
+                  
+                  listaNueva[resp] = productosLista;        
+                  chrome.storage.sync.remove(itemLista);
+                  chrome.storage.sync.set(listaNueva);
+                  
+                  var listaServidor = {
+                    nombreViejo: itemLista,
+                    nombreNuevo: resp
+                  }
+        
+                  $.ajax({
+                    type: "POST",
+                    url: "http://localhost:3000/modificarLista",
+                    data: listaServidor,
+                    error: function(xhr, status, error){
+                      console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+                  }
+                  });
+                  
                 });
                 
                 listaNueva[resp] = productosLista;        
                 chrome.storage.sync.remove(itemLista);
                 chrome.storage.sync.set(listaNueva);
                 
-                var listaServidor = {
-                  nombreViejo: itemLista,
-                  nombreNuevo: resp
-                }
-      
-                $.ajax({
-                  type: "POST",
-                  url: "http://localhost:3000/modificarLista",
-                  data: listaServidor,
-                  error: function(xhr, status, error){
-                    console.log("Error al contactar con el servidor, xhr: " + xhr.status);
-                }
-                });
+                getearSessionId().then(id => {
+                  var listaServidor = {
+                    nombreViejo: itemLista,
+                    nombreNuevo: resp,
+                    sessionId: id
+                  }
+        
+                  var request = $.ajax({
+                    type: "POST",
+                    url: "http://localhost:3000/modificarLista",
+                    data: listaServidor
+                  });
+                  request.done(function(response) {
+                    console.log(response);
+                    obtenerSessionIdABM(response.sessionId);
+                  });
+              
                 
               });
-              
-              setTimeout(function (){
-                DesplegarListas();
-                EventoListas();
-              }, 200);
-            }
-            else if(existe == true){
+              location.reload();
+            
+          }else if(existe == true){
               alert("Ya hay una lista con ese nombre!");
             }
-          });
-        }
-    });
-  } catch (err) {
+       
+      });
+    }
+  });
+   } catch (err) {
     console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
-  }
+   }
+    
 }
 
 function EventoEliminarProducto(itemProducto){
@@ -254,26 +342,29 @@ function EventoEliminarProducto(itemProducto){
               });
             });
           });
-          if(existe == true){
+        });
+        if(existe == true){
+          getearSessionId().then(idsession => {
             var productoServidor = {            
-              id: id
+              id: id,
+              sessionId: idsession
             }
-  
-            $.ajax({
+
+            var request = $.ajax({
               type: "POST",
               url: "http://localhost:3000/bajaProducto",
-              data: productoServidor,
-              error: function(xhr, status, error){
-                console.log("Error al contactar con el servidor, xhr: " + xhr.status);
-            }
+              data: productoServidor
             });
-  
-            listaNueva[listaSeleccionada] = productosLista;        
-            chrome.storage.sync.remove(listaSeleccionada);
-            chrome.storage.sync.set(listaNueva);
-          }
-          
-        });
+            request.done(function(response) {
+              console.log(response);
+              obtenerSessionIdABM(response.sessionId);
+            });
+          });
+
+          listaNueva[listaSeleccionada] = productosLista;        
+          chrome.storage.sync.remove(listaSeleccionada);
+          chrome.storage.sync.set(listaNueva);
+        }
         
         setTimeout(function (){
           $('#productosUl').empty();
@@ -291,42 +382,27 @@ function EventoEliminarProducto(itemProducto){
 function EventoEliminarLista(itemLista){
   try {
     $("#eliminar").click(function(e){
-        var listaServidor = {            
-          nombre: itemLista
-        }
-        $.ajax({
-          type: "POST",
-          url: "http://localhost:3000/bajaLista",
-          data: listaServidor,
-          error: function(xhr, status, error){
-            console.log("Error al contactar con el servidor, xhr: " + xhr.status);
-        }
-        });
-        chrome.storage.sync.remove(itemLista);
+        getearSessionId().then(id => {
+          var listaServidor = {            
+            nombre: itemLista,
+            sessionId: id
+          }
   
-         setTimeout(function (){
-          DesplegarListas();
-          EventoListas();
-        }, 200);
-    });
-  } catch (err) {
-    console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
-  }
-}
-
-function EventoOcultarMenu(){
-  try {
-    $(window).click(function() {
-      lista = false;
-      producto = false;
-      producto = false;
-    $("#menu").hide();
+          var request = $.ajax({
+            type: "POST",
+            url: "http://localhost:3000/bajaLista",
+            data: listaServidor
+          });
+          request.done(function(response) {
+            console.log(response);
+            obtenerSessionIdABM(response.sessionId);
+          });
+        });
       });
   } catch (err) {
     console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
   }
 }
-
 function EventoContextMenu(){
   try {
     $("#eliminar").mouseover(function(){

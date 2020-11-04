@@ -47,8 +47,7 @@ $(document).ready(function(){
               subject: 'CONTACTO',
               text: 'Mensaje de: '+mail+'\n\nMensaje: '+mensaje
             };
-  
-            $.ajax({
+              $.ajax({
               type: "POST",
               url: "http://localhost:3000/reciboMail",
               data: mailOptions,

@@ -10,12 +10,22 @@
   "license": "ISC",
   "dependencies": {
     "chrome-storage": "^1.0.3",
+    "cookie-parser": "^1.4.5",
     "express": "^4.17.1",
+    "express-mysql-session": "^2.1.4",
+    "express-session": "^1.17.1",
     "http": "0.0.1-security",
     "mysql2": "^2.2.5",
     "node-cron": "^2.0.3",
     "node-fetch": "^2.6.1",
+<<<<<<< HEAD
     "path": "^0.12.7",
+=======
+    "nodemailer": "^6.4.14",
+    "path": "^0.12.7",
+    "request": "^2.88.2",
+    "requests": "^0.3.0",
+>>>>>>> f887dbab2c3a809c2992ebfc385cf6e41fdf3e7e
     "socket.io": "^2.3.0"
   }
 }
