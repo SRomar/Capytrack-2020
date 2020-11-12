@@ -189,63 +189,75 @@ function EventoCambiarNombreLista(){
 
       var resp = window.prompt("Nuevo nombre:");
       var existe = false;
+      //EventoOcultarMenu();
 
       if(resp != null && resp != ""){
+        if(typeof(resp) === 'string' || typeof(resp) === 'number'){
+          console.log("nombre nuevo: " + resp);
+          chrome.storage.sync.get(null, function(items) {
+            var allKeys = Object.keys(items);
+            for (i = 0; i < allKeys.length; i++) {
+                if(resp == allKeys[i]){
+                  existe = true;
+                }
+            }
+            if(existe == false){
+              var productosLista = [];
+              var listaNueva = {};
 
-        chrome.storage.sync.get(null, function(items) {
-          var allKeys = Object.keys(items);
-          for (i = 0; i < allKeys.length; i++) {
-              if(resp == allKeys[i]){
-                existe = true;
-              }
-          }
-          if(existe == false){
-            var productosLista = [];
-            var listaNueva = {};
-
-            chrome.storage.sync.get(itemLista, function (lista) { //Obtiene la lista
-                
-              $.map(lista, function(productosEnLista, itemLista) { //Obtiene los productos en la lista
-                
-                
-                $.map(productosEnLista, function(producto, llaveProducto) {  //Separa a los productos
+              chrome.storage.sync.get(itemLista, function (lista) { //Obtiene la lista
+                  
+                $.map(lista, function(productosEnLista, itemLista) { //Obtiene los productos en la lista
                   
                   
-                  $.map(producto, function(datosProducto, categoryID) { //Separa a los datos del producto
-                      productosLista.push(producto);
+                  $.map(productosEnLista, function(producto, llaveProducto) {  //Separa a los productos
+                    
+                    
+                    $.map(producto, function(datosProducto, categoryID) { //Separa a los datos del producto
+                        productosLista.push(producto);
+                    });
                   });
                 });
-              });
-              
-              listaNueva[resp] = productosLista;        
-              chrome.storage.sync.remove(itemLista);
-              chrome.storage.sync.set(listaNueva);
-              
-              getearSessionId().then(id => {
-                var listaServidor = {
-                  nombreViejo: itemLista,
-                  nombreNuevo: resp,
-                  sessionId: id
-                }
-      
-                var request = $.ajax({
-                  type: "POST",
-                  url: "http://localhost:3000/modificarLista",
-                  data: listaServidor
+                
+                listaNueva[resp] = productosLista;        
+                chrome.storage.sync.remove(itemLista);
+                chrome.storage.sync.set(listaNueva);
+                
+                getearSessionId().then(id => {
+                  var listaServidor = {
+                    nombreViejo: itemLista,
+                    nombreNuevo: resp,
+                    sessionId: id
+                  }
+        
+                  var request = $.ajax({
+                    type: "POST",
+                    url: "http://localhost:3000/modificarLista",
+                    data: listaServidor
+                  });
+                  request.done(function(response) {
+                    console.log(response);
+                    obtenerSessionIdABM(response.sessionId);
+                  });
                 });
-                request.done(function(response) {
-                  console.log(response);
-                  obtenerSessionIdABM(response.sessionId);
-                });
+                
               });
-              
-            });
-            location.reload();
-          }
-          else if(existe == true){
-            alert("Ya hay una lista con ese nombre!");
-          }
-        });
+              location.reload();
+            }
+            else if(existe == true){
+              alert("Ya hay una lista con ese nombre!");
+            }
+          });
+        }
+        else{
+          alert("Nombre de lista invalido");
+          console.log("nombre deseado: " + resp);
+        }
+      }
+      else{
+        if(resp == ""){
+          alert("Nombre de lista invalido");
+        }
       }
      
 
