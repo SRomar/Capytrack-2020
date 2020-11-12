@@ -4,6 +4,8 @@ $(document).ready(function(){
   DesplegarListas();
   EventoAgregarProductoLista();
   EventoPanelNuevaLista();
+  EventoAdministrarLista();
+  conexionSocket();
   obtenerSessionId();
 });
 
@@ -153,7 +155,10 @@ function AgregarProducto(category_id){
         var request = $.ajax({
           type: "POST",
           url: "http://localhost:3000/altaProducto",
-          data: productoServidor
+          data: productoServidor,
+          error: function(xhr, status, error){
+            console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+          }
         });
         request.done(function(response) {
           console.log(response);
@@ -291,7 +296,10 @@ function EventoCrearLista(){
             var request = $.ajax({
               type: "POST",
               url: "http://localhost:3000/altaLista",
-              data: listaServidor
+              data: listaServidor,
+              error: function(xhr, status, error){
+                console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+            }
             });
             request.done(function(response) {
               console.log(response);
@@ -306,5 +314,10 @@ function EventoCrearLista(){
           alert("Ya hay una lista con ese nombre!");
         }
       });
+  });
+}
+
+function EventoAdministrarLista(){
+  $(document).on('click','#btnAdministrarLista', function() {
   });
 }

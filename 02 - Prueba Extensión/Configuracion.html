@@ -6,6 +6,8 @@
     <title>Capytrack</title>
     <link rel="stylesheet" href="css/configuracionEstilo.css">
     <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@100;300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Spinnaker&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Spartan:wght@100;200;300;400;500&display=swap" rel="stylesheet">
     <script src="js/jquery-3.5.1.min.js"></script>
     <script src="js/configuracion.js"></script>
 
@@ -15,9 +17,9 @@
   
     <div id="header">
         <h1>CAPYTRACK</h1>
-        <div id="capyCara">
+        <!-- <div id="capyCara">
             <img src="res/CapyOpciones.png" alt="capyCara">
-        </div>
+        </div> -->
 
     </div>
       
@@ -36,15 +38,26 @@
         <div id="opcionesConfig">
             <h3>Opciones</h3>
             <ul id="listaOpcionesConfig">
-                <li class="opcionConfiguracion">Opcion 1</li>
-                <li class="opcionConfiguracion">Opcion 2</li>
+                <li class="opcionConfiguracion" id="Temas">Temas</li>
+                <li class="opcionConfiguracion" id="opcion2">Opcion 2</li>
                 <li class="opcionConfiguracion">Opcion 3</li>
             </ul>
         </div>
-        <div id="configOpciones">
-            <h3>Configuración</h3>
-            <img id="perro" src="res/perro404.jpg" alt="perro">
-            <h4>Estamos trabajando :)</h4>
+            <div id="configOpciones">
+                <div id="contenidoOpcion"></div>
+
+                    <div id="TemasContenido" style="visibility:hidden;">
+                        <ul id="listaColores">
+                            <li id="fondoPag">Fondo <input type="color" id="fondoPagInput"></li> 
+                            <li id="borde">Bordes <input type="color" id="bordesInput"></li>
+                            <li id="contenedor">Contenedor <input type="color" id="contenedorInput"></li>
+                            <li id="lineas">Lineas <input type="color" id="lineasInput"></li>
+                            <li id="texto">Texto <input type="color" id="textoInput"></li>
+                        </ul>
+                    </div>
+            </div>     
+
+ 
         </div>
 
     </div>

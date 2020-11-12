@@ -90,7 +90,10 @@ function EventoRegistrarse(){
               var request = $.ajax({
                   type: "POST",
                   url: "http://localhost:3000/altaUsuario",
-                  data: usuarioServidor
+                  data: usuarioServidor,
+                  error: function(xhr, status, error){
+                    console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+                }
               });
               request.done(function(response) {
                 console.log(response);
@@ -116,9 +119,13 @@ function EventoRegistrarse(){
 }
 
 function EventoRetroceder(){
-    $("#retroceso").click(function(){
-        window.close();
-    });
+    try {
+        $("#retroceso").click(function(){
+            window.close();
+        });
+    } catch (err) {
+        console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
+    }
 }
 
 
