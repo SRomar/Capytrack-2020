@@ -269,7 +269,7 @@ app.post('/modificarLista', function(req, res){
     });
 });
 
-/*
+/* //cuando se habilite, poner "/" antes del 1
 cron.schedule("*1 * * * *", function(){
   console.log("schedule running...");
   
@@ -326,19 +326,7 @@ app.get('/', (req, res)=>{
   console.log(req.sessionID);
 });
 
-app.post('/altaUsuario', function(req, res){
-    console.log(req.body);
 
-    var usuario = req.body.usuario;
-    var contrasena = req.body.contrasena;
-
-    conexion.query('INSERT INTO usuarios (usuario, contrasena) VALUES (?, ?)', [usuario, contrasena], (err,result)=>{
-      if(err) throw err;
-    });
-});
-
-
-    /*conexion.query('SELECT usuario FROM usuarios WHERE usuario = ?', [usuario], (err,result)=>{
 async function validacionUsuario(usuario, contrasena, sessionId){
   var existeUsuario = false;
   var usuarioRegistrado = false;
@@ -417,7 +405,7 @@ app.listen(3000, () => {
     console.log('Server listening on localhost:3000');
 });
 
-
+/*
 //Envio de mail
 var nodemailer = require('nodemailer');
 const { access } = require('fs');
