@@ -326,19 +326,7 @@ app.get('/', (req, res)=>{
   console.log(req.sessionID);
 });
 
-app.post('/altaUsuario', function(req, res){
-    console.log(req.body);
 
-    var usuario = req.body.usuario;
-    var contrasena = req.body.contrasena;
-
-    conexion.query('INSERT INTO usuarios (usuario, contrasena) VALUES (?, ?)', [usuario, contrasena], (err,result)=>{
-      if(err) throw err;
-    });
-});
-
-
-    /*conexion.query('SELECT usuario FROM usuarios WHERE usuario = ?', [usuario], (err,result)=>{
 async function validacionUsuario(usuario, contrasena, sessionId){
   var existeUsuario = false;
   var usuarioRegistrado = false;
@@ -393,29 +381,30 @@ async function validacionUsuario(usuario, contrasena, sessionId){
   return usuarioRegistrado;
   
 }
-
 app.post('/altaUsuario', function(req, res){
-    console.log(req.body);
+  console.log(req.body);
 
-    var usuario = req.body.usuario;
-    var contrasena = req.body.contrasena;
-    var sessionId = req.body.sessionId;
-    var usuarioRegistrado;
+  var usuario = req.body.usuario;
+  var contrasena = req.body.contrasena;
+  var sessionId = req.body.sessionId;
+  var usuarioRegistrado;
 
-    validacionUsuario(usuario, contrasena, sessionId).then(registrado => {
-      console.log(registrado);
-      usuarioRegistrado = registrado;
-      res.json({
-        status: 'success',
-        usuarioRegistrado: usuarioRegistrado,
-        sessionId: req.sessionID
-      });
+  validacionUsuario(usuario, contrasena, sessionId).then(registrado => {
+    console.log(registrado);
+    usuarioRegistrado = registrado;
+    res.json({
+      status: 'success',
+      usuarioRegistrado: usuarioRegistrado,
+      sessionId: req.sessionID
     });
+  });
 });
 
 app.listen(3000, () => {
-    console.log('Server listening on localhost:3000');
+  console.log('Server listening on localhost:3000');
 });
+
+
 
 
 //Envio de mail
@@ -460,3 +449,4 @@ app.post('/reciboMail', function(req, res){
     status: 'success'
   });
 });*/
+

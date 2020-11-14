@@ -73,17 +73,14 @@ function ocultarLabelProblema(){
 
 function EventoRegistrarse(){
     $("#registrarse").click(function(){
-        var usuario = $("#usuario").val();
-        var contrasena = $("#contrasena").val();
+        var usr = $("#usuario").val();
+        var contr = $("#contrasena").val();
 
-        console.log("usuario: " + usuario);
-        console.log("contraseña: " + contrasena);
-
-        if(usuario != null && contrasena != null && usuario != "" && contrasena != ""){
+        if(usr != null && contr != null && usr != "" && contr != ""){
             getearSessionId().then(id => {
               var usuarioServidor = {
-                  usuario: usuario,
-                  contrasena: contrasena,
+                  usuario: usr,
+                  contrasena: contr,
                   sessionId: id
                 }
               
@@ -110,7 +107,7 @@ function EventoRegistrarse(){
             });
            
         }
-        else if(usuario == null || contrasena == null || usuario == "" || contrasena == ""){
+        else if(usr == null || contr == null || usr == "" || contr == ""){
             $("#problema").text("Hay campos vacios");
             $("#problema").show();
         }

@@ -6,6 +6,7 @@ $(document).ready(function(){
   EventoPanelNuevaLista();
   EventoAdministrarLista();
   eventoSelect();
+  DesplegarProductos($( "#selectLista" ).val());
   // conexionSocket();
   // obtenerSessionId();
 });
