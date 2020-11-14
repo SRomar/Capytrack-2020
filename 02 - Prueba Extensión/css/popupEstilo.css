@@ -1,158 +1,158 @@
+:root {
+    --fondoPag: linear-gradient(360deg, rgb(31, 56, 73) 1%, var(--secundario) 100%);
+    --borde: #52093f;
+    --secundario: #4b7fa1;
+    --contenedor: linear-gradient(180deg, #ffffff 0%, #dbdbdb 100%);
+    --complementario: #ececec;
+    --lineas: #ffffff0a;
+    --texto: #ececec;
+    --texto2: #444444;
+    --fuente: 'Spinnaker';
+    --fuente2: 'Spartan', sans-serif;
+  } 
+
 html{
-    width: 200px;
-    height: 300px;
-    background-color:  #C4C4C4;
-    font-family: 'M PLUS Rounded 1c', sans-serif;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    width: 280px;
+    background:  var(--fondoPag);
+    font-family: var(--fuente2);
+
+    align-content: center;
     padding: 0px;
     margin: 0px;
-  
 }
 
 body{
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 
+
+    height: 100%;
+    width: 100%;
     padding: 0px;
-    margin: 5px;
-    margin-top: 0px;
-    
- 
+    margin: 0 auto;
 }
 
 h1{
     font-size: 22px;
-    font-family: 'M PLUS Rounded 1c', sans-serif;
+    font-family: var(--fuente);
     font-weight: 700;
     margin-top: 8px;
-    color: #505050;
+    margin-bottom: 2px;
+    color: var(--texto); 
 }
-h3{
-    margin: 0px;
+h3, span{
     margin-bottom: 2px;
     margin-top: 5px;
     font-size: 15px;
-    font-family: 'M PLUS Rounded 1c', sans-serif;
+    font-family: var(--fuente2);
     font-weight: 700;
-    color: #505050;
+    color: var(--texto); 
   
 }
 
 
-
-header{ 
-    text-align: center;
-    width: 100%;
-    height: 40px;
-    margin: 0;
-    padding-left: 0;
-    padding-top: 0px;
-    padding-bottom: 2px;
-    font-weight: 500;
-    border-bottom:3px solid #757575;
-    background: #C4C4C4;
-    /* background: linear-gradient(#FFC907, #FFA63E); */
-    text-align: left;
-    display: flex;
-}
-#capyPop{
-    padding-top: 9px;
-    padding-left: 5px;
-}
-
-
-
 #contenedor{
-    
-    color: rgb(47, 47, 47);
-    display: block;
+    height: 100%;
+    width: 100%;
     text-align: center;
-
 }
 
 #btnPopup, #nuevaLista, #btnAgregarLista, #btnAdministrarLista, #btnCrearLista, #retroceso{
-    font-family: 'M PLUS Rounded 1c', sans-serif;
+    font-family: var(--fuente2);
     font-weight: 600;
-    color: #505050;
-    margin-top: 10px;
+    color: var(--texto2);
     text-decoration: none;
     border: none;
-    width: 100%;
+    width: 260px;
+    margin: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
     height: 25px;
-    border: 3px solid #757575;
-    margin-left: 0;
-    vertical-align: middle;
+    /* border-radius: 10px; */
+    background: var(--contenedor);
+    box-shadow: 0px 1.92677px 1.92677px rgba(0, 0, 0, 0.25);
+}
+
+#btnAgregarLista{
+    margin-top: 1px;
+    margin-bottom: 6px;
 }
 
 #nombreLista{
-    border: 3px solid #757575;
-    width: calc(100% - 10px);
+    width: 10px;
 }
 
 #nuevaLista{
-    width: 55%;
+    width: 47.3%;
     height: 26px;
-    margin: 0px;
-    margin-bottom: 3px;
+    display: inline-block;
+    margin-right: 0px;
 }
 
 #selectLista{
-    font-family: 'M PLUS Rounded 1c', sans-serif;
-    font-weight: 450;
+    font-family: var(--fuente2);
+    font-weight: 470;
     font-size: 12px;
-    color: #505050;
-    width: 43%;
-    margin-right: 0;
-    margin-top: 0;
-    height: 26px;
-    border: 3px solid #757575;
+    color: var(--texto2); 
+    background: var(--contenedor);
+    /* border-radius: 10px; */
+    width: 47.3%;
+    height: 27px;
+    display: inline-block;
 
 }
 
 #contenedorLista{
-    margin: 0px;
-    margin-top: 5px;
+    margin: 10px;
     vertical-align: middle;
-    
     text-align: left;
 }
 
-#contenedorInformacion{
-    
-    text-align: left;
-    margin-top: 0px;
+
+
+#informacion{
+    margin-right: 10px;
+}
+
+#productosListaUL{
+    margin: 10px;
+    overflow-y: scroll;
+    overflow-x: scroll;
+    background-color: white;
+    width: calc(100%-10px);
+    height: 125px;
+    padding: 0px;
 
 }
 
-ul{
-
-    text-align: left;
+.productoEnLista{
+    font-family:  var(--fuente2);
+    text-decoration: none;
     list-style-type: none;
-    padding: 5px;
-    margin: 0px;
+    color: var(--texto2);
+    background: var(--lineas);
+    font-size: 15px;
+    font-weight: 500;
+    width: 100%;
+    height: 8px;
+    padding-top: 10px;
+    padding-left: 10px;
+    margin-bottom: 35px;
+    text-align: left;
+    vertical-align: middle;
 }
-
 
 li{
-    font-family: 'M PLUS Rounded 1c', sans-serif;
+    font-family: var(--fuente2);
     font-weight: 500;
     font-size: 15px;
-    color: #505050;
+    color: var(--texto); 
     margin-bottom: 0px;
 }
 
 
 
-.custom-select {
-    position: relative;
-    font-family: Arial;
-    display: inline;
-  }
-
-  #btnAgregarLista{
-      margin-top: 4px;
-  }
-  #btnAdministrarLista{
-      margin-top: 0px;
-  }
   
-  button{
-      display: inline;
-  }
+  
