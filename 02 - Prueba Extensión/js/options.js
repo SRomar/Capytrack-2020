@@ -13,7 +13,7 @@ $(document).ready(function(){
   
   CrearContextMenu();
   EventoIluminar();
-  // obtenerSessionId();
+  obtenerSessionId();
 
 });
 

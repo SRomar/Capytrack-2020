@@ -37,7 +37,7 @@ body{
 h1{
     font-size: 22px;
     font-family: var(--fuente);
-    font-weight: 700;
+    font-weight: 500;
     margin-top: 8px;
     margin-bottom: 2px;
     color: var(--texto); 
@@ -47,7 +47,7 @@ h3, span{
     margin-top: 5px;
     font-size: 15px;
     font-family: var(--fuente2);
-    font-weight: 700;
+    font-weight: 500;
     color: var(--texto); 
   
 }

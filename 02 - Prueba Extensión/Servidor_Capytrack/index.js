@@ -14,8 +14,8 @@ const cookieParser = require('cookie-parser');
 var options = {
   hots: 'localhost',
   port: 3306,
-  user: 'root',
-  password: '123456',
+  user: 'Velnias',
+  password: '/Velnias7',
   database: 'capytrack'
 };
 
@@ -23,8 +23,8 @@ var sessionStore = new MySQLStore(options);
 
 const conexion = mysql.createConnection({
   host: 'localhost',
-  user: 'root',
-  password: '123456',
+  user: 'Velnias',
+  password: '/Velnias7',
   database: 'capytrack'
 });
 

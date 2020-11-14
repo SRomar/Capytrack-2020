@@ -18,14 +18,10 @@
     "mysql2": "^2.2.5",
     "node-cron": "^2.0.3",
     "node-fetch": "^2.6.1",
-<<<<<<< HEAD
-    "path": "^0.12.7",
-=======
     "nodemailer": "^6.4.14",
     "path": "^0.12.7",
     "request": "^2.88.2",
     "requests": "^0.3.0",
->>>>>>> f887dbab2c3a809c2992ebfc385cf6e41fdf3e7e
     "socket.io": "^2.3.0"
   }
 }
