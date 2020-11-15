@@ -1,5 +1,4 @@
 $(document).ready(function(){
-    ocultarLabelProblema();
     EventoRegistrarse();
     EventoRetroceder();
     obtenerSessionId();
@@ -67,8 +66,24 @@ async function getearSessionId(){
   return id;
 }
 
-function ocultarLabelProblema(){
-    $("#problema").hide();
+function ValidarMail(mailUsuario)
+{
+  var mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  if(mailUsuario.match(mailformat)){
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+
+function ValidarContrasena(contraUsuario){
+  if(contraUsuario.length >= 5){
+    return true;
+  }
+  else{
+    return false;
+  }
 }
 
 function EventoRegistrarse(){
@@ -77,39 +92,46 @@ function EventoRegistrarse(){
         var contr = $("#contrasena").val();
 
         if(usr != null && contr != null && usr != "" && contr != ""){
-            getearSessionId().then(id => {
-              var usuarioServidor = {
-                  usuario: usr,
-                  contrasena: contr,
-                  sessionId: id
-                }
-              
-              var request = $.ajax({
-                  type: "POST",
-                  url: "http://localhost:3000/altaUsuario",
-                  data: usuarioServidor,
-                  error: function(xhr, status, error){
-                    console.log("Error al contactar con el servidor, xhr: " + xhr.status);
-                }
-              });
-              request.done(function(response) {
-                console.log(response);
-                obtenerSessionIdABM(response.sessionId);
-                if(response.usuarioRegistrado == false){
-                  $("#problema").text("El nombre de usuario ya esta en uso");
-                  $("#problema").show();
-                }
-                else{
-                  alert("Registrado con éxito!");
-                  window.close();
-                }
-              });
-            });
-           
+            if(ValidarMail(usr) == true){
+              if(ValidarContrasena(contr) == true){
+                getearSessionId().then(id => {
+                  var usuarioServidor = {
+                      usuario: usr,
+                      contrasena: contr,
+                      sessionId: id
+                    }
+                  
+                  var request = $.ajax({
+                      type: "POST",
+                      url: "http://localhost:3000/altaUsuario",
+                      data: usuarioServidor,
+                      error: function(xhr, status, error){
+                        console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+                    }
+                  });
+                  request.done(function(response) {
+                    console.log(response);
+                    obtenerSessionIdABM(response.sessionId);
+                    if(response.usuarioRegistrado == false){
+                      alert("El nombre de usuario ya esta en uso!");
+                    }
+                    else{
+                      alert("Registrado con éxito!");
+                      window.close();
+                    }
+                  });
+                });
+              }
+              else{
+                alert("Contraseña debil. Debe contener al menos 5 caracteres.");
+              }  
+            }
+            else{
+              alert("E-Mail inválido!");
+            }
         }
         else if(usr == null || contr == null || usr == "" || contr == ""){
-            $("#problema").text("Hay campos vacios");
-            $("#problema").show();
+            alert("Hay campos vacios!");
         }
           
     });

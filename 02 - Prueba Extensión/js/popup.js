@@ -8,8 +8,36 @@ $(document).ready(function(){
   eventoSelect();
   DesplegarProductos($( "#selectLista" ).val());
   // conexionSocket();
-  // obtenerSessionId();
+  obtenerSessionId();
+  mostrarBotonRegistrarse();
 });
+
+function mostrarBotonRegistrarse(){
+  getearSessionId().then(id => {
+    var sessionIdServidor = {
+      sessionId: id
+    }
+    var request = $.ajax({
+      type: "POST",
+      url: "http://localhost:3000/usuarioRegistrado",
+      data: sessionIdServidor,
+      error: function(xhr, status, error){
+        console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+      }
+    });
+    request.done(function(response) {
+      console.log(response);
+      console.log("usuario ya registrado: " + response.usuario);
+      if(response.usuario == true){
+        $('#btnRegistrarse').hide();       
+      }
+      else{
+        $('#btnRegistrarse').show();
+      }
+      obtenerSessionIdABM(response.sessionId);
+    });
+  });
+}
 
 function eventoSelect(){
   $('#selectLista').on('change', function() {
@@ -18,6 +46,7 @@ function eventoSelect(){
 });
 
 }
+
 function obtenerSessionIdABM(id){
   chrome.storage.local.get(['sessionId_NUEVO'], function(result){
     var sessionId_anterior = result.sessionId_NUEVO;

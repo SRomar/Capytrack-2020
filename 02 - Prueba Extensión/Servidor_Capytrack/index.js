@@ -14,8 +14,8 @@ const cookieParser = require('cookie-parser');
 var options = {
   hots: 'localhost',
   port: 3306,
-  user: 'Velnias',
-  password: '/Velnias7',
+  user: 'root',
+  password: '123456',
   database: 'capytrack'
 };
 
@@ -23,8 +23,8 @@ var sessionStore = new MySQLStore(options);
 
 const conexion = mysql.createConnection({
   host: 'localhost',
-  user: 'Velnias',
-  password: '/Velnias7',
+  user: 'root',
+  password: '123456',
   database: 'capytrack'
 });
 
@@ -117,6 +117,38 @@ async function updateSessionId(idNuevo, idAnterior){
   }
 
 }
+
+app.post('/usuarioRegistrado', function(req, res){
+    console.log(req.body);
+
+    var sessionId = req.body.sessionId;
+
+    conexion.query('SELECT idCliente FROM clientes WHERE session_id = ?;', sessionId, (err,result)=>{
+      if(err) throw err;
+      else{
+        var idCliente = result[0].idCliente;
+        conexion.query('SELECT COUNT(*) AS count FROM usuarios WHERE idCliente = ?;', idCliente, (err,result)=>{
+          if(err) throw err;
+          else{
+            if(result[0].count == 0){
+              res.json({
+                status: 'success',
+                usuario: false,
+                sessionId: req.sessionID
+              });
+            }
+            else{
+              res.json({
+                status: 'success',
+                usuario: true,
+                sessionId: req.sessionID
+              });
+            }
+          }
+        });
+      }
+    });
+});
 
 
 app.post('/altaProducto', function(req, res){
@@ -241,11 +273,6 @@ app.post('/modificarLista', function(req, res){
         conexion.query('SET foreign_key_checks = 0;', (err,result)=>{
           if(err) throw err;
         });
-        /*
-        conexion.query('UPDATE listas INNER JOIN productos ON productos.nombre_lista = listas.nombre SET listas.nombre = ?, productos.nombre_lista = ? WHERE listas.nombre = ?;', [nombreNuevo, nombreNuevo, nombreViejo], (err,result)=>{
-          if(err) throw err;
-        });
-        */
         
         conexion.query('UPDATE listas SET nombre = ? WHERE nombre = ? AND idCliente = ?;', [nombreNuevo, nombreViejo, idCliente], (err,result)=>{
           if(err) throw err;

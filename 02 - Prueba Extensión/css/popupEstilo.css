@@ -59,7 +59,7 @@ h3, span{
     text-align: center;
 }
 
-#btnPopup, #nuevaLista, #btnAgregarLista, #btnAdministrarLista, #btnCrearLista, #retroceso{
+#btnPopup, #btnRegistrarse, #nuevaLista, #btnAgregarLista, #btnAdministrarLista, #btnCrearLista, #retroceso{
     font-family: var(--fuente2);
     font-weight: 600;
     color: var(--texto2);
