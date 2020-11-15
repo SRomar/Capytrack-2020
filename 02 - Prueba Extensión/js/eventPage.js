@@ -7,7 +7,7 @@ var rule = {
       new chrome.declarativeContent.PageStateMatcher({
         pageUrl: { hostEquals: 'articulo.mercadolibre.com.bo', schemes: ['https'] }
       }),
-      new chrome.decalarativeContent.PageStateMatcher({
+      new chrome.declarativeContent.PageStateMatcher({
         pageUrl: { hostEquals: 'articulo.mercadolibre.com.br', schemes: ['https'] }
       }),
       new chrome.declarativeContent.PageStateMatcher({
