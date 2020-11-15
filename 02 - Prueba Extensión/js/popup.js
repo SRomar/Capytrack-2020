@@ -5,10 +5,19 @@ $(document).ready(function(){
   EventoAgregarProductoLista();
   EventoPanelNuevaLista();
   EventoAdministrarLista();
-  conexionSocket();
-  obtenerSessionId();
+  eventoSelect();
+  DesplegarProductos($( "#selectLista" ).val());
+  // conexionSocket();
+  // obtenerSessionId();
 });
 
+function eventoSelect(){
+  $('#selectLista').on('change', function() {
+    $('#productosListaUL').empty()
+    DesplegarProductos($(this).val());
+});
+
+}
 function obtenerSessionIdABM(id){
   chrome.storage.local.get(['sessionId_NUEVO'], function(result){
     var sessionId_anterior = result.sessionId_NUEVO;
@@ -78,7 +87,7 @@ function DesplegarListas(){
         var allKeys = Object.keys(items);
         $('#selectLista').empty();
         for (i = 0; i < allKeys.length; i++) {
-            $("#selectLista").append(new Option(allKeys[i], allKeys[i]));
+          $("#selectLista").append(new Option(allKeys[i], allKeys[i]));
         }
     });
   
@@ -129,10 +138,10 @@ function AgregarProducto(category_id){
     //Se agrega a una lista
     if(valorLista !== null){
     
-      ide.innerHTML = i.id;
-      nombre.innerHTML = i.title;
-      estado.innerHTML = i.status;      
-      precio.innerHTML = i.price;
+      // ide.innerHTML = i.id;
+      // nombre.innerHTML = i.title;
+      // estado.innerHTML = i.status;      
+      // precio.innerHTML = i.price;
 
       diccionariofoto = i.pictures;
       arregloFoto = diccionariofoto[Object.keys(diccionariofoto)[0]];
@@ -179,6 +188,8 @@ function AgregarProducto(category_id){
         } 
         chrome.storage.sync.set(cfg); 
       });
+
+      DesplegarProductos();
 
     } else{
       alert('No hay listas!');
@@ -245,6 +256,8 @@ async function VerificacionExistenciaProducto(){
   
   
 }
+
+
 
 function EventoAgregarProductoLista(){
   $("#btnAgregarLista").click(function(){
@@ -320,4 +333,58 @@ function EventoCrearLista(){
 function EventoAdministrarLista(){
   $(document).on('click','#btnAdministrarLista', function() {
   });
+}
+
+
+function EventoListas(){
+  
+  try {
+    chrome.storage.sync.get(null, function(items) {
+    document.querySelectorAll('.elementoLista').forEach(item => {
+
+      $(item).on('click', function() {      
+        
+        $('#productosListaUL').empty()
+        var nombreLista = $(this).text(); //Obtiene el nombre de li
+        console.log(nombreLista);
+        DesplegarProductos(nombreLista);
+      });  
+    });
+    });
+  } catch (err) {
+    console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
+  }
+
+
+}
+
+
+
+function DesplegarProductos(nombreLista){
+  try {
+    $('#productosListaUL').empty()
+    chrome.storage.sync.get(nombreLista, function (lista) { //Obtiene la lista
+      var total = 0;
+      $.map(lista, function(productosEnLista, nombreProducto) { //Obtiene los productos en la lista
+    
+          $.map(productosEnLista, function(producto, llaveProducto) {  //Separa los productos
+
+            $.map(producto, function(datosProducto, categoryID) { //Separa los datos del producto
+  
+              $("#productosListaUL").append('<li class="productoEnLista" id="'+datosProducto[5]+'">'+datosProducto[0]+'</li>'); //De aca se pueden sacar los datos del producto usando el indice
+              
+              total = total + parseInt(datosProducto[1]);
+         
+
+         
+          });
+
+        });
+        precio.innerHTML = "$ "+total;
+      });
+      
+    });
+  } catch (err) {
+    console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
+  }
 }

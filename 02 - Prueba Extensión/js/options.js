@@ -9,7 +9,6 @@ $(document).ready(function(){
 
   EventosBotones();
   DesplegarListas();
-  // Animacion();
   EventoListas();
   
   CrearContextMenu();
@@ -192,6 +191,15 @@ function CrearContextMenu(){
   } catch (err) {
     console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
   }
+}
+
+function EventoOcultarMenu(){
+  $(window).click(function() {
+    lista = false;
+    producto = false;
+    producto = false;
+  $("#menu").hide();
+    });
 }
 
 function Comprobacion(){
@@ -500,6 +508,7 @@ function Animacion(idElemento){
     console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
   }
 }
+
 function Animacion2(idElemento){
   try {
     $(idElemento).click(function() {

@@ -14,8 +14,8 @@ const cookieParser = require('cookie-parser');
 var options = {
   hots: 'localhost',
   port: 3306,
-  user: 'root',
-  password: '123456',
+  user: 'Velnias',
+  password: '/Velnias7',
   database: 'capytrack'
 };
 
@@ -23,8 +23,8 @@ var sessionStore = new MySQLStore(options);
 
 const conexion = mysql.createConnection({
   host: 'localhost',
-  user: 'root',
-  password: '123456',
+  user: 'Velnias',
+  password: '/Velnias7',
   database: 'capytrack'
 });
 
@@ -381,28 +381,27 @@ async function validacionUsuario(usuario, contrasena, sessionId){
   return usuarioRegistrado;
   
 }
-
 app.post('/altaUsuario', function(req, res){
-    console.log(req.body);
+  console.log(req.body);
 
-    var usuario = req.body.usuario;
-    var contrasena = req.body.contrasena;
-    var sessionId = req.body.sessionId;
-    var usuarioRegistrado;
+  var usuario = req.body.usuario;
+  var contrasena = req.body.contrasena;
+  var sessionId = req.body.sessionId;
+  var usuarioRegistrado;
 
-    validacionUsuario(usuario, contrasena, sessionId).then(registrado => {
-      console.log(registrado);
-      usuarioRegistrado = registrado;
-      res.json({
-        status: 'success',
-        usuarioRegistrado: usuarioRegistrado,
-        sessionId: req.sessionID
-      });
+  validacionUsuario(usuario, contrasena, sessionId).then(registrado => {
+    console.log(registrado);
+    usuarioRegistrado = registrado;
+    res.json({
+      status: 'success',
+      usuarioRegistrado: usuarioRegistrado,
+      sessionId: req.sessionID
     });
+  });
 });
 
 app.listen(3000, () => {
-    console.log('Server listening on localhost:3000');
+  console.log('Server listening on localhost:3000');
 });
 
 /*
@@ -448,3 +447,4 @@ app.post('/reciboMail', function(req, res){
     status: 'success'
   });
 });*/
+
