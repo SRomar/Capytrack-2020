@@ -11,6 +11,33 @@ $(document).ready(function(){
   obtenerSessionId();
 });
 
+function mostrarBotonRegistrarse(){
+  getearSessionId().then(id => {
+    var sessionIdServidor = {
+      sessionId: id
+    }
+    var request = $.ajax({
+      type: "POST",
+      url: "http://localhost:3000/usuarioRegistrado",
+      data: sessionIdServidor,
+      error: function(xhr, status, error){
+        console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+      }
+    });
+    request.done(function(response) {
+      console.log(response);
+      console.log("usuario ya registrado: " + response.usuario);
+      if(response.usuario == true){
+        $('#btnRegistrarse').hide();       
+      }
+      else{
+        $('#btnRegistrarse').show();
+      }
+      obtenerSessionIdABM(response.sessionId);
+    });
+  });
+}
+
 function eventoSelect(){
   $('#selectLista').on('change', function() {
     $('#productosListaUL').empty()
@@ -18,6 +45,7 @@ function eventoSelect(){
 });
 
 }
+
 function obtenerSessionIdABM(id){
   chrome.storage.local.get(['sessionId_NUEVO'], function(result){
     var sessionId_anterior = result.sessionId_NUEVO;
@@ -287,46 +315,51 @@ function EventoCrearLista(){
   $("#btnCrearLista").unbind().click(function() {
       var existe = false;
       var Lista = {};       
-      var nombre = document.getElementById('nombreLista').value;  
-      chrome.storage.sync.get(null, function(items) {
-        var allKeys = Object.keys(items);
-        for (i = 0; i < allKeys.length; i++) {
-            if(nombre == allKeys[i]){
-              existe = true;
-            }
-        }
-        if(existe == false){
-          Lista[nombre]= [];
-          chrome.storage.sync.set(Lista);
-          DesplegarListas(); 
+      var nombre = document.getElementById('nombreLista').value; 
+      if(nombre != null && nombre != ""){
+        chrome.storage.sync.get(null, function(items) {
+          var allKeys = Object.keys(items);
+          for (i = 0; i < allKeys.length; i++) {
+              if(nombre == allKeys[i]){
+                existe = true;
+              }
+          }
+          if(existe == false){
+            Lista[nombre]= [];
+            chrome.storage.sync.set(Lista);
+            DesplegarListas(); 
 
-          getearSessionId().then(id => {
-            var listaServidor = {
-              nombre: nombre,
-              sessionId: id
-            }
+            getearSessionId().then(id => {
+              var listaServidor = {
+                nombre: nombre,
+                sessionId: id
+              }
 
-            var request = $.ajax({
-              type: "POST",
-              url: "http://localhost:3000/altaLista",
-              data: listaServidor,
-              error: function(xhr, status, error){
-                console.log("Error al contactar con el servidor, xhr: " + xhr.status);
-            }
+              var request = $.ajax({
+                type: "POST",
+                url: "http://localhost:3000/altaLista",
+                data: listaServidor,
+                error: function(xhr, status, error){
+                  console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+              }
+              });
+              request.done(function(response) {
+                console.log(response);
+                obtenerSessionIdABM(response.sessionId);
+              });
             });
-            request.done(function(response) {
-              console.log(response);
-              obtenerSessionIdABM(response.sessionId);
-            });
-          });
-          $("#contenedorNuevaLista").hide();
-          $("#contenedor").show();        
-         
-        }
-        else if(existe == true){
-          alert("Ya hay una lista con ese nombre!");
-        }
-      });
+            $("#contenedorNuevaLista").hide();
+            $("#contenedor").show();        
+          
+          }
+          else if(existe == true){
+            alert("Ya hay una lista con ese nombre!");
+          }
+        });
+      }
+      else{
+        alert("Ingrese un nombre");
+      }
   });
 }
 
