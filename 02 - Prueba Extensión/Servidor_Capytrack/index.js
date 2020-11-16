@@ -41,8 +41,11 @@ app.use(function(req, res, next) {
 });
 
 app.use(express.json());
+
 app.use(bodyParser.json());   
+
 app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(session({
   secret: 'e',
   resave: true,
@@ -130,6 +133,8 @@ app.post('/altaProducto', function(req, res){
     var nombrelista = req.body.nombrelista;
     var precio = req.body.price;
     var sessionId = req.body.sessionId;
+  
+
 
     conexion.query('SELECT idCliente FROM clientes WHERE session_id = ?;', sessionId, (err,result)=>{
       if(err) throw err;
@@ -283,10 +288,10 @@ async function verificarPrecios(){
   var p1 = new Promise(function(resolve, reject){
     conexion.query('SELECT id, precio FROM productos;', (err,result)=>{
       if(err) throw err;
-      else{
-        if(result != null){
+      else if(result != null){
+        
           prods = result;
-        }     
+           
       }
       resolve(prods);
     });
@@ -312,6 +317,7 @@ async function verificarPrecios(){
         }
         else{
           console.log("el precio de " + productos[i].id + " cambio y es este: " + precioActual);  
+          
         }
     }
   }

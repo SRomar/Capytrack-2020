@@ -8,7 +8,7 @@ $(document).ready(function(){
   eventoSelect();
   DesplegarProductos($( "#selectLista" ).val());
   // conexionSocket();
-  // obtenerSessionId();
+  obtenerSessionId();
 });
 
 function eventoSelect(){
