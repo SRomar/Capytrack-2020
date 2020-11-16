@@ -118,6 +118,38 @@ async function updateSessionId(idNuevo, idAnterior){
 
 }
 
+app.post('/usuarioRegistrado', function(req, res){
+    console.log(req.body);
+
+    var sessionId = req.body.sessionId;
+
+    conexion.query('SELECT idCliente FROM clientes WHERE session_id = ?;', sessionId, (err,result)=>{
+      if(err) throw err;
+      else{
+        var idCliente = result[0].idCliente;
+        conexion.query('SELECT COUNT(*) AS count FROM usuarios WHERE idCliente = ?;', idCliente, (err,result)=>{
+          if(err) throw err;
+          else{
+            if(result[0].count == 0){
+              res.json({
+                status: 'success',
+                usuario: false,
+                sessionId: req.sessionID
+              });
+            }
+            else{
+              res.json({
+                status: 'success',
+                usuario: true,
+                sessionId: req.sessionID
+              });
+            }
+          }
+        });
+      }
+    });
+});
+
 
 app.post('/altaProducto', function(req, res){
 
@@ -241,11 +273,6 @@ app.post('/modificarLista', function(req, res){
         conexion.query('SET foreign_key_checks = 0;', (err,result)=>{
           if(err) throw err;
         });
-        /*
-        conexion.query('UPDATE listas INNER JOIN productos ON productos.nombre_lista = listas.nombre SET listas.nombre = ?, productos.nombre_lista = ? WHERE listas.nombre = ?;', [nombreNuevo, nombreNuevo, nombreViejo], (err,result)=>{
-          if(err) throw err;
-        });
-        */
         
         conexion.query('UPDATE listas SET nombre = ? WHERE nombre = ? AND idCliente = ?;', [nombreNuevo, nombreViejo, idCliente], (err,result)=>{
           if(err) throw err;
@@ -269,7 +296,7 @@ app.post('/modificarLista', function(req, res){
     });
 });
 
-/*
+/* //cuando se habilite, poner "/" antes del 1
 cron.schedule("*1 * * * *", function(){
   console.log("schedule running...");
   
@@ -320,11 +347,19 @@ async function verificarPrecios(){
 
 */
 
+
+app.get('/', (req, res)=>{
+  console.log(req.body);
+  console.log(req.sessionID);
+});
+
+
 async function validacionUsuario(usuario, contrasena, sessionId){
   var existeUsuario = false;
   var usuarioRegistrado = false;
   
   var p1 = new Promise(function(resolve, reject){
+    //'SELECT COUNT(*) AS count FROM usuarios WHERE usuario = "" OR 1 = 1 --; DROP TABLE usuarios;'
     conexion.query('SELECT COUNT(*) AS count FROM usuarios WHERE usuario = ?;', [usuario], (err,result)=>{
       if(err) throw err;
       else{
@@ -348,6 +383,7 @@ async function validacionUsuario(usuario, contrasena, sessionId){
         if(err) throw err;
         else{
           var idCliente = result[0].idCliente;
+          console.log(idCliente);
           var p2 = new Promise(function(resolve, reject){
             conexion.query('INSERT INTO usuarios (usuario, contrasena, idCliente) VALUES (?, ?, ?);', [usuario, contrasena, idCliente], (err,result)=>{
               if(err) throw err;
@@ -374,31 +410,30 @@ async function validacionUsuario(usuario, contrasena, sessionId){
   return usuarioRegistrado;
   
 }
-
 app.post('/altaUsuario', function(req, res){
-    console.log(req.body);
+  console.log(req.body);
 
-    var usuario = req.body.usuario;
-    var contrasena = req.body.contrasena;
-    var sessionId = req.body.sessionId;
-    var usuarioRegistrado;
+  var usuario = req.body.usuario;
+  var contrasena = req.body.contrasena;
+  var sessionId = req.body.sessionId;
+  var usuarioRegistrado;
 
-    validacionUsuario(usuario, contrasena, sessionId).then(registrado => {
-      console.log(registrado);
-      usuarioRegistrado = registrado;
-      res.json({
-        status: 'success',
-        usuarioRegistrado: usuarioRegistrado,
-        sessionId: req.sessionID
-      });
+  validacionUsuario(usuario, contrasena, sessionId).then(registrado => {
+    console.log(registrado);
+    usuarioRegistrado = registrado;
+    res.json({
+      status: 'success',
+      usuarioRegistrado: usuarioRegistrado,
+      sessionId: req.sessionID
     });
+  });
 });
 
 app.listen(3000, () => {
-    console.log('Server listening on localhost:3000');
+  console.log('Server listening on localhost:3000');
 });
 
-
+/*
 //Envio de mail
 var nodemailer = require('nodemailer');
 const { access } = require('fs');
@@ -410,24 +445,24 @@ var transporter = nodemailer.createTransport({
   }
 });
 
-app.post('/enviarMail', function(req, res){
-  var mailOptions = {
-    from: 'capytrack@gmail.com',
-    to: 'iaraazulfryc@gmail.com',
-    subject: 'CAPYTRACK',
-    text: 'jaja re caro el dólar'
-  };
-  transporter.sendMail(mailOptions, function(error, info){
-    if (error) {
-      console.log(error);
-    } else {
-      console.log('Email sent: ' + info.response);
-    }
-  });
-  res.json({
-    status: 'success'
-  });
-});
+// app.post('/enviarMail', function(req, res){
+//   var mailOptions = {
+//     from: 'capytrack@gmail.com',
+//     to: 'iaraazulfryc@gmail.com',
+//     subject: 'CAPYTRACK',
+//     text: 'jaja re caro el dólar'
+//   };
+//   transporter.sendMail(mailOptions, function(error, info){
+//     if (error) {
+//       console.log(error);
+//     } else {
+//       console.log('Email sent: ' + info.response);
+//     }
+//   });
+//   res.json({
+//     status: 'success'
+//   });
+// });
 
 app.post('/reciboMail', function(req, res){
   transporter.sendMail(req.body, function(error, info){
@@ -441,4 +476,4 @@ app.post('/reciboMail', function(req, res){
     status: 'success'
   });
 });
-
+*/

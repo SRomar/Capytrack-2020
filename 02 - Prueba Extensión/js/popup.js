@@ -4,8 +4,48 @@ $(document).ready(function(){
   DesplegarListas();
   EventoAgregarProductoLista();
   EventoPanelNuevaLista();
+  EventoAdministrarLista();
+  eventoSelect();
+  DesplegarProductos($( "#selectLista" ).val());
+  // conexionSocket();
   obtenerSessionId();
+  mostrarBotonRegistrarse();
 });
+
+function mostrarBotonRegistrarse(){
+  getearSessionId().then(id => {
+    var sessionIdServidor = {
+      sessionId: id
+    }
+    var request = $.ajax({
+      type: "POST",
+      url: "http://localhost:3000/usuarioRegistrado",
+      data: sessionIdServidor,
+      error: function(xhr, status, error){
+        console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+      }
+    });
+    request.done(function(response) {
+      console.log(response);
+      console.log("usuario ya registrado: " + response.usuario);
+      if(response.usuario == true){
+        $('#btnRegistrarse').hide();       
+      }
+      else{
+        $('#btnRegistrarse').show();
+      }
+      obtenerSessionIdABM(response.sessionId);
+    });
+  });
+}
+
+function eventoSelect(){
+  $('#selectLista').on('change', function() {
+    $('#productosListaUL').empty()
+    DesplegarProductos($(this).val());
+});
+
+}
 
 function obtenerSessionIdABM(id){
   chrome.storage.local.get(['sessionId_NUEVO'], function(result){
@@ -76,7 +116,7 @@ function DesplegarListas(){
         var allKeys = Object.keys(items);
         $('#selectLista').empty();
         for (i = 0; i < allKeys.length; i++) {
-            $("#selectLista").append(new Option(allKeys[i], allKeys[i]));
+          $("#selectLista").append(new Option(allKeys[i], allKeys[i]));
         }
     });
   
@@ -127,10 +167,10 @@ function AgregarProducto(category_id){
     //Se agrega a una lista
     if(valorLista !== null){
     
-      ide.innerHTML = i.id;
-      nombre.innerHTML = i.title;
-      estado.innerHTML = i.status;      
-      precio.innerHTML = i.price;
+      // ide.innerHTML = i.id;
+      // nombre.innerHTML = i.title;
+      // estado.innerHTML = i.status;      
+      // precio.innerHTML = i.price;
 
       diccionariofoto = i.pictures;
       arregloFoto = diccionariofoto[Object.keys(diccionariofoto)[0]];
@@ -153,7 +193,10 @@ function AgregarProducto(category_id){
         var request = $.ajax({
           type: "POST",
           url: "http://localhost:3000/altaProducto",
-          data: productoServidor
+          data: productoServidor,
+          error: function(xhr, status, error){
+            console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+          }
         });
         request.done(function(response) {
           console.log(response);
@@ -174,6 +217,8 @@ function AgregarProducto(category_id){
         } 
         chrome.storage.sync.set(cfg); 
       });
+
+      DesplegarProductos();
 
     } else{
       alert('No hay listas!');
@@ -241,6 +286,8 @@ async function VerificacionExistenciaProducto(){
   
 }
 
+
+
 function EventoAgregarProductoLista(){
   $("#btnAgregarLista").click(function(){
     VerificacionExistenciaProducto();
@@ -269,42 +316,109 @@ function EventoCrearLista(){
   $("#btnCrearLista").unbind().click(function() {
       var existe = false;
       var Lista = {};       
-      var nombre = document.getElementById('nombreLista').value;  
-      chrome.storage.sync.get(null, function(items) {
-        var allKeys = Object.keys(items);
-        for (i = 0; i < allKeys.length; i++) {
-            if(nombre == allKeys[i]){
-              existe = true;
-            }
-        }
-        if(existe == false){
-          Lista[nombre]= [];
-          chrome.storage.sync.set(Lista);
-          DesplegarListas(); 
+      var nombre = document.getElementById('nombreLista').value; 
+      if(nombre != null && nombre != ""){
+        chrome.storage.sync.get(null, function(items) {
+          var allKeys = Object.keys(items);
+          for (i = 0; i < allKeys.length; i++) {
+              if(nombre == allKeys[i]){
+                existe = true;
+              }
+          }
+          if(existe == false){
+            Lista[nombre]= [];
+            chrome.storage.sync.set(Lista);
+            DesplegarListas(); 
 
-          getearSessionId().then(id => {
-            var listaServidor = {
-              nombre: nombre,
-              sessionId: id
-            }
+            getearSessionId().then(id => {
+              var listaServidor = {
+                nombre: nombre,
+                sessionId: id
+              }
 
-            var request = $.ajax({
-              type: "POST",
-              url: "http://localhost:3000/altaLista",
-              data: listaServidor
+              var request = $.ajax({
+                type: "POST",
+                url: "http://localhost:3000/altaLista",
+                data: listaServidor,
+                error: function(xhr, status, error){
+                  console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+              }
+              });
+              request.done(function(response) {
+                console.log(response);
+                obtenerSessionIdABM(response.sessionId);
+              });
             });
-            request.done(function(response) {
-              console.log(response);
-              obtenerSessionIdABM(response.sessionId);
-            });
-          });
-          $("#contenedorNuevaLista").hide();
-          $("#contenedor").show();        
-         
-        }
-        else if(existe == true){
-          alert("Ya hay una lista con ese nombre!");
-        }
-      });
+            $("#contenedorNuevaLista").hide();
+            $("#contenedor").show();        
+          
+          }
+          else if(existe == true){
+            alert("Ya hay una lista con ese nombre!");
+          }
+        });
+      }
+      else{
+        alert("Ingrese un nombre");
+      }
   });
+}
+
+function EventoAdministrarLista(){
+  $(document).on('click','#btnAdministrarLista', function() {
+  });
+}
+
+
+function EventoListas(){
+  
+  try {
+    chrome.storage.sync.get(null, function(items) {
+    document.querySelectorAll('.elementoLista').forEach(item => {
+
+      $(item).on('click', function() {      
+        
+        $('#productosListaUL').empty()
+        var nombreLista = $(this).text(); //Obtiene el nombre de li
+        console.log(nombreLista);
+        DesplegarProductos(nombreLista);
+      });  
+    });
+    });
+  } catch (err) {
+    console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
+  }
+
+
+}
+
+
+
+function DesplegarProductos(nombreLista){
+  try {
+    $('#productosListaUL').empty()
+    chrome.storage.sync.get(nombreLista, function (lista) { //Obtiene la lista
+      var total = 0;
+      $.map(lista, function(productosEnLista, nombreProducto) { //Obtiene los productos en la lista
+    
+          $.map(productosEnLista, function(producto, llaveProducto) {  //Separa los productos
+
+            $.map(producto, function(datosProducto, categoryID) { //Separa los datos del producto
+  
+              $("#productosListaUL").append('<li class="productoEnLista" id="'+datosProducto[5]+'">'+datosProducto[0]+'</li>'); //De aca se pueden sacar los datos del producto usando el indice
+              
+              total = total + parseInt(datosProducto[1]);
+         
+
+         
+          });
+
+        });
+        precio.innerHTML = "$ "+total;
+      });
+      
+    });
+  } catch (err) {
+    console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
+  }
 }

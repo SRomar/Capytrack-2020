@@ -1,12 +1,20 @@
 var listaSeleccionada;
+var animacion1Ejecutada = false;
+var animacion2Ejecutada = false; 
+var elementoAnterior = "";
+var productoAnterior = "";
+
 
 $(document).ready(function(){
 
   EventosBotones();
   DesplegarListas();
   EventoListas();
+  
   CrearContextMenu();
+  EventoIluminar();
   obtenerSessionId();
+
 });
 
 async function getearSessionId(){
@@ -92,189 +100,255 @@ function EventosBotones(){
 
 function DesplegarListas(){
   if($( "#listasUl" ).val() !== null){
-    chrome.storage.sync.get(null, function(items) {
-        var allKeys = Object.keys(items);
-        $("#listasUl").empty();
-        for (i = 0; i < allKeys.length; i++) {
-            $("#listasUl").append('<li class="elementoLista" id="'+allKeys[i]+'">'+allKeys[i]+'</li>');
-        }
-
-    });
+    try{
+      chrome.storage.sync.get(null, function(items) {
+          var allKeys = Object.keys(items);
+          $("#listasUl").empty();
+          for (i = 0; i < allKeys.length; i++) {
+              $("#listasUl").append('<li class="elementoLista" id="'+allKeys[i]+'">'+allKeys[i]+'</li>');
+              EventoIluminar("#"+allKeys[i]);
+              Animacion("#"+allKeys[i]);
+          }
+      });
+  } catch(err){
+    console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
+  }
   } 
 }
 
 function EventoListas(){
-  chrome.storage.sync.get(null, function(items) {
-  document.querySelectorAll('.elementoLista').forEach(item => {
+  
+    try {
+      chrome.storage.sync.get(null, function(items) {
+      document.querySelectorAll('.elementoLista').forEach(item => {
+  
+        $(item).on('click', function() {      
+          
+          $('#productosUl').empty()
+          var nombreLista = $(this).text(); //Obtiene el nombre de li
+          listaSeleccionada = nombreLista;
+          DesplegarProductos(nombreLista);
+        });  
+      });
+      });
+    } catch (err) {
+      console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
+    }
 
-    $(item).on('click', function() {      
-      $('#productosUl').empty()
-      var nombreLista = $(this).text(); //Obtiene el nombre de li
-      listaSeleccionada = nombreLista;
-      DesplegarProductos(nombreLista);
-    });  
-  });
-  });
+
 }
 
 function DesplegarProductos(nombreLista){
-  chrome.storage.sync.get(nombreLista, function (lista) { //Obtiene la lista
-
-    $.map(lista, function(productosEnLista, nombreProducto) { //Obtiene los productos en la lista
+  try {
+    chrome.storage.sync.get(nombreLista, function (lista) { //Obtiene la lista
   
-        $.map(productosEnLista, function(producto, llaveProducto) {  //Separa los productos
-
-          $.map(producto, function(datosProducto, categoryID) { //Separa los datos del producto
-
-            $("#productosUl").append('<li class="productoEnLista" id="'+datosProducto[5]+'">'+datosProducto[0]+'</li>'); //De aca se pueden sacar los datos del producto usando el indice
-        
-            var idProducto = "#"+datosProducto[5];
-            EventoProducto(idProducto, datosProducto);
-            
+      $.map(lista, function(productosEnLista, nombreProducto) { //Obtiene los productos en la lista
+    
+          $.map(productosEnLista, function(producto, llaveProducto) {  //Separa los productos
+  
+            $.map(producto, function(datosProducto, categoryID) { //Separa los datos del producto
+  
+              $("#productosUl").append('<li class="productoEnLista" id="'+datosProducto[5]+'">'+datosProducto[0]+'</li>'); //De aca se pueden sacar los datos del producto usando el indice
+              
+              var idProducto = "#"+datosProducto[5];
+              EventoIluminarProductos(idProducto);
+              Animacion2(idProducto);
+              EventoProducto(idProducto, datosProducto);
+              
+          });
         });
       });
     });
-  });
+  } catch (err) {
+    console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
+  }
 }
 
 function EventoProducto(idProducto, datosProducto){
-      $(idProducto).on('click', function() {
-        $('#contenedorImagen').empty()
-        $("#contenedorImagen").append('<img src="'+datosProducto[4]+'" class="imagenProducto" alt="celular"></img>');
-        nombre.innerHTML = datosProducto[0];
-        estado.innerHTML = datosProducto[2];      
-        precio.innerHTML = datosProducto[1];
-        urlProducto.innerHTML = '<a href="'+datosProducto[3]+'">ver</a>';
-    });
+     try {
+        $(idProducto).on('click', function() {
+          $('#contenedorImagen').empty()
+          $("#contenedorImagen").append('<img src="'+datosProducto[4]+'" class="imagenProducto" alt="celular"></img>');
+          nombre.innerHTML = datosProducto[0];
+          estado.innerHTML = datosProducto[2];      
+          precio.innerHTML = datosProducto[1];
+          urlProducto.innerHTML = '<a href="'+datosProducto[3]+'">ver</a>';
+      });
+     } catch (err) {
+      console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
+     }
 }
 
-
 function CrearContextMenu(){
-  $(document).bind("contextmenu", function(e){
-    EventoOcultarMenu();
-    Comprobacion();
-    EventoCambiarNombreLista();
-    EventoFondo();
-    return false;
-  });
+  try {
+    $(document).bind("contextmenu", function(e){
+      EventoOcultarMenu();
+      Comprobacion();
+      EventoCambiarNombreLista();
+      EventoContextMenu();
+      return false;
+    });
+  } catch (err) {
+    console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
+  }
+}
+
+function EventoOcultarMenu(){
+  $(window).click(function() {
+    lista = false;
+    producto = false;
+    producto = false;
+  $("#menu").hide();
+    });
 }
 
 function Comprobacion(){
 
-  $(".elementoLista").mousedown(function(e){
-    if(e.button == 2){
-   
-      itemLista = $(e.target).text();
-      itemSeleccionado.innerHTML = " "+itemLista;
-      document.getElementById("cambiarNombreLista").style.display = "inline";
-      EventoEliminarLista(itemLista);
-      $("#menu").css({'display':'block', 'left':e.pageX, 'top':e.pageY});
-    }
-  });
-
-  $(".productoEnLista").mousedown(function(e){
-    if(e.button == 2){
-
-      itemProducto = $(e.target).text();
-      itemSeleccionado.innerHTML = " "+itemProducto;
-      document.getElementById("cambiarNombreLista").style.display = "none";
-      EventoEliminarProducto(itemProducto);
-      $("#menu").css({'display':'block', 'left':e.pageX, 'top':e.pageY});
-    }
-  });
+  try {
+    $(".elementoLista").mousedown(function(e){
+      if(e.button == 2){
+     
+        itemLista = $(e.target).text();
+    
+        itemSeleccionado.innerHTML = " "+itemLista;
+        document.getElementById("cambiarNombreLista").style.display = "inline";
+        EventoEliminarLista(itemLista);
+        $("#menu").css({'display':'block', 'left':e.pageX, 'top':e.pageY});
+      }
+    });
+  
+    $(".productoEnLista").mousedown(function(e){
+      if(e.button == 2){
+  
+        itemProducto = $(e.target).text();
+        itemSeleccionado.innerHTML = " "+itemProducto;
+        document.getElementById("cambiarNombreLista").style.display = "none";
+        EventoEliminarProducto(itemProducto);
+        $("#menu").css({'display':'block', 'left':e.pageX, 'top':e.pageY});
+      }
+    });
+  } catch (err) {
+    console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
+  }
 }
 
 function EventoCambiarNombreLista(){ 
+  try{
   $("#cambiarNombreLista").unbind().click(function(e){
 
       var resp = window.prompt("Nuevo nombre:");
       var existe = false;
+      //EventoOcultarMenu();
 
       if(resp != null && resp != ""){
+        if(typeof(resp) === 'string' || typeof(resp) === 'number'){
+          console.log("nombre nuevo: " + resp);
+          chrome.storage.sync.get(null, function(items) {
+            var allKeys = Object.keys(items);
+            for (i = 0; i < allKeys.length; i++) {
+                if(resp == allKeys[i]){
+                  existe = true;
+                }
+            }
+            if(existe == false){
+              var productosLista = [];
+              var listaNueva = {};
 
-        chrome.storage.sync.get(null, function(items) {
-          var allKeys = Object.keys(items);
-          for (i = 0; i < allKeys.length; i++) {
-              if(resp == allKeys[i]){
-                existe = true;
-              }
-          }
-          if(existe == false){
-            var productosLista = [];
-            var listaNueva = {};
-
-            chrome.storage.sync.get(itemLista, function (lista) { //Obtiene la lista
-                
-              $.map(lista, function(productosEnLista, itemLista) { //Obtiene los productos en la lista
-                
-                
-                $.map(productosEnLista, function(producto, llaveProducto) {  //Separa a los productos
+              chrome.storage.sync.get(itemLista, function (lista) { //Obtiene la lista
                   
+                $.map(lista, function(productosEnLista, itemLista) { //Obtiene los productos en la lista
                   
-                  $.map(producto, function(datosProducto, categoryID) { //Separa a los datos del producto
-                      productosLista.push(producto);
+                  listaNueva[resp] = productosLista;        
+                  chrome.storage.sync.remove(itemLista);
+                  chrome.storage.sync.set(listaNueva);
+                  
+                  $.map(productosEnLista, function(producto, llaveProducto) {  //Separa a los productos
+                    
+                    
+                    $.map(producto, function(datosProducto, categoryID) { //Separa a los datos del producto
+                        productosLista.push(producto);
+                    });
+                  });
+                  
+                });
+                
+                listaNueva[resp] = productosLista;        
+                chrome.storage.sync.remove(itemLista);
+                chrome.storage.sync.set(listaNueva);
+                
+                getearSessionId().then(id => {
+                  var listaServidor = {
+                    nombreViejo: itemLista,
+                    nombreNuevo: resp,
+                    sessionId: id
+                  }
+        
+                  var request = $.ajax({
+                    type: "POST",
+                    url: "http://localhost:3000/modificarLista",
+                    data: listaServidor,
+                    error: function(xhr, status, error){
+                      console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+                    }
+                  });
+                  request.done(function(response) {
+                    console.log(response);
+                    obtenerSessionIdABM(response.sessionId);
                   });
                 });
+                
               });
-              
-              listaNueva[resp] = productosLista;        
-              chrome.storage.sync.remove(itemLista);
-              chrome.storage.sync.set(listaNueva);
-              
-              getearSessionId().then(id => {
-                var listaServidor = {
-                  nombreViejo: itemLista,
-                  nombreNuevo: resp,
-                  sessionId: id
-                }
-      
-                var request = $.ajax({
-                  type: "POST",
-                  url: "http://localhost:3000/modificarLista",
-                  data: listaServidor
-                });
-                request.done(function(response) {
-                  console.log(response);
-                  obtenerSessionIdABM(response.sessionId);
-                });
-              });
-              
-            });
-            location.reload();
-          }
-          else if(existe == true){
-            alert("Ya hay una lista con ese nombre!");
-          }
-        });
+              location.reload();
+            }
+            else if(existe == true){
+              alert("Ya hay una lista con ese nombre!");
+            }
+          });
+        }
+        else{
+          alert("Nombre de lista invalido");
+          console.log("nombre deseado: " + resp);
+        }
+      }
+      else{
+        if(resp == ""){
+          alert("Nombre de lista invalido");
+        }
       }
      
 
   });
+   } catch (err) {
+    console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
+   }
+    
 }
 
 function EventoEliminarProducto(itemProducto){
-  $("#eliminar").unbind().click(function(e){
-      var productosLista = [];
-      var listaNueva = {};
-      var existe = false;
-      var id;
-
-      chrome.storage.sync.get(listaSeleccionada, function (lista) { //Obtiene la lista
-          
-        $.map(lista, function(productosEnLista, listaSeleccionada) { //Obtiene los productos en la lista
-          
-          
-          $.map(productosEnLista, function(producto, llaveProducto) {  //Separa a los productos
+  try {
+    $("#eliminar").unbind().click(function(e){
+        var productosLista = [];
+        var listaNueva = {};
+        var existe = false;
+        var id;
+  
+        chrome.storage.sync.get(listaSeleccionada, function (lista) { //Obtiene la lista
+            
+          $.map(lista, function(productosEnLista, listaSeleccionada) { //Obtiene los productos en la lista
             
             
-            $.map(producto, function(datosProducto, categoryID) { //Separa a los datos del producto
-              if(datosProducto[0] !== itemProducto){
-                productosLista.push(producto);
-              }
-              else if(datosProducto[0] == itemProducto){
-                existe = true;
-                id = categoryID;
-              }
+            $.map(productosEnLista, function(producto, llaveProducto) {  //Separa a los productos
+              
+              
+              $.map(producto, function(datosProducto, categoryID) { //Separa a los datos del producto
+                if(datosProducto[0] !== itemProducto){
+                  productosLista.push(producto);
+                }
+                else if(datosProducto[0] == itemProducto){
+                  existe = true;
+                  id = categoryID;
+                }
+              });
             });
           });
         });
@@ -301,66 +375,172 @@ function EventoEliminarProducto(itemProducto){
           chrome.storage.sync.set(listaNueva);
         }
         
-      });
-      
-      setTimeout(function (){
-        $('#productosUl').empty();
-        DesplegarProductos(listaSeleccionada);
-      }, 200);
-
-    lista = false;
-    producto = false;
-  });
+        setTimeout(function (){
+          $('#productosUl').empty();
+          DesplegarProductos(listaSeleccionada);
+        }, 200);
+  
+      lista = false;
+      producto = false;
+    });
+  } catch (err) {
+    console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
+  }
 }
 
 function EventoEliminarLista(itemLista){
-  $("#eliminar").click(function(e){
-      getearSessionId().then(id => {
-        var listaServidor = {            
-          nombre: itemLista,
-          sessionId: id
-        }
-
-        var request = $.ajax({
-          type: "POST",
-          url: "http://localhost:3000/bajaLista",
-          data: listaServidor
+  try {
+    $("#eliminar").click(function(e){
+        getearSessionId().then(id => {
+          var listaServidor = {            
+            nombre: itemLista,
+            sessionId: id
+          }
+  
+          var request = $.ajax({
+            type: "POST",
+            url: "http://localhost:3000/bajaLista",
+            data: listaServidor
+          });
+          request.done(function(response) {
+            console.log(response);
+            obtenerSessionIdABM(response.sessionId);
+          });
         });
-        request.done(function(response) {
-          console.log(response);
-          obtenerSessionIdABM(response.sessionId);
-        });
+        chrome.storage.sync.remove(itemLista);
+        setTimeout(function (){
+          $('#listasUl').empty();
+          DesplegarListas();
+        }, 200);
       });
-
-      chrome.storage.sync.remove(itemLista);
-
-       setTimeout(function (){
-        DesplegarListas();
-        EventoListas();
-      }, 200);
-  });
+  } catch (err) {
+    console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
+  }
 }
 
-function EventoOcultarMenu(){
-  $(window).click(function() {
-    lista = false;
-    producto = false;
-    producto = false;
-  $("#menu").hide();
+function EventoContextMenu(){
+  try {
+    $("#eliminar").mouseover(function(){
+      $("#eliminar").css("background-color", "#ffffff0a");
+      $("#cambiarNombreLista").css("background-color", "#3f3f3f");
     });
+    $("#cambiarNombreLista").mouseover(function(){
+      $("#eliminar").css("background-color", "#3f3f3f");
+      $("#cambiarNombreLista").css("background-color", "#ffffff0a");
+    });
+    $(".contextMenu").mouseleave(function(){
+      $("#eliminar").css("background-color", "#3f3f3f");
+      $("#cambiarNombreLista").css("background-color", "#3f3f3f");
+    });
+  } catch (err) {
+    console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
+  }
 }
 
-function EventoFondo(){
-  $("#eliminar").mouseover(function(){
-    $("#eliminar").css("background-color", "#757575");
-    $("#cambiarNombreLista").css("background-color", "#ffffff");
-  });
-  $("#cambiarNombreLista").mouseover(function(){
-    $("#eliminar").css("background-color", "#ffffff");
-    $("#cambiarNombreLista").css("background-color", "#757575");
-  });
-  $(".contextMenu").mouseleave(function(){
-    $("#eliminar").css("background-color", "#ffffff");
-    $("#cambiarNombreLista").css("background-color", "#ffffff");
-  });
+function EventoIluminar(idElemento){
+    try {
+      $(idElemento).mouseover(function(){
+        if(elementoAnterior != idElemento){
+        $(idElemento).css("background", "#b1b1b12c");
+        }
+      });
+      $(idElemento).mouseleave(function(){
+        if(elementoAnterior != idElemento){
+        $(idElemento).css("background", "#ffffff0a");
+        }
+      
+      });
+      $(idElemento).click(function(){
+        $(idElemento).css("background", "#b1b1b156");     
+        if(elementoAnterior != idElemento){
+          $(elementoAnterior).css("background", "#ffffff0a");
+          elementoAnterior = idElemento;
+        }
+        
+      });
+    } catch (err) {
+      console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
+    }
 }
+
+function EventoIluminarProductos(idElemento){
+  try {
+    $(idElemento).mouseover(function(){
+      if(productoAnterior != idElemento){
+      $(idElemento).css("background", "#b1b1b12c");
+      }
+    });
+    $(idElemento).mouseleave(function(){
+      if(productoAnterior != idElemento){
+      $(idElemento).css("background", "#ffffff0a");
+      }
+    
+    });
+    $(idElemento).click(function(){
+      $(idElemento).css("background", "#b1b1b156");     
+      if(productoAnterior != idElemento){
+        $(productoAnterior).css("background", "#ffffff0a");
+        productoAnterior = idElemento;
+      }
+      
+    });
+  } catch (err) {
+    console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
+  }
+}
+
+function Animacion(idElemento){
+  try {
+    $('.productos').hide();
+    $('.informacion').hide();
+    $(idElemento).click(function() {
+      if (!animacion1Ejecutada) {    
+        $('.productos').show();
+  
+        $(".listas").addClass('animacion');
+        $(".productos").addClass('animacion');
+  
+        setTimeout(function() {
+          $(".listas").removeClass('animacion');
+        }, 500);
+      
+        setTimeout(function() {
+          $(".productos").removeClass('animacion');
+        }, 500);
+      }
+      animacion1Ejecutada = true;
+    });
+  } catch (err) {
+    console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
+  }
+}
+
+function Animacion2(idElemento){
+  try {
+    $(idElemento).click(function() {
+      if (!animacion2Ejecutada) {
+        $('.informacion').show();
+        $(".listas").addClass('animacion2');
+        $(".productos").addClass('animacion2');
+        $(".informacion").addClass('animacion2');
+  
+        setTimeout(function() {
+          $(".listas").removeClass('animacion2');
+          $(".informacion").removeClass('animacion2');
+          $(".productos").removeClass('animacion2');
+        }, 500);
+      
+        setTimeout(function() {
+          $(".productos").removeClass('animacion2');
+        }, 500);
+  
+        setTimeout(function() {
+          $(".informacion").removeClass('animacion2');
+        }, 500);
+      }
+      animacion2Ejecutada = true;
+    });
+  } catch (err) {
+    console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
+  }
+ }
