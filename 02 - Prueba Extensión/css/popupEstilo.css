@@ -59,6 +59,14 @@ h3, span{
     text-align: center;
 }
 
+#contenedorNuevaLista{
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    height: 300px;
+    
+}
+
 #btnPopup, #btnRegistrarse, #nuevaLista, #btnAgregarLista, #btnAdministrarLista, #btnCrearLista, #retroceso{
     font-family: var(--fuente2);
     font-weight: 600;
