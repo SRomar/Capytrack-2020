@@ -1,4 +1,3 @@
-
 $(document).ready(function(){
 
     EventosBotones();
@@ -35,7 +34,7 @@ $(document).ready(function(){
   
           var mail = $('#mail').val();
           var mensaje = $('#mensaje').val();
-  
+          console.log(typeof mensaje);
           if(mail === "" || mensaje === ""){
             alert("Complete todos los campos!");
           }
@@ -45,16 +44,17 @@ $(document).ready(function(){
               from: 'capytrack@gmail.com',
               to: 'capytrack@gmail.com',
               subject: 'CONTACTO',
-              text: 'Mensaje de: '+mail+'\n\nMensaje: '+mensaje
+              text: 'Mensaje de: '+mail+'\n\nMensaje: '+mensaje,
+              // text: 'Mensaje de: '+"""+'\n\nMensaje: '+mensaje
             };
-              $.ajax({
-              type: "POST",
-              url: "http://localhost:3000/reciboMail",
-              data: mailOptions,
-              error: function(xhr, status, error){
-                  console.log("Error al contactar con el servidor, xhr: " + xhr.status);
-              }
-            });
+            //   $.ajax({
+            //   type: "POST",
+            //   url: "http://localhost:3000/reciboMail",
+            //   data: mailOptions,
+            //   error: function(xhr, status, error){
+            //       console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+            //   }
+            // });
            }
           });
       } catch (err) {
@@ -62,18 +62,16 @@ $(document).ready(function(){
       }
   }
   
-  function ValidarMail(inputText)
-{
-  var mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-  if(inputText.value.match(mailformat))
+  function ValidarMail(email){
+  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+  if(re.test(String(email).toLowerCase()))
   {
-  document.form1.text1.focus();
   return true;
   }
   else
   {
   alert("E-Mail invalido!");
-  document.form1.text1.focus();
   return false;
   }
 }

@@ -359,6 +359,7 @@ async function validacionUsuario(usuario, contrasena, sessionId){
   var usuarioRegistrado = false;
   
   var p1 = new Promise(function(resolve, reject){
+    //'SELECT COUNT(*) AS count FROM usuarios WHERE usuario = "" OR 1 = 1 --; DROP TABLE usuarios;'
     conexion.query('SELECT COUNT(*) AS count FROM usuarios WHERE usuario = ?;', [usuario], (err,result)=>{
       if(err) throw err;
       else{
@@ -382,6 +383,7 @@ async function validacionUsuario(usuario, contrasena, sessionId){
         if(err) throw err;
         else{
           var idCliente = result[0].idCliente;
+          console.log(idCliente);
           var p2 = new Promise(function(resolve, reject){
             conexion.query('INSERT INTO usuarios (usuario, contrasena, idCliente) VALUES (?, ?, ?);', [usuario, contrasena, idCliente], (err,result)=>{
               if(err) throw err;
@@ -443,24 +445,24 @@ var transporter = nodemailer.createTransport({
   }
 });
 
-app.post('/enviarMail', function(req, res){
-  var mailOptions = {
-    from: 'capytrack@gmail.com',
-    to: 'iaraazulfryc@gmail.com',
-    subject: 'CAPYTRACK',
-    text: 'jaja re caro el dólar'
-  };
-  transporter.sendMail(mailOptions, function(error, info){
-    if (error) {
-      console.log(error);
-    } else {
-      console.log('Email sent: ' + info.response);
-    }
-  });
-  res.json({
-    status: 'success'
-  });
-});
+// app.post('/enviarMail', function(req, res){
+//   var mailOptions = {
+//     from: 'capytrack@gmail.com',
+//     to: 'iaraazulfryc@gmail.com',
+//     subject: 'CAPYTRACK',
+//     text: 'jaja re caro el dólar'
+//   };
+//   transporter.sendMail(mailOptions, function(error, info){
+//     if (error) {
+//       console.log(error);
+//     } else {
+//       console.log('Email sent: ' + info.response);
+//     }
+//   });
+//   res.json({
+//     status: 'success'
+//   });
+// });
 
 app.post('/reciboMail', function(req, res){
   transporter.sendMail(req.body, function(error, info){
@@ -473,5 +475,5 @@ app.post('/reciboMail', function(req, res){
   res.json({
     status: 'success'
   });
-});*/
-
+});
+*/
