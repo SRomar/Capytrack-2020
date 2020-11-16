@@ -407,11 +407,17 @@ function EventoEliminarLista(itemLista){
             obtenerSessionIdABM(response.sessionId);
           });
         });
+        chrome.storage.sync.remove(itemLista);
+        setTimeout(function (){
+          $('#listasUl').empty();
+          DesplegarListas();
+        }, 200);
       });
   } catch (err) {
     console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
   }
 }
+
 function EventoContextMenu(){
   try {
     $("#eliminar").mouseover(function(){
