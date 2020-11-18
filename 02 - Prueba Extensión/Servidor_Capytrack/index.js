@@ -10,6 +10,16 @@ var request = require('request');
 const session = require('express-session');
 var MySQLStore = require('express-mysql-session')(session);
 const cookieParser = require('cookie-parser');
+var nodemailer = require('nodemailer');
+const { access } = require('fs');
+
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'capytrack@gmail.com',
+    pass: '/Capytrack20'
+  }
+});
 
 var options = {
   hots: 'localhost',
@@ -104,7 +114,7 @@ async function updateSessionId(idNuevo, idAnterior){
   });
 
   const guardarSession = await(p2);
-
+  console.log("guardarSession: " + guardarSession);
   if(guardarSession == true){
     conexion.query('INSERT INTO clientes (session_id) VALUES (?);', idNuevo, (err,result)=>{
       if(err) throw err;
@@ -123,31 +133,47 @@ app.post('/usuarioRegistrado', function(req, res){
 
     var sessionId = req.body.sessionId;
 
-    conexion.query('SELECT idCliente FROM clientes WHERE session_id = ?;', sessionId, (err,result)=>{
+    conexion.query('SELECT COUNT(*) AS countClientes FROM clientes;', (err,result)=>{
       if(err) throw err;
       else{
-        var idCliente = result[0].idCliente;
-        conexion.query('SELECT COUNT(*) AS count FROM usuarios WHERE idCliente = ?;', idCliente, (err,result)=>{
-          if(err) throw err;
-          else{
-            if(result[0].count == 0){
-              res.json({
-                status: 'success',
-                usuario: false,
-                sessionId: req.sessionID
-              });
-            }
+        var countClientes = result[0].countClientes;
+        if(countClientes != 0){
+          conexion.query('SELECT idCliente FROM clientes WHERE session_id = ?;', sessionId, (err,result)=>{
+            if(err) throw err;
             else{
-              res.json({
-                status: 'success',
-                usuario: true,
-                sessionId: req.sessionID
+              var idCliente = result[0].idCliente;
+              conexion.query('SELECT COUNT(*) AS count FROM usuarios WHERE idCliente = ?;', idCliente, (err,result)=>{
+                if(err) throw err;
+                else{
+                  if(result[0].count == 0){
+                    res.json({
+                      status: 'success',
+                      usuario: false,
+                      sessionId: req.sessionID
+                    });
+                  }
+                  else{
+                    res.json({
+                      status: 'success',
+                      usuario: true,
+                      sessionId: req.sessionID
+                    });
+                  }
+                }
               });
             }
-          }
-        });
+          });
+        }
+        else{
+          res.json({
+            status: 'success',
+            usuario: false,
+            sessionId: req.sessionID
+          });
+        }
       }
     });
+      
 });
 
 
@@ -296,8 +322,9 @@ app.post('/modificarLista', function(req, res){
     });
 });
 
-/* //cuando se habilite, poner "/" antes del 1
-cron.schedule("*1 * * * *", function(){
+
+//cuando se habilite, poner "/" antes del 1
+cron.schedule("*/1 * * * *", function(){
   console.log("schedule running...");
   
   verificarPrecios();
@@ -308,7 +335,7 @@ cron.schedule("*1 * * * *", function(){
 async function verificarPrecios(){
   var prods;
   var p1 = new Promise(function(resolve, reject){
-    conexion.query('SELECT id, precio FROM productos;', (err,result)=>{
+    conexion.query('SELECT id, nombre, precio, nombre_lista, idCliente FROM productos;', (err,result)=>{
       if(err) throw err;
       else{
         if(result != null){
@@ -335,17 +362,68 @@ async function verificarPrecios(){
         const precioActual = await p2;
 
         if(precioActual == productos[i].precio){
-          console.log("el precio de " + productos[i].id + " sigue igual perri y es: " + precioActual); 
+          console.log("el precio de " + productos[i].id + " sigue igual perri y es: " + precioActual);
         }
         else{
-          console.log("el precio de " + productos[i].id + " cambio y es este: " + precioActual);  
+          console.log("el precio de " + productos[i].id + " cambio y es este: " + precioActual); 
+          
+          conexion.query('UPDATE productos SET precio = ? WHERE id = ?;', [precioActual, productos[i].id], (err,result)=>{
+            if(err) throw err;
+          });
+
+          var mail;
+         
+          
+          var usuarioRegistrado;
+          var p3 = new Promise(function(resolve, reject){
+            conexion.query('SELECT COUNT(*) AS count FROM usuarios WHERE idCliente = ?;', productos[i].idCliente , (err,result)=>{
+              if(err) throw err;
+              else{
+                if(result[0].count == 1){
+                  usuarioRegistrado = true;
+                }
+                else{
+                  usuarioRegistrado = false;
+                }     
+              }
+              resolve(usuarioRegistrado);
+            });
+          });
+          const uRegistrado = await(p3);
+
+          if(uRegistrado == true){
+            var p4 = new Promise(function(resolve, reject){
+              conexion.query('SELECT usuario FROM usuarios WHERE idCliente = ?;', productos[i].idCliente , (err,result)=>{
+                if(err) throw err;
+                else{
+                    mail = result[0].usuario;  
+                }
+                resolve(mail);
+              });
+            });     
+            const mailUsuario = await(p4);
+
+            var textoMail = "El precio del producto " + productos[i].id + " - " + productos[i].nombre + " perteneciente a la lista " + productos[i].nombre_lista + " cambio de precio. Su precio actual es de: " + precioActual + "$";
+            
+            var mailOptions = {
+              from: 'capytrack@gmail.com',
+              to: mailUsuario,
+              subject: 'CAPYTRACK',
+              text: textoMail
+            };
+            transporter.sendMail(mailOptions, function(error, info){
+              if (error) {
+                console.log(error);
+              } else {
+                console.log('Email sent: ' + info.response);
+              }
+            }); 
+          }
         }
     }
   }
 
 }
-
-*/
 
 
 app.get('/', (req, res)=>{
@@ -433,32 +511,12 @@ app.listen(3000, () => {
   console.log('Server listening on localhost:3000');
 });
 
-/*
-//Envio de mail
-var nodemailer = require('nodemailer');
-const { access } = require('fs');
-var transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: 'capytrack@gmail.com',
-    pass: '/Capytrack20'
-  }
-});
 
+//Envio de mail
+
+/*
 // app.post('/enviarMail', function(req, res){
-//   var mailOptions = {
-//     from: 'capytrack@gmail.com',
-//     to: 'iaraazulfryc@gmail.com',
-//     subject: 'CAPYTRACK',
-//     text: 'jaja re caro el dólar'
-//   };
-//   transporter.sendMail(mailOptions, function(error, info){
-//     if (error) {
-//       console.log(error);
-//     } else {
-//       console.log('Email sent: ' + info.response);
-//     }
-//   });
+//   
 //   res.json({
 //     status: 'success'
 //   });
