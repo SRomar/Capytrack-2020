@@ -351,33 +351,38 @@ function EventoEliminarProducto(itemProducto){
               });
             });
           });
+
+          if(existe == true){
+            getearSessionId().then(idsession => {
+              var productoServidor = {            
+                id: id,
+                sessionId: idsession
+              }
+  
+              var request = $.ajax({
+                type: "POST",
+                url: "http://localhost:3000/bajaProducto",
+                data: productoServidor
+              });
+              request.done(function(response) {
+                console.log(response);
+                obtenerSessionIdABM(response.sessionId);
+              });
+            });
+  
+            listaNueva[listaSeleccionada] = productosLista;        
+            chrome.storage.sync.remove(listaSeleccionada);
+            chrome.storage.sync.set(listaNueva);
+            console.log("elimino producto");
+          }
+
         });
-        if(existe == true){
-          getearSessionId().then(idsession => {
-            var productoServidor = {            
-              id: id,
-              sessionId: idsession
-            }
-
-            var request = $.ajax({
-              type: "POST",
-              url: "http://localhost:3000/bajaProducto",
-              data: productoServidor
-            });
-            request.done(function(response) {
-              console.log(response);
-              obtenerSessionIdABM(response.sessionId);
-            });
-          });
-
-          listaNueva[listaSeleccionada] = productosLista;        
-          chrome.storage.sync.remove(listaSeleccionada);
-          chrome.storage.sync.set(listaNueva);
-        }
+        
         
         setTimeout(function (){
           $('#productosUl').empty();
           DesplegarProductos(listaSeleccionada);
+          console.log("desplego productos");
         }, 200);
   
       lista = false;
