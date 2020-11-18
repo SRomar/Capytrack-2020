@@ -104,7 +104,7 @@ async function updateSessionId(idNuevo, idAnterior){
   });
 
   const guardarSession = await(p2);
-
+  console.log("guardarSession: " + guardarSession);
   if(guardarSession == true){
     conexion.query('INSERT INTO clientes (session_id) VALUES (?);', idNuevo, (err,result)=>{
       if(err) throw err;
@@ -122,32 +122,47 @@ app.post('/usuarioRegistrado', function(req, res){
     console.log(req.body);
 
     var sessionId = req.body.sessionId;
-
-    conexion.query('SELECT idCliente FROM clientes WHERE session_id = ?;', sessionId, (err,result)=>{
+    conexion.query('SELECT COUNT(*) AS countClientes FROM clientes;', (err,result)=>{
       if(err) throw err;
       else{
-        var idCliente = result[0].idCliente;
-        conexion.query('SELECT COUNT(*) AS count FROM usuarios WHERE idCliente = ?;', idCliente, (err,result)=>{
-          if(err) throw err;
-          else{
-            if(result[0].count == 0){
-              res.json({
-                status: 'success',
-                usuario: false,
-                sessionId: req.sessionID
-              });
-            }
+        var countClientes = result[0].countClientes;
+        if(countClientes != 0){
+          conexion.query('SELECT idCliente FROM clientes WHERE session_id = ?;', sessionId, (err,result)=>{
+            if(err) throw err;
             else{
-              res.json({
-                status: 'success',
-                usuario: true,
-                sessionId: req.sessionID
+              var idCliente = result[0].idCliente;
+              conexion.query('SELECT COUNT(*) AS count FROM usuarios WHERE idCliente = ?;', idCliente, (err,result)=>{
+                if(err) throw err;
+                else{
+                  if(result[0].count == 0){
+                    res.json({
+                      status: 'success',
+                      usuario: false,
+                      sessionId: req.sessionID
+                    });
+                  }
+                  else{
+                    res.json({
+                      status: 'success',
+                      usuario: true,
+                      sessionId: req.sessionID
+                    });
+                  }
+                }
               });
             }
-          }
-        });
+          });
+        }
+        else{
+          res.json({
+            status: 'success',
+            usuario: false,
+            sessionId: req.sessionID
+          });
+        }
       }
     });
+      
 });
 
 

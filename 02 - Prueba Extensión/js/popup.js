@@ -1,15 +1,15 @@
 
 //Llenar select
 $(document).ready(function(){
+  obtenerSessionId();
+  mostrarBotonRegistrarse();
   DesplegarListas();
   EventoAgregarProductoLista();
   EventoPanelNuevaLista();
   EventoAdministrarLista();
   eventoSelect();
   DesplegarProductos($( "#selectLista" ).val());
-  // conexionSocket();
-  obtenerSessionId();
-  mostrarBotonRegistrarse();
+  
 });
 
 function mostrarBotonRegistrarse(){
@@ -71,6 +71,7 @@ function obtenerSessionIdABM(id){
 } 
 
 function obtenerSessionId(){
+  console.log("entro a obtenerSessionId");
   fetch('http://localhost:3000/session').then(data => data.text()).then(data =>{
     var i = data;
     console.log("i: " + i);
