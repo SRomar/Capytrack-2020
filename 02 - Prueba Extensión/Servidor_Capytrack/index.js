@@ -98,11 +98,13 @@ async function updateSessionId(idNuevo, idAnterior){
       if(err) throw err;
     });
   }
-  
+  console.log("\n\n\n ANTERIOR:"+ idAnterior +"\n NUEVO: "+ idNuevo+"\n\n\n");
+  conexion.query('UPDATE clientes SET session_id = ? WHERE session_id = ?;', [idNuevo, idAnterior], (err,result)=>{
+    if(err) throw err;
+  });
   conexion.query('UPDATE sessions SET session_id = ? WHERE session_id = ?;', [idNuevo, idAnterior], (err,result)=>{
     if(err) throw err;
   });
-
   var sinRegistros = false;
   var p2 = new Promise(function(resolve, reject){
     conexion.query('SELECT COUNT(*) AS count FROM clientes;', (err,result)=>{
@@ -140,7 +142,7 @@ app.post('/usuarioRegistrado', function(req, res){
         if(countClientes != 0){
           conexion.query('SELECT idCliente FROM clientes WHERE session_id = ?;', sessionId, (err,result)=>{
             if(err) throw err;
-            else if(result.length>0){
+            else{
               var idClientes = result[0].idCliente;
               conexion.query('SELECT COUNT(*) AS count FROM usuarios WHERE idCliente = ?;', idClientes, (err,result)=>{
                 if(err) throw err;
@@ -153,7 +155,7 @@ app.post('/usuarioRegistrado', function(req, res){
                     });
                   }
                   else{
-                    res.json({  
+                    res.json({
                       status: 'success',
                       usuario: true,
                       sessionId: req.sessionID
@@ -162,10 +164,8 @@ app.post('/usuarioRegistrado', function(req, res){
                 }
               });
             }
-          
           });
-        }
-        else{
+        }else{
           res.json({
             status: 'success',
             usuario: false,
@@ -216,7 +216,7 @@ app.post('/altaLista', function(req, res){
 
     conexion.query('SELECT idCliente FROM clientes WHERE session_id = ?;', sessionId, (err,result)=>{
       if(err) throw err;
-      else{
+      else if(result.length>0){
         var idCliente = result[0].idCliente;
         conexion.query('INSERT INTO listas (nombre, idCliente) VALUES (?, ?);', [nombrelista, idCliente], (err,result)=>{
           if(err) throw err;
@@ -460,7 +460,7 @@ async function validacionUsuario(usuario, contrasena, sessionId){
     var p3 = new Promise(function(resolve, reject){
       conexion.query('SELECT idCliente FROM clientes WHERE session_id = ?;', sessionId, (err,result)=>{
         if(err) throw err;
-        else{
+        else if(result.length>0){
           var idClientes = result[0].idCliente;
           console.log(idClientes);
           var p2 = new Promise(function(resolve, reject){

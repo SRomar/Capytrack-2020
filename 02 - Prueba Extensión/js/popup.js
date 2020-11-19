@@ -1,7 +1,8 @@
 
 //Llenar select
 $(document).ready(function(){
-  obtenerSessionId();
+  obtenerSessionId()
+
   mostrarBotonRegistrarse();
   DesplegarListas();
   EventoAgregarProductoLista();
@@ -71,29 +72,42 @@ function obtenerSessionIdABM(id){
 } 
 
 function obtenerSessionId(){
-  console.log("entro a obtenerSessionId");
-  fetch('http://localhost:3000/session').then(data => data.text()).then(data =>{
+  // console.log("entro a obtenerSessionId");
+  fetch('http://localhost:3000/session').then(data =>{
     var i = data;
-    console.log("i: " + i);
+    // console.log("i: " + i);
     chrome.storage.local.get(['sessionId_NUEVO'], function(result){
       var sessionId_anterior = "";
+     
+      chrome.storage.local.set({'sessionId_NUEVO': i}, function() {
+        // console.log('sessionId_NUEVO: ' + i);
+      });
       if(result.sessionId_NUEVO !== undefined){
         sessionId_anterior = result.sessionId_NUEVO;
-        console.log("sessionId_anterior: " + sessionId_anterior);
-      }
-      chrome.storage.local.set({'sessionId_NUEVO': i}, function() {
-        console.log('sessionId_NUEVO: ' + i);
-      });
-      var sessionIds = {
-        idAnterior: sessionId_anterior,
-        idNuevo: i 
-      }
+        var sessionIds = {
+          idAnterior: sessionId_anterior,
+          idNuevo: i 
+        }
 
-      $.ajax({
-        type: "POST",
-        url: "http://localhost:3000/updateSessionId",
-        data: sessionIds
-      });
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:3000/updateSessionId",
+          data: sessionIds
+        });
+        // console.log("sessionId_anterior: " + sessionId_anterior);
+      }else{
+        var sessionIds = {
+          idAnterior: i,
+          idNuevo: i 
+        }
+
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:3000/updateSessionId",
+          data: sessionIds
+        });
+      }
+    
     });
      
   });
@@ -181,7 +195,8 @@ function AgregarProducto(category_id){
       //Se crea el producto
       var producto = [i.title, i.price, i.status, i.permalink, foto, i.id];
 
-      getearSessionId().then(id => {
+
+      getearSessionId().unbind().then(id => {
         var productoServidor = {
           title: i.title,
           price: i.price,
@@ -331,7 +346,7 @@ function EventoCrearLista(){
             chrome.storage.sync.set(Lista);
             DesplegarListas(); 
 
-            getearSessionId().then(id => {
+            getearSessionId().unbind().then(id => {
               var listaServidor = {
                 nombre: nombre,
                 sessionId: id
