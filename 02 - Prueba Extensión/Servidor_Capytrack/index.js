@@ -12,6 +12,7 @@ var MySQLStore = require('express-mysql-session')(session);
 const cookieParser = require('cookie-parser');
 var nodemailer = require('nodemailer');
 const { access } = require('fs');
+const { count } = require('console');
 
 var transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -24,8 +25,8 @@ var transporter = nodemailer.createTransport({
 var options = {
   hots: 'localhost',
   port: 3306,
-  user: 'root',
-  password: '123456',
+  user: 'Velnias',
+  password: '/Velnias7',
   database: 'capytrack'
 };
 
@@ -33,8 +34,8 @@ var sessionStore = new MySQLStore(options);
 
 const conexion = mysql.createConnection({
   host: 'localhost',
-  user: 'root',
-  password: '123456',
+  user: 'Velnias',
+  password: '/Velnias7',
   database: 'capytrack'
 });
 
@@ -129,7 +130,6 @@ async function updateSessionId(idNuevo, idAnterior){
 }
 
 app.post('/usuarioRegistrado', function(req, res){
-    console.log(req.body);
 
     var sessionId = req.body.sessionId;
 
@@ -140,9 +140,9 @@ app.post('/usuarioRegistrado', function(req, res){
         if(countClientes != 0){
           conexion.query('SELECT idCliente FROM clientes WHERE session_id = ?;', sessionId, (err,result)=>{
             if(err) throw err;
-            else{
-              var idCliente = result[0].idCliente;
-              conexion.query('SELECT COUNT(*) AS count FROM usuarios WHERE idCliente = ?;', idCliente, (err,result)=>{
+            else if(result.length>0){
+              var idClientes = result[0].idCliente;
+              conexion.query('SELECT COUNT(*) AS count FROM usuarios WHERE idCliente = ?;', idClientes, (err,result)=>{
                 if(err) throw err;
                 else{
                   if(result[0].count == 0){
@@ -153,7 +153,7 @@ app.post('/usuarioRegistrado', function(req, res){
                     });
                   }
                   else{
-                    res.json({
+                    res.json({  
                       status: 'success',
                       usuario: true,
                       sessionId: req.sessionID
@@ -162,6 +162,7 @@ app.post('/usuarioRegistrado', function(req, res){
                 }
               });
             }
+          
           });
         }
         else{
@@ -381,12 +382,12 @@ async function verificarPrecios(){
               else{
                 if(result[0].count == 1){
                   usuarioRegistrado = true;
+                  resolve(usuarioRegistrado);     
                 }
                 else{
                   usuarioRegistrado = false;
-                }     
+                }
               }
-              resolve(usuarioRegistrado);
             });
           });
           const uRegistrado = await(p3);
@@ -460,10 +461,10 @@ async function validacionUsuario(usuario, contrasena, sessionId){
       conexion.query('SELECT idCliente FROM clientes WHERE session_id = ?;', sessionId, (err,result)=>{
         if(err) throw err;
         else{
-          var idCliente = result[0].idCliente;
-          console.log(idCliente);
+          var idClientes = result[0].idCliente;
+          console.log(idClientes);
           var p2 = new Promise(function(resolve, reject){
-            conexion.query('INSERT INTO usuarios (usuario, contrasena, idCliente) VALUES (?, ?, ?);', [usuario, contrasena, idCliente], (err,result)=>{
+            conexion.query('INSERT INTO usuarios (usuario, contrasena, idCliente) VALUES (?, ?, ?);', [usuario, contrasena, idClientes], (err,result)=>{
               if(err) throw err;
               else{
                 var US = true;
