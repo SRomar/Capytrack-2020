@@ -3,9 +3,33 @@ $(document).ready(function(){
 
     EventosBotones();
     EventosOpciones();
-  
-
+    crearConfiguracionInformacionProducto();
+    aplicarConfiguracionInformacionProducto();
   });
+
+  function crearConfiguracionInformacionProducto(){
+
+    var value = [true, true, true, true, true, false, false, false, false, false, false];
+    chrome.storage.local.set({'ConfiguracionInformacionProducto': value}, function() {
+   
+    });
+
+    
+  }
+
+  function aplicarConfiguracionInformacionProducto(){
+    chrome.storage.local.get(['ConfiguracionInformacionProducto'], function(result) {
+      
+      for(i=0; i<11; i++){
+        console.log(result.ConfiguracionInformacionProducto[i]);
+        if(!result.ConfiguracionInformacionProducto[i]){
+          var boton = '#inp' + i;
+          $(boton).removeAttr('Checked'); 
+        }
+      }
+    });
+  }
+
 
 
   function EventosBotones(){
