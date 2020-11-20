@@ -14,28 +14,34 @@ $(document).ready(function(){
 
 function mostrarBotonRegistrarse(){
   getearSessionId().then(id => {
-    var sessionIdServidor = {
-      sessionId: id
+    if(id != 0){
+      var sessionIdServidor = {
+        sessionId: id
+      }
+      var request = $.ajax({
+        type: "POST",
+        url: "http://localhost:3000/usuarioRegistrado",
+        data: sessionIdServidor,
+        error: function(xhr, status, error){
+          console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+        }
+      });
+      request.done(function(response) {
+        console.log(response);
+        console.log("usuario ya registrado: " + response.usuario);
+        if(response.usuario == true){
+          $('#btnRegistrarse').hide();       
+        }
+        else{
+          $('#btnRegistrarse').show();
+        }
+        obtenerSessionIdABM(response.sessionId);
+      });
     }
-    var request = $.ajax({
-      type: "POST",
-      url: "http://localhost:3000/usuarioRegistrado",
-      data: sessionIdServidor,
-      error: function(xhr, status, error){
-        console.log("Error al contactar con el servidor, xhr: " + xhr.status);
-      }
-    });
-    request.done(function(response) {
-      console.log(response);
-      console.log("usuario ya registrado: " + response.usuario);
-      if(response.usuario == true){
-        $('#btnRegistrarse').hide();       
-      }
-      else{
-        $('#btnRegistrarse').show();
-      }
-      obtenerSessionIdABM(response.sessionId);
-    });
+    else{
+      $('#btnRegistrarse').show();
+    }
+    
   });
 }
 
@@ -108,7 +114,14 @@ async function getearSessionId(){
     });
   });
   const id = await(p);
-  return id;
+  console.log("id: " + id);
+  if(id == undefined){
+    return 0;
+  }
+  else{
+    return id;
+  }
+  
 }
 
 function DesplegarListas(){

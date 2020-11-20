@@ -73,6 +73,8 @@ app.get('/session', (req, res) => {
 app.post('/updateSessionId', (req, res) => {
   var idAnterior = req.body.idAnterior;
   var idNuevo = req.body.idNuevo;
+  console.log("idsession_viejo: " + idAnterior);
+  console.log("idsession_nuevo: " + idNuevo);
   
   updateSessionId(idNuevo, idAnterior);
 
@@ -335,7 +337,7 @@ cron.schedule("*/1 * * * *", function(){
 async function verificarPrecios(){
   var prods;
   var p1 = new Promise(function(resolve, reject){
-    conexion.query('SELECT id, nombre, precio, nombre_lista, idCliente FROM productos;', (err,result)=>{
+    conexion.query('SELECT id, nombre, activo, precio, nombre_lista, idCliente FROM productos;', (err,result)=>{
       if(err) throw err;
       else{
         if(result != null){
@@ -355,19 +357,25 @@ async function verificarPrecios(){
         var p2 = new Promise(function(resolve, reject){
           fetch(linkAPI).then(data => data.text()).then(data =>{
             var j = JSON.parse(data);
-            resolve(j.price);   
+            
+            var atributosProducto = {
+              price: j.price,
+              status: j.status
+            };
+          
+            resolve(atributosProducto);   
           });
         });
         
-        const precioActual = await p2;
+        const atributos = await p2;
 
-        if(precioActual == productos[i].precio){
-          console.log("el precio de " + productos[i].id + " sigue igual perri y es: " + precioActual);
+        if(atributos.price == productos[i].precio){
+          console.log("el precio de " + productos[i].id + " sigue igual perri y es: " + atributos.price);
         }
-        else{
-          console.log("el precio de " + productos[i].id + " cambio y es este: " + precioActual); 
+        else if(atributos.price != productos[i].precio){
+          console.log("el precio de " + productos[i].id + " cambio y es este: " + atributos.price); 
           
-          conexion.query('UPDATE productos SET precio = ? WHERE id = ?;', [precioActual, productos[i].id], (err,result)=>{
+          conexion.query('UPDATE productos SET precio = ? WHERE id = ?;', [atributos.price, productos[i].id], (err,result)=>{
             if(err) throw err;
           });
 
@@ -403,7 +411,7 @@ async function verificarPrecios(){
             });     
             const mailUsuario = await(p4);
 
-            var textoMail = "El precio del producto " + productos[i].id + " - " + productos[i].nombre + " perteneciente a la lista " + productos[i].nombre_lista + " cambio de precio. Su precio actual es de: " + precioActual + "$";
+            var textoMail = "El precio del producto " + productos[i].id + " - " + productos[i].nombre + " perteneciente a la lista " + productos[i].nombre_lista + " cambio de precio. Su precio actual es de: " + atributos.price + "$";
             
             var mailOptions = {
               from: 'capytrack@gmail.com',
@@ -420,6 +428,66 @@ async function verificarPrecios(){
             }); 
           }
         }
+        else if(atributos.status == productos[i].activo){
+          console.log("El producto " + productos[i].id + " no cambio de estado, sigue: " + atributos.status);
+        }
+        else if(atributos.status != productos[i].activo){
+          console.log("El producto " + productos[i].id + " cambio de estado a " + atributos.status);
+        
+          conexion.query('UPDATE productos SET activo = ? WHERE id = ?;', [atributos.status, productos[i].id], (err,result)=>{
+            if(err) throw err;
+          });
+
+          var mail;
+         
+          
+          var usuarioRegistrado;
+          var p3 = new Promise(function(resolve, reject){
+            conexion.query('SELECT COUNT(*) AS count FROM usuarios WHERE idCliente = ?;', productos[i].idCliente , (err,result)=>{
+              if(err) throw err;
+              else{
+                if(result[0].count == 1){
+                  usuarioRegistrado = true;
+                }
+                else{
+                  usuarioRegistrado = false;
+                }     
+              }
+              resolve(usuarioRegistrado);
+            });
+          });
+          const uRegistrado = await(p3);
+
+          if(uRegistrado == true){
+            var p4 = new Promise(function(resolve, reject){
+              conexion.query('SELECT usuario FROM usuarios WHERE idCliente = ?;', productos[i].idCliente , (err,result)=>{
+                if(err) throw err;
+                else{
+                    mail = result[0].usuario;  
+                }
+                resolve(mail);
+              });
+            });     
+            const mailUsuario = await(p4);
+
+            var textoMail = "El estado del producto " + productos[i].id + " - " + productos[i].nombre + " perteneciente a la lista " + productos[i].nombre_lista + " cambio de estado. Su estado actual es: " + atributos.status;
+            
+            var mailOptions = {
+              from: 'capytrack@gmail.com',
+              to: mailUsuario,
+              subject: 'CAPYTRACK',
+              text: textoMail
+            };
+            transporter.sendMail(mailOptions, function(error, info){
+              if (error) {
+                console.log(error);
+              } else {
+                console.log('Email sent: ' + info.response);
+              }
+            }); 
+          }
+
+        }
     }
   }
 
@@ -435,6 +503,7 @@ app.get('/', (req, res)=>{
 async function validacionUsuario(usuario, contrasena, sessionId){
   var existeUsuario = false;
   var usuarioRegistrado = false;
+  var inicioSesion = false;
   
   var p1 = new Promise(function(resolve, reject){
     //'SELECT COUNT(*) AS count FROM usuarios WHERE usuario = "" OR 1 = 1 --; DROP TABLE usuarios;'
@@ -482,12 +551,34 @@ async function validacionUsuario(usuario, contrasena, sessionId){
     usuarioRegistrado = await(p3);
   }
   else{
+    var p4 = new Promise(function(resolve, reject){
+      conexion.query('SELECT contrasena FROM usuarios WHERE usuario = ?;', usuario, (err,result)=>{
+        if(err) throw err;
+        else{
+          var is = false;
+          if(result[0].contrasena == contrasena){
+            is = true;
+          }
+        }
+        resolve(is);
+      });
+    });
+    inicioSesion = await(p4);
     usuarioRegistrado = false;
   }
 
-  return usuarioRegistrado;
+  if(usuarioRegistrado = true){
+    return "usuario_registrado";
+  }
+  else if(usuarioRegistrado == false && inicioSesion == false){
+    return "usuario_no_registrado";
+  }
+  else if(usuarioRegistrado == false && inicioSesion == true){
+    return "usuario_inicio_sesion"
+  }
   
 }
+
 app.post('/altaUsuario', function(req, res){
   console.log(req.body);
 
