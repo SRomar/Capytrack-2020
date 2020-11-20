@@ -470,7 +470,7 @@ async function verificarPrecios(){
             });     
             const mailUsuario = await(p4);
 
-            var textoMail = "El estado del producto " + productos[i].id + " - " + productos[i].nombre + " perteneciente a la lista " + productos[i].nombre_lista + " cambio de estado. Su estado actual es: " + atributos.status;
+            var textoMail = "El producto " + productos[i].id + " - " + productos[i].nombre + " perteneciente a la lista " + productos[i].nombre_lista + " cambio de estado. Su estado actual es: " + atributos.status;
             
             var mailOptions = {
               from: 'capytrack@gmail.com',
