@@ -1,8 +1,7 @@
 
 //Llenar select
 $(document).ready(function(){
-  obtenerSessionId()
-
+  obtenerSessionId();
   mostrarBotonRegistrarse();
   DesplegarListas();
   EventoAgregarProductoLista();
@@ -15,28 +14,34 @@ $(document).ready(function(){
 
 function mostrarBotonRegistrarse(){
   getearSessionId().then(id => {
-    var sessionIdServidor = {
-      sessionId: id
+    if(id != 0){
+      var sessionIdServidor = {
+        sessionId: id
+      }
+      var request = $.ajax({
+        type: "POST",
+        url: "http://localhost:3000/usuarioRegistrado",
+        data: sessionIdServidor,
+        error: function(xhr, status, error){
+          console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+        }
+      });
+      request.done(function(response) {
+        console.log(response);
+        console.log("usuario ya registrado: " + response.usuario);
+        if(response.usuario == true){
+          $('#btnRegistrarse').hide();       
+        }
+        else{
+          $('#btnRegistrarse').show();
+        }
+        obtenerSessionIdABM(response.sessionId);
+      });
     }
-    var request = $.ajax({
-      type: "POST",
-      url: "http://localhost:3000/usuarioRegistrado",
-      data: sessionIdServidor,
-      error: function(xhr, status, error){
-        console.log("Error al contactar con el servidor, xhr: " + xhr.status);
-      }
-    });
-    request.done(function(response) {
-      console.log(response);
-      console.log("usuario ya registrado: " + response.usuario);
-      if(response.usuario == true){
-        $('#btnRegistrarse').hide();       
-      }
-      else{
-        $('#btnRegistrarse').show();
-      }
-      obtenerSessionIdABM(response.sessionId);
-    });
+    else{
+      $('#btnRegistrarse').show();
+    }
+    
   });
 }
 
@@ -72,46 +77,34 @@ function obtenerSessionIdABM(id){
 } 
 
 function obtenerSessionId(){
-  // console.log("entro a obtenerSessionId");
-  fetch('http://localhost:3000/session').then(data =>{
+  setTimeout(function (){
+  console.log("entro a obtenerSessionId");
+  fetch('http://localhost:3000/session').then(data => data.text()).then(data =>{
     var i = data;
-    // console.log("i: " + i);
+    console.log("i: " + i);
     chrome.storage.local.get(['sessionId_NUEVO'], function(result){
       var sessionId_anterior = "";
-     
-      chrome.storage.local.set({'sessionId_NUEVO': i}, function() {
-        // console.log('sessionId_NUEVO: ' + i);
-      });
       if(result.sessionId_NUEVO !== undefined){
         sessionId_anterior = result.sessionId_NUEVO;
-        var sessionIds = {
-          idAnterior: sessionId_anterior,
-          idNuevo: i 
-        }
-
-        $.ajax({
-          type: "POST",
-          url: "http://localhost:3000/updateSessionId",
-          data: sessionIds
-        });
-        // console.log("sessionId_anterior: " + sessionId_anterior);
-      }else{
-        var sessionIds = {
-          idAnterior: i,
-          idNuevo: i 
-        }
-
-        $.ajax({
-          type: "POST",
-          url: "http://localhost:3000/updateSessionId",
-          data: sessionIds
-        });
+        console.log("sessionId_anterior: " + sessionId_anterior);
       }
-    
+      chrome.storage.local.set({'sessionId_NUEVO': i}, function() {
+        console.log('sessionId_NUEVO: ' + i);
+      });
+      var sessionIds = {
+        idAnterior: sessionId_anterior,
+        idNuevo: i 
+      }
+
+      $.ajax({
+        type: "POST",
+        url: "http://localhost:3000/updateSessionId",
+        data: sessionIds
+      });
     });
      
   });
-  
+}, 200);
 }
 
 async function getearSessionId(){
@@ -122,7 +115,14 @@ async function getearSessionId(){
     });
   });
   const id = await(p);
-  return id;
+  console.log("id: " + id);
+  if(id == undefined){
+    return 0;
+  }
+  else{
+    return id;
+  }
+  
 }
 
 function DesplegarListas(){
@@ -195,8 +195,7 @@ function AgregarProducto(category_id){
       //Se crea el producto
       var producto = [i.title, i.price, i.status, i.permalink, foto, i.id];
 
-
-      getearSessionId().unbind().then(id => {
+      getearSessionId().then(id => {
         var productoServidor = {
           title: i.title,
           price: i.price,
@@ -346,7 +345,7 @@ function EventoCrearLista(){
             chrome.storage.sync.set(Lista);
             DesplegarListas(); 
 
-            getearSessionId().unbind().then(id => {
+            getearSessionId().then(id => {
               var listaServidor = {
                 nombre: nombre,
                 sessionId: id
@@ -438,3 +437,8 @@ function DesplegarProductos(nombreLista){
     console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
   }
 }
+
+
+
+
+

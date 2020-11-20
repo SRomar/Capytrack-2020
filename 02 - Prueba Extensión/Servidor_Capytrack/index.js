@@ -12,7 +12,6 @@ var MySQLStore = require('express-mysql-session')(session);
 const cookieParser = require('cookie-parser');
 var nodemailer = require('nodemailer');
 const { access } = require('fs');
-const { count } = require('console');
 
 var transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -74,6 +73,8 @@ app.get('/session', (req, res) => {
 app.post('/updateSessionId', (req, res) => {
   var idAnterior = req.body.idAnterior;
   var idNuevo = req.body.idNuevo;
+  console.log("idsession_viejo: " + idAnterior);
+  console.log("idsession_nuevo: " + idNuevo);
   
   updateSessionId(idNuevo, idAnterior);
 
@@ -98,13 +99,11 @@ async function updateSessionId(idNuevo, idAnterior){
       if(err) throw err;
     });
   }
-  console.log("\n\n\n ANTERIOR:"+ idAnterior +"\n NUEVO: "+ idNuevo+"\n\n\n");
-  conexion.query('UPDATE clientes SET session_id = ? WHERE session_id = ?;', [idNuevo, idAnterior], (err,result)=>{
-    if(err) throw err;
-  });
+  
   conexion.query('UPDATE sessions SET session_id = ? WHERE session_id = ?;', [idNuevo, idAnterior], (err,result)=>{
     if(err) throw err;
   });
+
   var sinRegistros = false;
   var p2 = new Promise(function(resolve, reject){
     conexion.query('SELECT COUNT(*) AS count FROM clientes;', (err,result)=>{
@@ -132,6 +131,7 @@ async function updateSessionId(idNuevo, idAnterior){
 }
 
 app.post('/usuarioRegistrado', function(req, res){
+    console.log(req.body);
 
     var sessionId = req.body.sessionId;
 
@@ -143,8 +143,8 @@ app.post('/usuarioRegistrado', function(req, res){
           conexion.query('SELECT idCliente FROM clientes WHERE session_id = ?;', sessionId, (err,result)=>{
             if(err) throw err;
             else{
-              var idClientes = result[0].idCliente;
-              conexion.query('SELECT COUNT(*) AS count FROM usuarios WHERE idCliente = ?;', idClientes, (err,result)=>{
+              var idCliente = result[0].idCliente;
+              conexion.query('SELECT COUNT(*) AS count FROM usuarios WHERE idCliente = ?;', idCliente, (err,result)=>{
                 if(err) throw err;
                 else{
                   if(result[0].count == 0){
@@ -165,7 +165,8 @@ app.post('/usuarioRegistrado', function(req, res){
               });
             }
           });
-        }else{
+        }
+        else{
           res.json({
             status: 'success',
             usuario: false,
@@ -216,7 +217,7 @@ app.post('/altaLista', function(req, res){
 
     conexion.query('SELECT idCliente FROM clientes WHERE session_id = ?;', sessionId, (err,result)=>{
       if(err) throw err;
-      else if(result.length>0){
+      else{
         var idCliente = result[0].idCliente;
         conexion.query('INSERT INTO listas (nombre, idCliente) VALUES (?, ?);', [nombrelista, idCliente], (err,result)=>{
           if(err) throw err;
@@ -382,12 +383,12 @@ async function verificarPrecios(){
               else{
                 if(result[0].count == 1){
                   usuarioRegistrado = true;
-                  resolve(usuarioRegistrado);     
                 }
                 else{
                   usuarioRegistrado = false;
-                }
+                }     
               }
+              resolve(usuarioRegistrado);
             });
           });
           const uRegistrado = await(p3);
@@ -436,6 +437,7 @@ app.get('/', (req, res)=>{
 async function validacionUsuario(usuario, contrasena, sessionId){
   var existeUsuario = false;
   var usuarioRegistrado = false;
+  var inicioSesion = false;
   
   var p1 = new Promise(function(resolve, reject){
     //'SELECT COUNT(*) AS count FROM usuarios WHERE usuario = "" OR 1 = 1 --; DROP TABLE usuarios;'
@@ -460,11 +462,11 @@ async function validacionUsuario(usuario, contrasena, sessionId){
     var p3 = new Promise(function(resolve, reject){
       conexion.query('SELECT idCliente FROM clientes WHERE session_id = ?;', sessionId, (err,result)=>{
         if(err) throw err;
-        else if(result.length>0){
-          var idClientes = result[0].idCliente;
-          console.log(idClientes);
+        else{
+          var idCliente = result[0].idCliente;
+          console.log(idCliente);
           var p2 = new Promise(function(resolve, reject){
-            conexion.query('INSERT INTO usuarios (usuario, contrasena, idCliente) VALUES (?, ?, ?);', [usuario, contrasena, idClientes], (err,result)=>{
+            conexion.query('INSERT INTO usuarios (usuario, contrasena, idCliente) VALUES (?, ?, ?);', [usuario, contrasena, idCliente], (err,result)=>{
               if(err) throw err;
               else{
                 var US = true;
@@ -483,10 +485,31 @@ async function validacionUsuario(usuario, contrasena, sessionId){
     usuarioRegistrado = await(p3);
   }
   else{
+    var p4 = new Promise(function(resolve, reject){
+      conexion.query('SELECT contrasena FROM usuarios WHERE usuario = ?;', usuario, (err,result)=>{
+        if(err) throw err;
+        else{
+          var is = false;
+          if(result[0].contrasena == contrasena){
+            is = true;
+          }
+        }
+        resolve(is);
+      });
+    });
+    inicioSesion = await(p4);
     usuarioRegistrado = false;
   }
 
-  return usuarioRegistrado;
+  if(usuarioRegistrado = true){
+    return "usuario_registrado";
+  }
+  else if(usuarioRegistrado == false && inicioSesion == false){
+    return "usuario_no_registrado";
+  }
+  else if(usuarioRegistrado == false && inicioSesion == true){
+    return "usuario_inicio_sesion"
+  }
   
 }
 app.post('/altaUsuario', function(req, res){
