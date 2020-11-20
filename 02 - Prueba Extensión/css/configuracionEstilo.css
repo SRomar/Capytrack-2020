@@ -297,3 +297,68 @@ h3{
     text-decoration: none;
     text-align: left;
 }
+
+
+.opcionInformacionProducto{
+    margin: 20px;
+    display: flex;
+    
+}
+
+.h3InformacionProducto{
+    display: inline-flex;
+}
+
+.toggle-control {
+    display: inline-flex;
+    position: relative;
+    padding-left: 100px;
+    margin-bottom: 12px;
+    margin-top: 4px;
+    margin-left: 10px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+  }
+  .toggle-control input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+  .toggle-control input:checked ~ .control {
+    background: var(--texto);
+  }
+  .toggle-control input:checked ~ .control:after {
+    left: 55px;
+  }
+  .toggle-control .control {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 35px;
+    width: 85px;
+    border-radius: 25px;
+    background: var(--lineas);
+    -webkit-transition: background-color 0.15s ease-in;
+    transition: background-color 0.15s ease-in;
+  }
+  .toggle-control .control:after {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    width: 25px;
+    height: 25px;
+    border-radius: 25px;
+    background: white;
+    -webkit-transition: left 0.15s ease-in;
+    transition: left 0.15s ease-in;
+  }
+  
+
+ 

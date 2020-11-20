@@ -36,13 +36,14 @@ $(document).ready(function(){
         var nombreOpcion;
         if(e.button == 0){
           nombreOpcion = $(e.target).text();
+          console.log(nombreOpcion);
           funcion = nombreOpcion;
         }
         $('#contenidoOpcion').empty();
         nombreOpcion = "#"+nombreOpcion+"Contenido";
         $('#contenidoOpcion').append($(nombreOpcion).html());
         funcion = "Evento" + funcion;
-        window[funcion](); //Se agrega la funcion del li aca, ya que si esta el elemento oculto no se puede agregar 
+        window[funcion](); //Como no se pueden agregar eventos a elementos ocultos, se los agrega acá
       });
     } catch (err) {
       console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
@@ -76,5 +77,9 @@ $(document).ready(function(){
       console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
     }
 
+  }
+
+  function EventoProductos(){
+    console.log("EventoProducto");
   }
   
