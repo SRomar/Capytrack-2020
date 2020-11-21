@@ -279,10 +279,14 @@ h3{
 .informacion{
     overflow: hidden;
     padding: 0px;
-    overflow-y: scroll;
+    overflow-y: hidden;
 
 }
 
+.contenedorInformacion{
+    overflow-y: scroll;
+
+}
 
 
 .listas, .productos, .informacion{
