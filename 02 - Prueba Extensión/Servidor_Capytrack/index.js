@@ -420,7 +420,7 @@ async function verificarPrecios(){
           
           var usuarioRegistrado;
           var p3 = new Promise(function(resolve, reject){
-            conexion.query('SELECT COUNT(*) AS count FROM usuarios WHERE idCliente = ?;', productos[i].idCliente , (err,result)=>{
+            conexion.query('SELECT COUNT(*) AS count FROM usuarios WHERE idCliente = ?;', productos[i].idCliente, (err,result)=>{
               if(err) throw err;
               else{
                 if(result[0].count == 1){
@@ -437,16 +437,23 @@ async function verificarPrecios(){
 
           if(uRegistrado == true){
             var p4 = new Promise(function(resolve, reject){
-              conexion.query('SELECT usuario FROM usuarios WHERE idCliente = ?;', productos[i].idCliente , (err,result)=>{
+              conexion.query('SELECT usuario FROM usuarios WHERE idCliente = ? AND suscripcion IN (?, ?);', [productos[i].idCliente, 2, 3] , (err,result)=>{
+                var mail; 
                 if(err) throw err;
-                else{
+                else if(result.length > 0){
+                    console.log("usuarios encontrados")
                     mail = result[0].usuario;  
+                }
+                else{
+                  console.log("El mail no se envio");
+                  mail = null;
                 }
                 resolve(mail);
               });
             });     
             const mailUsuario = await(p4);
 
+            if(mailUsuario != null){
             var textoMail = "El precio del producto " + productos[i].id + " - " + productos[i].nombre + " perteneciente a la lista " + productos[i].nombre_lista + " cambio de precio. Su precio actual es de: " + precioActual + "$";
             
             var mailOptions = {
@@ -462,6 +469,7 @@ async function verificarPrecios(){
                 console.log('Email sent: ' + info.response);
               }
             }); 
+          }
           }
         }
     }
