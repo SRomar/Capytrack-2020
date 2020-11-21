@@ -329,6 +329,8 @@ h3{
 
 #inp1{
     margin: 0 auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
     border-radius: 10px; 
     align-content: center;
     background-color: var(--lineas);
