@@ -172,6 +172,12 @@ function EventoProducto(idProducto, datosProducto){
           nombre.innerHTML = datosProducto[0];
           estado.innerHTML = datosProducto[2];      
           precio.innerHTML = datosProducto[1];
+          localidad.innerHTML = datosProducto[6];
+          condicion.innerHTML = datosProducto[7];
+          envioGratis.innerHTML = datosProducto[8];
+          cantidadDisponible.innerHTML = datosProducto[9];
+          garantia.innerHTML = datosProducto[10];
+          productID.innerHTML = datosProducto[5];
           urlProducto.innerHTML = '<a href="'+datosProducto[3]+'">ver</a>';
       });
      } catch (err) {

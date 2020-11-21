@@ -1,7 +1,6 @@
 
 //Llenar select
 $(document).ready(function(){
-  obtenerSessionId();
   mostrarBotonRegistrarse();
   DesplegarListas();
   EventoAgregarProductoLista();
@@ -9,7 +8,7 @@ $(document).ready(function(){
   EventoAdministrarLista();
   eventoSelect();
   DesplegarProductos($( "#selectLista" ).val());
-  
+  obtenerSessionId();
 });
 
 function mostrarBotonRegistrarse(){
@@ -182,18 +181,17 @@ function AgregarProducto(category_id){
     //Se agrega a una lista
     if(valorLista !== null){
     
-      // ide.innerHTML = i.id;
-      // nombre.innerHTML = i.title;
-      // estado.innerHTML = i.status;      
-      // precio.innerHTML = i.price;
+
 
       diccionariofoto = i.pictures;
       arregloFoto = diccionariofoto[Object.keys(diccionariofoto)[0]];
       foto = arregloFoto[Object.keys(arregloFoto)[2]];
-      console.log(foto);
-
+      localidad =  i.seller_address.city.name + ", " + i.seller_address.state.nam; 
+      
+      
+      // console.log(i.condition  +" "+ i.shipping.free_shipping +" "+ i.available_quantity +" "+ i.warranty +" ")
       //Se crea el producto
-      var producto = [i.title, i.price, i.status, i.permalink, foto, i.id];
+      var producto = [i.title, i.price, i.status, i.permalink, foto, i.id, localidad, i.condition, i.shipping.free_shipping, i.available_quantity, i.warranty];
 
       getearSessionId().then(id => {
         var productoServidor = {
@@ -202,6 +200,10 @@ function AgregarProducto(category_id){
           status: i.status,
           permalink: i.permalink,
           id: i.id,
+          localidad: localidad,
+          envioGratis: i.shipping.free_shipping,
+          cantidadDisponible: i.available_quantity,
+          garantia: i.warranty,
           nombrelista: valorLista,
           sessionId: id
         }
@@ -237,7 +239,7 @@ function AgregarProducto(category_id){
 
     } else{
       alert('No hay listas!');
-    }
+     }
 
   });
 

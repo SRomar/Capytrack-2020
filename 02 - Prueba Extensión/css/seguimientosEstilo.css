@@ -279,13 +279,15 @@ h3{
 .informacion{
     overflow: hidden;
     padding: 0px;
+    overflow-y: scroll;
+
 }
 
 
 
 .listas, .productos, .informacion{
     margin-top: 20px;
-    overflow-y: hidden;
+
     /* outline:5px solid var(--borde); */
     border-radius: 10px;
 }

@@ -190,13 +190,17 @@ app.post('/altaProducto', function(req, res){
     var nombrelista = req.body.nombrelista;
     var precio = req.body.price;
     var sessionId = req.body.sessionId;
+    var localidad = req.body.localidad;
+    var envioGratis = Boolean(req.body.envioGratis);
+    var cantidadDisponible = req.body.cantidadDisponible;
+    var garantia = req.body.garantia;
 
     conexion.query('SELECT idCliente FROM clientes WHERE session_id = ?;', sessionId, (err,result)=>{
       if(err) throw err;
       else{
         var idCliente = result[0].idCliente;
         console.log("idCliente: " + idCliente);
-        conexion.query('INSERT INTO productos (id, nombre, url, activo, nombre_lista, precio, idCliente) VALUES (?, ?, ?, ?, ?, ?, ?);', [id, nombre, url, activo, nombrelista, precio, idCliente], (err,result)=>{
+        conexion.query('INSERT INTO productos (id, nombre, url, activo, nombre_lista, precio, idCliente, localidad, envio_gratis, cantidad_disponible, garantia) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', [id, nombre, url, activo, nombrelista, precio, idCliente, localidad, envioGratis, cantidadDisponible, garantia], (err,result)=>{
           if(err) throw err;
         });
       }
