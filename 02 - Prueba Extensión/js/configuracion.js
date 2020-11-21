@@ -2,7 +2,7 @@ var suscripcion = 0;
 
 $(document).ready(function(){
     setSuscripcion();
-    redireccionar(suscripcion);
+  
     EventosBotones();
     EventosOpciones();
     ConfiguracionInformacionProducto();
@@ -158,6 +158,7 @@ function EventoBotonesConfiguracionInformacionProducto(){
       });
       request.done(function(response) {
         suscripcion = response.suscripcion;
+        redireccionar(suscripcion);
       });
   }
   
