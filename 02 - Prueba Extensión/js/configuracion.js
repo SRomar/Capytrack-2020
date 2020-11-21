@@ -1,13 +1,20 @@
+var suscripcion = 0;
 
 $(document).ready(function(){
-
+    setSuscripcion();
+    redireccionar(suscripcion);
     EventosBotones();
     EventosOpciones();
     ConfiguracionInformacionProducto();
-
+    
   });
 
- 
+  function redireccionar(suscripcion){
+    if(suscripcion<2){
+      alert("Necesitas tener una suscripción VIP o KING CAPY para acceder a esta pestaña.")
+      window.location.replace("suscripciones.html");
+    }
+  }
 
   function ConfiguracionInformacionProducto(){
     chrome.storage.local.get(['ConfiguracionInformacionProducto'], function(result) {
@@ -135,3 +142,87 @@ function EventoBotonesConfiguracionInformacionProducto(){
     EventoBotonesConfiguracionInformacionProducto();
   }
   
+
+
+  function getSuscripcion(id){
+    var sessionUsuario = {
+      sessionId: id
+    }
+    var request = $.ajax({
+      type: "POST",
+      url: "http://localhost:3000/getSuscripcion",
+      data: sessionUsuario,
+      error: function(xhr, status, error){
+        console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+      }
+      });
+      request.done(function(response) {
+        suscripcion = response.suscripcion;
+      });
+  }
+  
+  
+  function setSuscripcion(){
+    getearSessionId().then(id => {
+      if(id != 0){
+        var sessionIdServidor = {
+          sessionId: id
+        }
+        var request = $.ajax({
+          type: "POST",
+          url: "http://localhost:3000/usuarioRegistrado",
+          data: sessionIdServidor,
+          error: function(xhr, status, error){
+            console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+          }
+        });
+        request.done(function(response) {
+          if(response.usuario == true){
+            getSuscripcion(id);
+          }
+        });
+      }
+    });
+  }
+
+  function obtenerSessionId(){
+    fetch('http://localhost:3000/session').then(data => data.text()).then(data =>{
+      var i = data;
+      console.log("i: " + i);
+      chrome.storage.local.get(['sessionId_NUEVO'], function(result){
+        var sessionId_anterior = "";
+        if(result.sessionId_NUEVO !== undefined){
+          sessionId_anterior = result.sessionId_NUEVO;
+          console.log("sessionId_anterior: " + sessionId_anterior);
+        }
+        chrome.storage.local.set({'sessionId_NUEVO': i}, function() {
+          console.log('sessionId_NUEVO: ' + i);
+        });
+        var sessionIds = {
+          idAnterior: sessionId_anterior,
+          idNuevo: i 
+        }
+  
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:3000/updateSessionId",
+          data: sessionIds
+        });
+      });
+       
+    });
+  }
+  
+
+  async function getearSessionId(){
+    var p = new Promise(function(resolve, reject){
+      chrome.storage.local.get(['sessionId_NUEVO'], function(result){
+        var id = result.sessionId_NUEVO;
+        resolve(id); 
+      });
+    });
+    const id = await(p);
+    return id;
+  }
+  
+    

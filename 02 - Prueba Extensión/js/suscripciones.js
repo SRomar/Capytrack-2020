@@ -1,7 +1,7 @@
 var suscripcion = 0;
-
+var registrado = false;
 $(document).ready(function(){
-
+    siRegistrado();
     EventosBotones();
     EventoBotonesPaquetes();
   });
@@ -32,7 +32,8 @@ $(document).ready(function(){
 
   function EventoBotonesPaquetes(){
     $(document).on('click','#paquete1', function() {
-      console.log("click!!!");
+      console.log(registrado);
+      if(registrado){
       getearSessionId().then(id => {
         if(id != 0){
       var sessionUsuario = {
@@ -48,13 +49,17 @@ $(document).ready(function(){
         }
         });
         setSuscripcion();
-        console.log("######## " +suscripcion);
       }
+     
     });
+  }else{
+    alert("Debe registrarse antes de contratar una suscripcion.")
+  }
     });
 
     $(document).on('click','#paquete2', function() {
-      console.log("click!!!");
+      if(registrado){
+
       getearSessionId().then(id => {
         if(id != 0){
       var sessionUsuario = {
@@ -70,13 +75,16 @@ $(document).ready(function(){
         }
         });
         setSuscripcion();
-        console.log("######## " +suscripcion);
       }
     });
+  }else{
+    alert("Debe registrarse antes de contratar una suscripcion.")
+  }
     });
 
     $(document).on('click','#paquete3', function() {
-      console.log("click!!!");
+      if(registrado){
+
       getearSessionId().then(id => {
         if(id != 0){
       var sessionUsuario = {
@@ -92,10 +100,13 @@ $(document).ready(function(){
         }
         });
         setSuscripcion();
-        console.log("######## " +suscripcion);
       }
     });
+  }else{
+    alert("Debe registrarse antes de contratar una suscripcion.")
+  }
     });
+
   }
 
 
@@ -135,6 +146,27 @@ $(document).ready(function(){
           if(response.usuario == true){
             getSuscripcion(id);
           }
+        });
+      }
+    });
+  }
+
+  function siRegistrado(){
+    getearSessionId().then(id => {
+      if(id != 0){
+        var sessionIdServidor = {
+          sessionId: id
+        }
+        var request = $.ajax({
+          type: "POST",
+          url: "http://localhost:3000/usuarioRegistrado",
+          data: sessionIdServidor,
+          error: function(xhr, status, error){
+            console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+          }
+        });
+        request.done(function(response) {
+          registrado = response.usuario;
         });
       }
     });

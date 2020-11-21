@@ -192,6 +192,7 @@ app.post('/usuarioRegistrado', function(req, res){
                     });
                   }
                   else{
+                    console.log("USUARIO REGISTRADO");
                     res.json({
                       status: 'success',
                       usuario: true,

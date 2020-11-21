@@ -8,6 +8,7 @@ var suscripcion = 0;
 
 $(document).ready(function(){
   setSuscripcion();
+  
   EventosBotones();
   DesplegarListas();
   EventoListas();
@@ -28,6 +29,8 @@ async function getearSessionId(){
   const id = await(p);
   return id;
 }
+
+
 
 function obtenerSessionIdABM(id){
   chrome.storage.local.get(['sessionId_NUEVO'], function(result){
