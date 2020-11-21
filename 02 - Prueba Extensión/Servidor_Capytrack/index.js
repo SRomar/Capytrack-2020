@@ -12,6 +12,7 @@ var MySQLStore = require('express-mysql-session')(session);
 const cookieParser = require('cookie-parser');
 var nodemailer = require('nodemailer');
 const { access } = require('fs');
+const { Console } = require('console');
 
 var transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -117,7 +118,7 @@ async function updateSessionId(idNuevo, idAnterior){
   });
 
   const guardarSession = await(p2);
-  console.log("guardarSession: " + guardarSession);
+  // console.log("guardarSession: " + guardarSession);
   if(guardarSession == true){
     conexion.query('INSERT INTO clientes (session_id) VALUES (?);', idNuevo, (err,result)=>{
       if(err) throw err;
@@ -147,6 +148,20 @@ app.post('/getSuscripcion', (req, res) =>{
   }); 
 });
 
+app.post('/setSuscripcion', (req, res) =>{
+  var sessionId = req.body.sessionId;
+  var sucripcion = req.body.tipoSuscripcion;
+  conexion.query('SELECT idCliente FROM clientes WHERE session_id = ?;', sessionId, (err,result)=>{
+    if(err) throw err;
+    conexion.query('UPDATE usuarios SET suscripcion = ? WHERE idCliente = ?;', [sucripcion, result[0].idCliente], (err,result)=>{
+      if(err) throw err;
+      else{
+        console.log("\n\n Suscripcion actualizada \n\n");
+      }  
+    });
+  }); 
+});
+
 
 
 app.post('/usuarioRegistrado', function(req, res){
@@ -165,7 +180,7 @@ app.post('/usuarioRegistrado', function(req, res){
               var idCliente = result[0].idCliente;
               conexion.query('SELECT COUNT(*) AS count FROM usuarios WHERE idCliente = ?;', idCliente, (err,result)=>{
                 var contrasena = result[0].contrasena;
-                console.log(result[0] +" A "+contrasena);
+                // console.log(result[0] +" A "+contrasena);
 
                 if(err) throw err;
                 else{
@@ -221,7 +236,7 @@ app.post('/altaProducto', function(req, res){
       if(err) throw err;
       else{
         var idCliente = result[0].idCliente;
-        console.log("idCliente: " + idCliente);
+        // console.log("idCliente: " + idCliente);
         conexion.query('INSERT INTO productos (id, nombre, url, activo, nombre_lista, precio, idCliente, localidad, envio_gratis, cantidad_disponible, garantia) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', [id, nombre, url, activo, nombrelista, precio, idCliente, localidad, envioGratis, cantidadDisponible, garantia], (err,result)=>{
           if(err) throw err;
         });
@@ -260,7 +275,7 @@ app.post('/altaLista', function(req, res){
 
 
 app.post('/bajaProducto', function(req, res){
-    console.log(req.body);
+    // console.log(req.body);
 
     var categoryID = req.body.id;
     var sessionId = req.body.sessionId;
@@ -286,7 +301,7 @@ app.post('/bajaProducto', function(req, res){
 
 
 app.post('/bajaLista', function(req, res){
-    console.log(req.body);
+    // console.log(req.body);
 
     var nombrelista = req.body.nombre;
     var sessionId = req.body.sessionId;
@@ -313,7 +328,7 @@ app.post('/bajaLista', function(req, res){
   
 
 app.post('/modificarLista', function(req, res){
-    console.log(req.body);
+    // console.log(req.body);
 
     var nombreViejo = req.body.nombreViejo;
     var nombreNuevo = req.body.nombreNuevo;
@@ -470,7 +485,7 @@ async function validacionUsuario(usuario, contrasena, sessionId){
     conexion.query('SELECT COUNT(*) AS count FROM usuarios WHERE usuario = ?;', [usuario], (err,result)=>{
       if(err) throw err;
       else{
-        console.log(result[0].count);
+        // console.log(result[0].count);
         if(result[0].count == 0){
           existeUsuario = false;
         }
@@ -490,7 +505,7 @@ async function validacionUsuario(usuario, contrasena, sessionId){
         if(err) throw err;
         else{
           var idCliente = result[0].idCliente;
-          console.log(idCliente);
+          // console.log(idCliente);
           var p2 = new Promise(function(resolve, reject){
             conexion.query('INSERT INTO usuarios (usuario, contrasena, idCliente, suscripcion) VALUES (?, ?, ?, ?);', [usuario, contrasena, idCliente, 0], (err,result)=>{
               if(err) throw err;
@@ -539,7 +554,7 @@ async function validacionUsuario(usuario, contrasena, sessionId){
   
 }
 app.post('/altaUsuario', function(req, res){
-  console.log(req.body);
+  // console.log(req.body);
 
   var usuario = req.body.usuario;
   var contrasena = req.body.contrasena;
@@ -547,7 +562,7 @@ app.post('/altaUsuario', function(req, res){
   var usuarioRegistrado;
 
   validacionUsuario(usuario, contrasena, sessionId).then(registrado => {
-    console.log(registrado);
+    // console.log(registrado);
     usuarioRegistrado = registrado;
     res.json({
       status: 'success',

@@ -3,10 +3,11 @@ var animacion1Ejecutada = false;
 var animacion2Ejecutada = false; 
 var elementoAnterior = "";
 var productoAnterior = "";
+var suscripcion = 0;
 
 
 $(document).ready(function(){
-
+  setSuscripcion();
   EventosBotones();
   DesplegarListas();
   EventoListas();
@@ -583,4 +584,47 @@ function AplicarConfiguracionInformacionProducto(result){
         $(elementoInformacion).hide();
       }
     }
+}
+
+
+
+function getSuscripcion(id){
+  var sessionUsuario = {
+    sessionId: id
+  }
+  var request = $.ajax({
+    type: "POST",
+    url: "http://localhost:3000/getSuscripcion",
+    data: sessionUsuario,
+    error: function(xhr, status, error){
+      console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+    }
+    });
+    request.done(function(response) {
+      suscripcion = response.suscripcion;
+    });
+}
+
+
+function setSuscripcion(){
+  getearSessionId().then(id => {
+    if(id != 0){
+      var sessionIdServidor = {
+        sessionId: id
+      }
+      var request = $.ajax({
+        type: "POST",
+        url: "http://localhost:3000/usuarioRegistrado",
+        data: sessionIdServidor,
+        error: function(xhr, status, error){
+          console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+        }
+      });
+      request.done(function(response) {
+        if(response.usuario == true){
+          getSuscripcion(id);
+        }
+      });
+    }
+  });
 }

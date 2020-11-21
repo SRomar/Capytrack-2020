@@ -1,4 +1,4 @@
-
+var suscripcion = 0;
 //Llenar select
 $(document).ready(function(){
   mostrarBotonRegistrarse();
@@ -26,8 +26,10 @@ function getSuscripcion(){
         }
         });
         request.done(function(response) {
-          console.log("Suscripcion: "+response.suscripcion);
+          suscripcion = response.suscripcion;
         });
+      }else{
+        suscripcion = 0;
       }
   });
 }
