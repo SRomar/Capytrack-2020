@@ -237,9 +237,10 @@ h3{
     display: block;
     
 }
-#listasUl, #productosUl{
+#listasUl, #productosUl, #ulInformacion{
     
     height: calc(100% - 30px);
+    width: 100%;
     overflow-y: scroll;
     overflow-x: hidden;
     
@@ -275,18 +276,8 @@ h3{
 }
 
 
-.informacion{
-    padding: 0px;
 
-}
 
-#ulInformacion{
-    overflow-y: scroll;
-    overflow-x: hidden;
-    width: 100%;
-    height: 100%;
-    padding: 0px;
-}
 
 .listas, .productos, .informacion{
     margin-top: 20px;
@@ -313,14 +304,14 @@ h3{
 
 .informacion{
     display: block;
-    overflow-y: hidden;
-    overflow-x: hidden;
     align-items: center;
     text-align: center;
     width: 24.75%;
     background: var(--contenedor);
     align-content: center;
-
+    padding: 0px;
+    overflow-y: hidden;
+    overflow-x: hidden;
 }
 .informacionProducto{
     
