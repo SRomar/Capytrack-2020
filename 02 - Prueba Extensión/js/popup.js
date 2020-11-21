@@ -11,6 +11,27 @@ $(document).ready(function(){
   obtenerSessionId();
 });
 
+function getSuscripcion(){
+  getearSessionId().then(id => {
+    if(id != 0){
+      var sessionUsuario = {
+        sessionId: id
+      }
+      var request = $.ajax({
+        type: "POST",
+        url: "http://localhost:3000/getSuscripcion",
+        data: sessionUsuario,
+        error: function(xhr, status, error){
+          console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+        }
+        });
+        request.done(function(response) {
+          console.log("Suscripcion: "+response.suscripcion);
+        });
+      }
+  });
+}
+
 function mostrarBotonRegistrarse(){
   getearSessionId().then(id => {
     if(id != 0){
@@ -29,7 +50,8 @@ function mostrarBotonRegistrarse(){
         console.log(response);
         console.log("usuario ya registrado: " + response.usuario);
         if(response.usuario == true){
-          $('#btnRegistrarse').hide();       
+          $('#btnRegistrarse').hide();
+          getSuscripcion();
         }
         else{
           $('#btnRegistrarse').show();

@@ -73,6 +73,7 @@ app.get('/session', (req, res) => {
 app.post('/updateSessionId', (req, res) => {
   var idAnterior = req.body.idAnterior;
   var idNuevo = req.body.idNuevo;
+
   console.log("idsession_viejo: " + idAnterior);
   console.log("idsession_nuevo: " + idNuevo);
   
@@ -130,6 +131,24 @@ async function updateSessionId(idNuevo, idAnterior){
 
 }
 
+app.post('/getSuscripcion', (req, res) =>{
+    var sessionId = req.body.sessionId;
+
+  conexion.query('SELECT idCliente FROM clientes WHERE session_id = ?;', sessionId, (err,result)=>{
+    if(err) throw err;
+    conexion.query('SELECT suscripcion from usuarios WHERE idCliente = ?;', [result[0].idCliente], (err,result)=>{
+      if(err) throw err;
+      else{
+        res.json({
+          suscripcion: result[0].suscripcion
+        });
+      }  
+    });
+  }); 
+});
+
+
+
 app.post('/usuarioRegistrado', function(req, res){
     console.log(req.body);
 
@@ -145,6 +164,9 @@ app.post('/usuarioRegistrado', function(req, res){
             else{
               var idCliente = result[0].idCliente;
               conexion.query('SELECT COUNT(*) AS count FROM usuarios WHERE idCliente = ?;', idCliente, (err,result)=>{
+                var contrasena = result[0].contrasena;
+                console.log(result[0] +" A "+contrasena);
+
                 if(err) throw err;
                 else{
                   if(result[0].count == 0){
@@ -470,7 +492,7 @@ async function validacionUsuario(usuario, contrasena, sessionId){
           var idCliente = result[0].idCliente;
           console.log(idCliente);
           var p2 = new Promise(function(resolve, reject){
-            conexion.query('INSERT INTO usuarios (usuario, contrasena, idCliente) VALUES (?, ?, ?);', [usuario, contrasena, idCliente], (err,result)=>{
+            conexion.query('INSERT INTO usuarios (usuario, contrasena, idCliente, suscripcion) VALUES (?, ?, ?, ?);', [usuario, contrasena, idCliente, 0], (err,result)=>{
               if(err) throw err;
               else{
                 var US = true;
