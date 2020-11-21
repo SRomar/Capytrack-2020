@@ -3,33 +3,61 @@ $(document).ready(function(){
 
     EventosBotones();
     EventosOpciones();
-    crearConfiguracionInformacionProducto();
-    aplicarConfiguracionInformacionProducto();
+    ConfiguracionInformacionProducto();
+
   });
 
-  function crearConfiguracionInformacionProducto(){
+ 
 
-    var value = [true, true, true, true, true, false, false, false, false, false, false];
-    chrome.storage.local.set({'ConfiguracionInformacionProducto': value}, function() {
-   
+  function ConfiguracionInformacionProducto(){
+    chrome.storage.local.get(['ConfiguracionInformacionProducto'], function(result) {
+    if(typeof result.ConfiguracionInformacionProducto == "undefined" || typeof result.ConfiguracionInformacionProducto == null){
+      CrearConfiguracionInformacionProductoPorDefecto();
+      ConfiguracionInformacionProducto();
+    } else{
+      AplicarConfiguracionInformacionProducto(result);
+    }
     });
-
-    
+  }
+  function CrearConfiguracionInformacionProductoPorDefecto(){
+    var value = [true, true, true, true, true, false, false, false, false, false, false];
+    chrome.storage.local.set({'ConfiguracionInformacionProducto': value}, function() {    
+    });
   }
 
-  function aplicarConfiguracionInformacionProducto(){
-    chrome.storage.local.get(['ConfiguracionInformacionProducto'], function(result) {
-      
-      for(i=0; i<11; i++){
-        console.log(result.ConfiguracionInformacionProducto[i]);
+  function AplicarConfiguracionInformacionProducto(result){
+
+      for(i=0; i<Object.keys(result.ConfiguracionInformacionProducto).length; i++){
         if(!result.ConfiguracionInformacionProducto[i]){
           var boton = '#inp' + i;
           $(boton).removeAttr('Checked'); 
         }
       }
-    });
   }
 
+function EventoBotonesConfiguracionInformacionProducto(){
+      $('.toggle-control :checkbox').each(function(idx, checkBox) {
+      checkBox.addEventListener('click', event => {
+      
+      chrome.storage.local.get(['ConfiguracionInformacionProducto'], function(result) {
+        var nuevaConfig = [];
+        for(i=0; i<Object.keys(result.ConfiguracionInformacionProducto).length; i++){
+          nuevaConfig.push(result.ConfiguracionInformacionProducto[i]);
+        }
+                    var indiceCheckbox = checkBox.id.substring(3);
+        console.log(indiceCheckbox);
+
+        if(nuevaConfig[indiceCheckbox]){
+          nuevaConfig[indiceCheckbox]=false;
+        }else{
+          nuevaConfig[indiceCheckbox]=true;
+        }
+        chrome.storage.local.set({'ConfiguracionInformacionProducto': nuevaConfig}, function() {    
+        });
+      });
+    });
+  });
+}
 
 
   function EventosBotones(){
@@ -104,6 +132,6 @@ $(document).ready(function(){
   }
 
   function EventoProductos(){
-    console.log("EventoProducto");
+    EventoBotonesConfiguracionInformacionProducto();
   }
   
