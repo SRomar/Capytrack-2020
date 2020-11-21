@@ -184,7 +184,7 @@ p {
     width: 300px;
     font-family: var(--fuente2);
     font-weight: 100;
-    height: 450px;
+    height: 480px;
     color: var(--texto);
     border-radius: 10px;
     /* outline:5px solid #757575; */
@@ -211,24 +211,26 @@ p {
     margin-top: 10px;
 }
 
-/* .nombrePaquete{
+ .nombrePaquete{
     font-size: 25px;
+    margin-bottom: 5px;
 }
 
 .precio{
-    font-size: 40px;
+    font-size: 30px;
 }
 
 ul{
-    height: 50px;
+    height: 80px;
     text-align: left;
     /* list-style-type: none; */
-/* }
+ }
 
 li{
     margin-top: 5px;
+    font-size: 20px;
 }
-
+/*
 #paquete3{
     background:  linear-gradient(360deg, rgb(50, 73, 87) 1%, rgb(143, 201, 209) 100%);
 }
