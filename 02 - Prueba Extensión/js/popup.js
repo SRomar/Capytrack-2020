@@ -188,6 +188,21 @@ function AgregarProducto(category_id){
       foto = arregloFoto[Object.keys(arregloFoto)[2]];
       localidad =  i.seller_address.city.name + ", " + i.seller_address.state.nam; 
       
+
+      var localidad; 
+      var city = i.seller_address.city.name;
+      var state = i.seller_address.state.name;
+      if(typeof city == undefined){
+        city = "";
+      }else{
+        city = i.seller_address.city.name + ", "; 
+      }
+      if(typeof state == undefined){
+        state = ""
+      }
+
+      localidad = city + state;
+
       
       // console.log(i.condition  +" "+ i.shipping.free_shipping +" "+ i.available_quantity +" "+ i.warranty +" ")
       //Se crea el producto
