@@ -167,8 +167,8 @@ function DesplegarProductos(nombreLista){
 function EventoProducto(idProducto, datosProducto){
      try {
         $(idProducto).on('click', function() {
-          $('#contenedorImagen').empty()
-          $("#contenedorImagen").append('<img src="'+datosProducto[4]+'" class="imagenProducto" alt="celular"></img>');
+          $('#inp1').empty()
+          $("#inp1").append('<img src="'+datosProducto[4]+'" class="imagenProducto" alt="celular"></img>');
           nombre.innerHTML = datosProducto[0];
           estado.innerHTML = datosProducto[2];      
           precio.innerHTML = datosProducto[1];
@@ -524,11 +524,12 @@ function Animacion2(idElemento){
   try {
     $(idElemento).click(function() {
       if (!animacion2Ejecutada) {
+        
         $('.informacion').show();
         $(".listas").addClass('animacion2');
         $(".productos").addClass('animacion2');
         $(".informacion").addClass('animacion2');
-  
+        ConfiguracionInformacionProducto();
         setTimeout(function() {
           $(".listas").removeClass('animacion2');
           $(".informacion").removeClass('animacion2');
@@ -549,3 +550,31 @@ function Animacion2(idElemento){
     console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
   }
  }
+
+
+ function ConfiguracionInformacionProducto(){
+  chrome.storage.local.get(['ConfiguracionInformacionProducto'], function(result) {
+  if(typeof result.ConfiguracionInformacionProducto == "undefined" || typeof result.ConfiguracionInformacionProducto == null){
+    CrearConfiguracionInformacionProductoPorDefecto();
+    ConfiguracionInformacionProducto();
+  } else{
+    AplicarConfiguracionInformacionProducto(result);
+  }
+  });
+}
+function CrearConfiguracionInformacionProductoPorDefecto(){
+  var value = [true, true, true, true, true, false, false, false, false, false, false];
+  chrome.storage.local.set({'ConfiguracionInformacionProducto': value}, function() {    
+  });
+}
+
+function AplicarConfiguracionInformacionProducto(result){
+
+    for(i=0; i<Object.keys(result.ConfiguracionInformacionProducto).length; i++){
+      if(!result.ConfiguracionInformacionProducto[i]){
+        var elementoInformacion = '#inp' + i;
+        console.log(elementoInformacion);
+        $(elementoInformacion).hide();
+      }
+    }
+}

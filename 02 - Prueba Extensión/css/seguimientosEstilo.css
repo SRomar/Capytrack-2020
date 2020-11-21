@@ -249,7 +249,7 @@ h3{
     
     
 }
-.elementoLista, .productoEnLista, .informacionProducto, #contenedorInformacion{   
+.elementoLista, .productoEnLista, .informacionProducto, #inp0{   
     font-family:  var(--fuente2);
     text-decoration: none;
     list-style-type: none;
@@ -268,7 +268,7 @@ h3{
     cursor: pointer;
 }
 
-#contenedorInformacion{
+#inp0{
     overflow-y: scroll;
     padding-top: 10px;
     padding-bottom: 10px;
@@ -322,7 +322,7 @@ h3{
     padding-top: 10px;
 }
 
-#contenedorImagen{
+#inp1{
     margin: 0 auto;
     border-radius: 10px; 
     align-content: center;
@@ -424,7 +424,7 @@ h3{
 
 @media (max-width: 960px) and (min-width: 501px) {
     #productosUl li {font-size: 15px;  width: 98%;}
-    #contenedorInformacion h3 {font-size: 14px;  width: 100%;}
-    #contenedorImagen {  width: 150px; height: 150px;}
+    #inp0 h3 {font-size: 14px;  width: 100%;}
+    #inp1 {  width: 150px; height: 150px;}
 
 }
