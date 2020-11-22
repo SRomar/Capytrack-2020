@@ -16,10 +16,10 @@ $(document).ready(function(){
 
 
 function traerProductosServidor(){
-  setTimeout(function(){
+
     getearSessionId().then(id => {
       if(id != 0){
-        //console.log("entro a id != 0");
+        console.log("entro a traerProductosSevidor,id igual a "+id);
         var clienteServidor = {
           idSession: id
         }
@@ -32,14 +32,19 @@ function traerProductosServidor(){
           }
         });
         request.done(function(response) {
-          console.log("response traerProductosServidor: " + response.prods);
-          obtenerSessionIdABM(response.sessionId);
-          comparacionProductos(response.prods);
+
+
+          // for(i=0; i<response.prods.length; i++){
+          //   console.log(response.prods[i].nombre) +"\n\n";
+          // }
+
+          // obtenerSessionIdABM(response.sessionId);
+          compararProductos(response.prods);
         });
       }
       
     });
-  },1000);
+
 }
 
 
@@ -68,7 +73,7 @@ console.log("entro a comparar productos \n");
         async function traerProds(p2){
           return await p2;
         };  
-        var prods2 = traerExiste(p2);    
+        var prods2 = traerProds(p2);    
       }
         
       resolve(prods2);       
@@ -76,18 +81,23 @@ console.log("entro a comparar productos \n");
   });
 
   const productosSync = await(p1);
-  console.log("productosSync: " + productosSync + "\n");
+  // console.log("\n\n\n ###ProductosSync: " + productosSync + "\n");
 
   cont = 0;
   productosSyncNuevos = [];
+  console.log("Productos length INICIAL"+productosSyncNuevos.length);
 
   for(var i=0; i<productosSync.length; i++){
     for(var j=0; j<productosServidor.length; j++){
-      if(productosSync[i].id == productoServidor[j].id){
-        if(productosSync[i].title != productosServidor[j].nombre ||
-           productosSync[i].status != productosServidor[j].activo ||
-           productosSync[i].price != productosServidor[j].precio){
-            actualizarProducto(productosSync[i], productosServidor[j]);
+      console.log("ID SERVIDOR " +productosServidor[j].id+ " ID SYNC "+ Object.keys(productosSync[i]));
+
+  
+      if(atributosProductoSync[5] == productosServidor[j].id){
+        if(atributosProductoSync[0] != productosServidor[j].nombre ||
+          atributosProductoSync[2] != productosServidor[j].activo ||
+          atributosProductoSync[1] != productosServidor[j].precio){
+            console.log("\n\n\n Un producto cambio de valor: \n Producto sync:" + productosSync[i] + "\n Producto servicdor:" +productosServidor[j] +"\n");
+            actualizarProducto(atributosProductoSync, productosServidor[j]);
             cont=0;
         }
         else{
@@ -99,10 +109,12 @@ console.log("entro a comparar productos \n");
       }
     }
     if(cont == productosServidor.length-1){
+      console.log("Se agrego un producto sync nuevo "+productosSyncNuevos.length);
       productosSyncNuevos.push(productosSync[i]);
     }
   }
-  if(productosSyncNuevos.length != 0){
+  if(productosSyncNuevos.length !== 0){
+    console.log("Productos length "+productosSyncNuevos.length);
     agregarProductosFaltantes(productosSyncNuevos);
   }
 
@@ -119,11 +131,10 @@ async function actualizarProducto(productoSync, productoServidor){
     $.map(lista, function(productosEnLista, listaSeleccionada) { //Obtiene los productos en la lista
             
             
-      $.map(productosEnLista, function(producto, llaveProducto) {  //Separa a los productos
-              
-              
+      $.map(productosEnLista, function(producto, llaveProducto) {  //Separa a los productos 
+        
         $.map(producto, function(datosProducto, categoryID) { //Separa a los datos del producto
-          if(productoSync.id !== categoryID){
+          if(productoSync[5] !== categoryID){
             productosLista.push(producto);
           }
 
@@ -136,10 +147,8 @@ async function actualizarProducto(productoSync, productoServidor){
     chrome.storage.sync.set(listaNueva);
     
     var diccionarioProducto = {};       
-    var key = productoSync.id;  
+    var key = productoSync[5];  
     diccionarioProducto[key]= productoServidor;   
-
-      
 
     chrome.storage.sync.get(function(cfg) {
       if(typeof(cfg[listaSeleccionada]) !== 'undefined' && cfg[listaSeleccionada] instanceof Array) { 
@@ -220,7 +229,7 @@ function AgregarProductoNuevo(productoNuevo, lista){
     });
 }
 
-function mostrarBotonRegistrarse(){
+  function mostrarBotonRegistrarse(){
   getearSessionId().then(id => {
     if(id != 0){
       var sessionIdServidor = {
@@ -324,7 +333,8 @@ async function getearSessionId(){
   });
   const id = await(p);
   //console.log("id: " + id);
-  if(id == undefined){
+  console.log("getearSessionId devolvio: "+id+ "de tipo "+ typeof id);
+  if(id == undefined || id == ""){
     return 0;
   }
   else{
@@ -509,15 +519,12 @@ async function VerificacionExistenciaProducto(){
   
 }
 
-
-
 function EventoAgregarProductoLista(){
   $("#btnAgregarLista").click(function(){
     VerificacionExistenciaProducto();
   });
   
 }
-
 
 function EventoPanelNuevaLista(){
   $("#nuevaLista").click(function(){
@@ -614,8 +621,6 @@ function EventoListas(){
 
 
 }
-
-
 
 function DesplegarProductos(nombreLista){
   try {
