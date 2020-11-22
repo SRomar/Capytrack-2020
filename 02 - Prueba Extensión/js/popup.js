@@ -13,46 +13,56 @@ $(document).ready(function(){
   
 });
 
-
-
 function traerProductosServidor(){
-  setTimeout(function(){
-    getearSessionId().then(id => {
-      if(id != 0){
-        //console.log("entro a id != 0");
-        var clienteServidor = {
-          idSession: id
-        }
-        var request = $.ajax({
-          type: "POST",
-          url: "http://localhost:3000/productosCliente",
-          data: clienteServidor,
-          error: function(xhr, status, error){
-            console.log("Error al contactar con el servidor, xhr: " + xhr.status);
-          }
-        });
-        request.done(function(response) {
-          console.log("response traerProductosServidor: " + response.prods);
-          obtenerSessionIdABM(response.sessionId);
-          comparacionProductos(response.prods);
-        });
+
+  getearSessionId().then(id => {
+    if(id != 0){
+      console.log("entro a traerProductosSevidor,id igual a "+id);
+      var clienteServidor = {
+        idSession: id
       }
-      
-    });
-  },1000);
+      var request = $.ajax({
+        type: "POST",
+        url: "http://localhost:3000/productosCliente",
+        data: clienteServidor,
+        error: function(xhr, status, error){
+          console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+        }
+      });
+      request.done(function(response) {
+        // for(i=0; i<response.prods.length; i++){
+        //   console.log(response.prods[i].nombre) +"\n\n";
+        // }
+        // obtenerSessionIdABM(response.sessionId);
+        compararProductos(response.prods);
+      });
+    }
+ });
 }
 
 
+/*
+function traerProductosServidor(){
+  fetch('http://localhost:3000/productosCliente').then(data => data.text()).then(data =>{
+      var i = data;
+      console.log("productos servidor: " + i);
+      if(i.length !== 0){
+        compararProductos(i);
+      }
+  });
+}*/
+
+
 async function compararProductos(productosServidor){
-console.log("entro a comparar productos \n");
-  var p1 = new Promise(function(resolve, reject){  
-    var prods = [];   
+console.log("entro a comparar productos");
+  var p1 = new Promise(function(resolve, reject){     
     chrome.storage.sync.get(null, function(items){
       var allkeys = Object.keys(items);
       
       for(var i=0; i<allkeys.length; i++){
 
         var p2 = new Promise(function(resolve, reject){
+          var prods = [];
           chrome.storage.sync.get(allkeys[i], function (lista) { //Obtiene la lista
             $.map(lista, function(productosEnLista, nombreLista) { //Obtiene los productos en la lista
               $.map(productosEnLista, function(producto, llaveProducto) {  //Separa a los productos
@@ -66,9 +76,9 @@ console.log("entro a comparar productos \n");
           });           
         });
         async function traerProds(p2){
-          return await p2;
+          return await (p2);
         };  
-        var prods2 = traerExiste(p2);    
+        var prods2 = traerProds(p2);    
       }
         
       resolve(prods2);       
@@ -76,18 +86,31 @@ console.log("entro a comparar productos \n");
   });
 
   const productosSync = await(p1);
-  console.log("productosSync: " + productosSync + "\n");
+  console.log("productosSync: " + Object.values(productosSync));
+  console.log("productosServidor: " + Object.values(productosServidor));
+
+
 
   cont = 0;
   productosSyncNuevos = [];
 
   for(var i=0; i<productosSync.length; i++){
     for(var j=0; j<productosServidor.length; j++){
-      if(productosSync[i].id == productoServidor[j].id){
-        if(productosSync[i].title != productosServidor[j].nombre ||
-           productosSync[i].status != productosServidor[j].activo ||
-           productosSync[i].price != productosServidor[j].precio){
-            actualizarProducto(productosSync[i], productosServidor[j]);
+
+      var productoSync = Object.values(productosSync[i]);
+      var atributosProductoSync = productoSync[0];
+      console.log("productoSync: " + productoSync);
+      console.log("productoSync[0]: " + productoSync[0]);
+      console.log(productoSync.title + " " + productosServidor[j].nombre);
+      
+      console.log("atributosProductoSync[5]: " + atributosProductoSync[5] + "\n productosServidor[j].id: " + productosServidor[j].id);
+      if(atributosProductoSync[5] == productosServidor[j].id){
+        if(atributosProductoSync[0] != productosServidor[j].nombre ||
+          atributosProductoSync[2] != productosServidor[j].activo  ||
+          atributosProductoSync[1] != productosServidor[j].precio){
+            console.log("\n\n\n Un producto cambio de valor: \n Producto sync:" + productosSync[i] + "\n Producto servicdor:" +productosServidor[j] +"\n");
+            actualizarProducto(atributosProductoSync, productosServidor[j]);
+
             cont=0;
         }
         else{
@@ -98,12 +121,15 @@ console.log("entro a comparar productos \n");
         cont++;
       }
     }
-    if(cont == productosServidor.length-1){
+    if(cont == productosServidor.length){
+      console.log("cont: " + cont + "\n productosServidor.length: " + productosServidor.length);
       productosSyncNuevos.push(productosSync[i]);
     }
   }
-  if(productosSyncNuevos.length != 0){
-    agregarProductosFaltantes(productosSyncNuevos);
+  
+  if(productosSyncNuevos.length !== 0){
+    console.log("productosSyncNuevos: " + productosSyncNuevos.length);
+    //agregarProductosFaltantes(productosSyncNuevos);
   }
 
 }
@@ -123,7 +149,7 @@ async function actualizarProducto(productoSync, productoServidor){
               
               
         $.map(producto, function(datosProducto, categoryID) { //Separa a los datos del producto
-          if(productoSync.id !== categoryID){
+          if(productoSync[5] !== categoryID){
             productosLista.push(producto);
           }
 
@@ -136,7 +162,8 @@ async function actualizarProducto(productoSync, productoServidor){
     chrome.storage.sync.set(listaNueva);
     
     var diccionarioProducto = {};       
-    var key = productoSync.id;  
+    var key = productoSync[5];  
+
     diccionarioProducto[key]= productoServidor;   
 
       
@@ -235,15 +262,12 @@ function mostrarBotonRegistrarse(){
         }
       });
       request.done(function(response) {
-        console.log(response);
-        //console.log("usuario ya registrado: " + response.usuario);
         if(response.usuario == true){
           $('#btnRegistrarse').hide();       
         }
         else{
           $('#btnRegistrarse').show();
         }
-        obtenerSessionIdABM(response.sessionId);
       });
     }
     else{
@@ -261,57 +285,46 @@ function eventoSelect(){
 
 }
 
-function obtenerSessionIdABM(id){
-  chrome.storage.local.get(['sessionId_NUEVO'], function(result){
-    var sessionId_anterior = result.sessionId_NUEVO;
-    //console.log("sessionId_anterior: " + sessionId_anterior);
-    chrome.storage.local.set({'sessionId_NUEVO': id}, function(){
-    //console.log("sessionId_NUEVO: " + id);
-    });
-    var sessionIds = {
-      idAnterior: sessionId_anterior,
-      idNuevo: id
-    }
-
-    $.ajax({
-      type: "POST",
-      url: "http://localhost:3000/updateSessionId",
-      data: sessionIds
-    });
-
-  });
- 
-
-} 
-
 function obtenerSessionId(){
   setTimeout(function(){
-    console.log("entro a obtenerSessionId");
+    getearSessionId().then(id => {
+      var SI;
+      if(id === undefined){
+        SI = 0;
+      }
+      else{
+        SI = id;
+      }
+      var sessionId = {
+        sessionId: SI
+      }
+  
+      var request = $.ajax({
+        type: "POST",
+        url: "http://localhost:3000/session",
+        data: sessionId,
+        error: function(xhr, status, error){
+          console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+        }
+      });
+      request.done(function(response) {
+        if(SI == 0){
+          chrome.storage.local.set({'sessionId_NUEVO': response.sessionID});
+        }
+      });
+    });
+    
+    /*
     fetch('http://localhost:3000/session').then(data => data.text()).then(data =>{
       var i = data;
-      console.log("i: " + i);
       chrome.storage.local.get(['sessionId_NUEVO'], function(result){
-        var sessionId_anterior = "";
-        if(result.sessionId_NUEVO !== undefined){
-          sessionId_anterior = result.sessionId_NUEVO;
-          console.log("sessionId_anterior: " + sessionId_anterior);
-        }
-        chrome.storage.local.set({'sessionId_NUEVO': i}, function() {
-          console.log('sessionId_NUEVO: ' + i);
-        });
-        var sessionIds = {
-          idAnterior: sessionId_anterior,
-          idNuevo: i 
-        }
-  
-        $.ajax({
-          type: "POST",
-          url: "http://localhost:3000/updateSessionId",
-          data: sessionIds
-        });
-      });
-       
-    });
+        if(result.sessionId_NUEVO === undefined){
+          chrome.storage.local.set({'sessionId_NUEVO': i}, function() {
+            console.log('sessionId_NUEVO: ' + i);
+          });
+        }      
+      });      
+    });*/
   }, 200);  
 }
 
@@ -422,8 +435,6 @@ function AgregarProducto(category_id){
           }
         });
         request.done(function(response) {
-          //console.log(response);
-          obtenerSessionIdABM(response.sessionId);
         });
       });
       
@@ -568,8 +579,6 @@ function EventoCrearLista(){
               }
               });
               request.done(function(response) {
-                //console.log(response);
-                obtenerSessionIdABM(response.sessionId);
               });
             });
             $("#contenedorNuevaLista").hide();

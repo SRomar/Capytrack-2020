@@ -61,15 +61,39 @@ app.use(session({
 }));
 
 
-app.get('/session', (req, res) => {
-  var sessionId = req.sessionID;
-  conexion.query('INSERT INTO sessions (session_id) VALUES (?);', sessionId, (err,result)=>{
-    if(err) throw err;
+app.post('/session', (req, res) => {
+  
+  var id = req.sessionID;
+  var sessionId = req.body.sessionId;
+
+  if(sessionId == 0){   
+    conexion.query('INSERT INTO clientes (session_id) VALUES (?);', id, (err,result)=>{
+      if(err) throw err;
+    });
+  }
+  else{
+    conexion.query('SELECT COUNT(*) AS count FROM clientes WHERE session_id = ?;', sessionId, (err,result)=>{
+      if(err) throw err;
+      else{
+        var contador = result[0].count;
+        if(contador == 0){
+          conexion.query('INSERT INTO clientes (session_id) VALUES (?);', sessionId, (err,result)=>{
+            if(err) throw err;
+          });
+        }
+      }
+    });
+  }
+
+  
+  res.json({
+    status: 'success',
+    sessionID: id
   });
-  res.send(sessionId);
 
 });
 
+/*
 app.post('/updateSessionId', (req, res) => {
   var idAnterior = req.body.idAnterior;
   var idNuevo = req.body.idNuevo;
@@ -81,7 +105,7 @@ app.post('/updateSessionId', (req, res) => {
 });
 
 async function updateSessionId(idNuevo, idAnterior){
-  console.log("entro al update session");
+  //console.log("entro al update session");
   var masDeUnRegistro = false;
   var p1 = new Promise(function(resolve, reject){
     conexion.query('SELECT COUNT(*) AS count FROM sessions;', (err,result)=>{
@@ -104,7 +128,7 @@ async function updateSessionId(idNuevo, idAnterior){
   conexion.query('UPDATE sessions SET session_id = ? WHERE session_id = ?;', [idNuevo, idAnterior], (err,result)=>{
     if(err) throw err;
     else{
-      console.log("actualizo session id");
+      //console.log("actualizo session id");
     }
     
   });
@@ -133,7 +157,7 @@ async function updateSessionId(idNuevo, idAnterior){
     });
   }
 
-}
+}*/
 
 app.post('/usuarioRegistrado', function(req, res){
     console.log(req.body);
@@ -207,8 +231,8 @@ app.post('/altaProducto', function(req, res){
       if(err) throw err;
       else{
         var idCliente = result[0].idCliente;
-        console.log("idCliente: " + idCliente);
-        conexion.query('INSERT INTO productos (id, nombre, url, activo, nombre_lista, precio, idCliente) VALUES (?, ?, ?, ?, ?, ?, ?);', [id, nombre, url, activo, nombrelista, precio, idCliente], (err,result)=>{
+        //console.log("idCliente: " + idCliente);
+        conexion.query('INSERT INTO productos (id, nombre, url, activo, precio, nombre_lista, idCliente) VALUES (?, ?, ?, ?, ?, ?, ?);', [id, nombre, url, activo, precio, nombrelista, idCliente], (err,result)=>{
           if(err) throw err;
         });
       }
@@ -534,6 +558,66 @@ async function verificarPrecios(){
 
 
 app.post('/productosCliente', (req, res)=>{
+  
+  var idSession = req.body.idSession;
+
+  console.log("\n Entro a productosCliente en busca del cliente con id: "+ idSession);
+  devolverProductosCliente(idSession).then(productos => {
+    res.json({
+      status: 'success',
+      prods: productos,
+      sessionId: req.sessionID
+    });
+  });
+
+});
+async function devolverProductosCliente(idSession){
+  
+  var p1 = new Promise(function(resolve, reject){
+    
+    conexion.query('SELECT idCliente FROM clientes WHERE session_id = ?;', idSession , (err,result)=>{
+      var idCliente;
+      if(err) throw err;
+      else{
+        idCliente = result[0].idCliente;       
+      }
+      resolve(idCliente);
+    });
+  });
+  
+  const idCliente = await (p1);
+
+  var p2 = new Promise(function(resolve, reject){
+    console.log("idCliente: " + idCliente);
+    conexion.query('SELECT * FROM productos WHERE idCliente = ?;', idCliente , (err,result)=>{
+      var prods = [];
+      if(err) throw err;
+      else{       
+        prods = result;      
+      }
+      resolve (prods);
+    });
+  });
+
+  const productos = await (p2);
+
+  console.log("productos: " + Object.values(productos));
+  return productos;
+  
+}
+
+/*
+app.get('/productosCliente', (req, res)=>{
+  conexion.query('SELECT id, activo, precio, nombre_lista FROM productos;', (err,result)=>{
+    if(err) throw err;
+    else{
+      res.send(result); 
+    }
+  });
+});
+*/
+/*
+app.post('/productosCliente', (req, res)=>{
   console.log(req.body);
   
   var idSession = req.body.idSession;
@@ -547,12 +631,9 @@ app.post('/productosCliente', (req, res)=>{
       sessionId: req.sessionID
     });
   });
-  
-
-  
-  
 });
-
+*/
+/*
 async function devolverProductosCliente(idSession){
   var sessionId = idSession;
   var p1 = new Promise(function(resolve, reject){
@@ -589,6 +670,7 @@ async function devolverProductosCliente(idSession){
   return productos;
   
 }
+*/
 
 app.get('/', (req, res)=>{
   console.log(req.body);
