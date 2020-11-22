@@ -3,6 +3,8 @@ var suscripcion = 0;
 $(document).ready(function(){
   mostrarBotonRegistrarse();
   DesplegarListas();
+  obtenerListaSeleccionada();
+
   EventoAgregarProductoLista();
   EventoPanelNuevaLista();
   EventoAdministrarLista();
@@ -385,8 +387,6 @@ async function VerificacionExistenciaProducto(){
   
 }
 
-
-
 function EventoAgregarProductoLista(){
   $("#btnAgregarLista").click(function(){
     VerificacionExistenciaProducto();
@@ -409,6 +409,19 @@ function EventoBotonRetroceso(){
     $("#contenedorNuevaLista").hide();
     $("#contenedor").show();
   })
+}
+
+function obtenerListaSeleccionada(){
+  var lista; 
+  chrome.storage.local.get(['ListaSeleccionada'], function(result){
+    lista = Object.values(result);
+    if(typeof lista !== undefined){
+      $("#selectLista").val(lista);
+    }
+  });
+
+
+
 }
 
 function EventoCrearLista(){
@@ -483,6 +496,7 @@ function EventoCrearLista(){
 function creacionLista(Lista, nombre){
   Lista[nombre]= [];
   chrome.storage.sync.set(Lista);
+  chrome.storage.local.set({'ListaSeleccionada': nombre});
   DesplegarListas(); 
 
   getearSessionId().then(id => {
@@ -490,6 +504,8 @@ function creacionLista(Lista, nombre){
       nombre: nombre,
       sessionId: id
     }
+
+
 
     var request = $.ajax({
       type: "POST",
@@ -522,6 +538,7 @@ function EventoListas(){
 
       $(item).on('click', function() {      
         
+     
         $('#productosListaUL').empty()
         var nombreLista = $(this).text(); //Obtiene el nombre de li
         // console.log(nombreLista);
@@ -539,7 +556,9 @@ function EventoListas(){
 
 
 function DesplegarProductos(nombreLista){
+
   try {
+    chrome.storage.local.set({'ListaSeleccionada': nombreLista});
     $('#productosListaUL').empty()
     chrome.storage.sync.get(nombreLista, function (lista) { //Obtiene la lista
       var total = 0;
