@@ -509,21 +509,25 @@ async function verificarPrecios(){
                 if(err) throw err;
                 else if(result.length > 0){
                     console.log("usuarios encontrados")
+                    var promesa = new Promise(function(resolve, reject){
+                    var mail2;
                     conexion.query('SELECT notificarPrecio FROM usuarios WHERE idCliente = ?', productos[i].idCliente, (err,res)=>{
                       if(err) throw err;
                       else if(res[0].notificarPrecio == 1){
-                        mail = result[0].usuario;  
-                        console.log("Mail creado");
-                        resolve(mail);
+                        mail2 = result[0].usuario;  
                       }else{
-                        console.log("NOTIFICAR PRECIO: "+res[0].notificarPrecio);
-                        console.log("El mail no se envio porque el usuario tiene desactiva esta opcion")
-                        mail = null;
+                        mail2 = null;
                       }
+                      resolve(mail2);
                     });
+                  });
+                  async function obtenerMail2(promesa){
+                    return await(promesa);
+                  }
+                  mail = obtenerMail2(promesa);
+
                 }
                 else{
-                  console.log("El mail no se envio");
                   mail = null;
                 }
                 resolve(mail);
@@ -554,6 +558,8 @@ async function verificarPrecios(){
   }
 
 }
+
+
 
 
 app.get('/', (req, res)=>{
