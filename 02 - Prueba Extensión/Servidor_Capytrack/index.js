@@ -24,8 +24,8 @@ var transporter = nodemailer.createTransport({
 var options = {
   hots: 'localhost',
   port: 3306,
-  user: 'root',
-  password: '123456',
+  user: 'Velnias',
+  password: '/Velnias7',
   database: 'capytrack'
 };
 
@@ -33,8 +33,8 @@ var sessionStore = new MySQLStore(options);
 
 const conexion = mysql.createConnection({
   host: 'localhost',
-  user: 'root',
-  password: '123456',
+  user: 'Velnias',
+  password: '/Velnias7',
   database: 'capytrack'
 });
 
@@ -561,8 +561,15 @@ app.post('/productosCliente', (req, res)=>{
   
   var idSession = req.body.idSession;
 
-  console.log("\n Entro a productosCliente en busca del cliente con id: "+ idSession);
+
+  console.log("\n\n Entro a productosCliente en busca del cliente con id: "+ idSession);
   devolverProductosCliente(idSession).then(productos => {
+    console.log("productos del cliente obtenidos: " + "\n productos[0] =" + productos[0] + "\n productos.length =" + productos.length
+    + "\n productos[0].nombre =" + productos[0].nombre  +"\n\n" );
+
+
+
+
     res.json({
       status: 'success',
       prods: productos,

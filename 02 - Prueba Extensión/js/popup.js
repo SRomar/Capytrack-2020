@@ -41,18 +41,41 @@ function traerProductosServidor(){
 }
 
 
-/*
-function traerProductosServidor(){
-  fetch('http://localhost:3000/productosCliente').then(data => data.text()).then(data =>{
-      var i = data;
-      console.log("productos servidor: " + i);
-      if(i.length !== 0){
-        compararProductos(i);
+
+
+    getearSessionId().then(id => {
+      if(id != 0){
+        console.log("entro a traerProductosSevidor,id igual a "+id);
+        var clienteServidor = {
+          idSession: id
+        }
+        var request = $.ajax({
+          type: "POST",
+          url: "http://localhost:3000/productosCliente",
+          data: clienteServidor,
+          error: function(xhr, status, error){
+            console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+          }
+        });
+        request.done(function(response) {
+
+
+          // for(i=0; i<response.prods.length; i++){
+          //   console.log(response.prods[i].nombre) +"\n\n";
+          // }
+
+          // obtenerSessionIdABM(response.sessionId);
+          compararProductos(response.prods);
+        });
       }
-  });
-}*/
+      
+    });
+
+}
 
 
+
+function traerProductosServidor(){
 async function compararProductos(productosServidor){
 console.log("entro a comparar productos");
   var p1 = new Promise(function(resolve, reject){     
@@ -86,13 +109,18 @@ console.log("entro a comparar productos");
   });
 
   const productosSync = await(p1);
+
   console.log("productosSync: " + Object.values(productosSync));
   console.log("productosServidor: " + Object.values(productosServidor));
 
 
 
+  // console.log("\n\n\n ###ProductosSync: " + productosSync + "\n");
+
+
   cont = 0;
   productosSyncNuevos = [];
+  console.log("Productos length INICIAL"+productosSyncNuevos.length);
 
   for(var i=0; i<productosSync.length; i++){
     for(var j=0; j<productosServidor.length; j++){
@@ -121,15 +149,15 @@ console.log("entro a comparar productos");
         cont++;
       }
     }
-    if(cont == productosServidor.length){
-      console.log("cont: " + cont + "\n productosServidor.length: " + productosServidor.length);
+
+    if(cont == productosServidor.length-1){
+      console.log("Se agrego un producto sync nuevo "+productosSyncNuevos.length);
       productosSyncNuevos.push(productosSync[i]);
     }
   }
-  
   if(productosSyncNuevos.length !== 0){
-    console.log("productosSyncNuevos: " + productosSyncNuevos.length);
-    //agregarProductosFaltantes(productosSyncNuevos);
+    console.log("Productos length "+productosSyncNuevos.length);
+    agregarProductosFaltantes(productosSyncNuevos);
   }
 
 }
@@ -145,9 +173,8 @@ async function actualizarProducto(productoSync, productoServidor){
     $.map(lista, function(productosEnLista, listaSeleccionada) { //Obtiene los productos en la lista
             
             
-      $.map(productosEnLista, function(producto, llaveProducto) {  //Separa a los productos
-              
-              
+      $.map(productosEnLista, function(producto, llaveProducto) {  //Separa a los productos 
+        
         $.map(producto, function(datosProducto, categoryID) { //Separa a los datos del producto
           if(productoSync[5] !== categoryID){
             productosLista.push(producto);
@@ -163,10 +190,7 @@ async function actualizarProducto(productoSync, productoServidor){
     
     var diccionarioProducto = {};       
     var key = productoSync[5];  
-
     diccionarioProducto[key]= productoServidor;   
-
-      
 
     chrome.storage.sync.get(function(cfg) {
       if(typeof(cfg[listaSeleccionada]) !== 'undefined' && cfg[listaSeleccionada] instanceof Array) { 
@@ -247,7 +271,7 @@ function AgregarProductoNuevo(productoNuevo, lista){
     });
 }
 
-function mostrarBotonRegistrarse(){
+  function mostrarBotonRegistrarse(){
   getearSessionId().then(id => {
     if(id != 0){
       var sessionIdServidor = {
@@ -337,7 +361,8 @@ async function getearSessionId(){
   });
   const id = await(p);
   //console.log("id: " + id);
-  if(id == undefined){
+  console.log("getearSessionId devolvio: "+id+ "de tipo "+ typeof id);
+  if(id == undefined || id == ""){
     return 0;
   }
   else{
@@ -520,15 +545,12 @@ async function VerificacionExistenciaProducto(){
   
 }
 
-
-
 function EventoAgregarProductoLista(){
   $("#btnAgregarLista").click(function(){
     VerificacionExistenciaProducto();
   });
   
 }
-
 
 function EventoPanelNuevaLista(){
   $("#nuevaLista").click(function(){
@@ -623,8 +645,6 @@ function EventoListas(){
 
 
 }
-
-
 
 function DesplegarProductos(nombreLista){
   try {
