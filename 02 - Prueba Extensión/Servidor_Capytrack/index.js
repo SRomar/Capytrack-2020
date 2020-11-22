@@ -73,14 +73,15 @@ app.get('/session', (req, res) => {
 app.post('/updateSessionId', (req, res) => {
   var idAnterior = req.body.idAnterior;
   var idNuevo = req.body.idNuevo;
-  console.log("idsession_viejo: " + idAnterior);
-  console.log("idsession_nuevo: " + idNuevo);
+  //console.log("idsession_viejo: " + idAnterior);
+  //console.log("idsession_nuevo: " + idNuevo);
   
   updateSessionId(idNuevo, idAnterior);
 
 });
 
 async function updateSessionId(idNuevo, idAnterior){
+  console.log("entro al update session");
   var masDeUnRegistro = false;
   var p1 = new Promise(function(resolve, reject){
     conexion.query('SELECT COUNT(*) AS count FROM sessions;', (err,result)=>{
@@ -102,6 +103,10 @@ async function updateSessionId(idNuevo, idAnterior){
   
   conexion.query('UPDATE sessions SET session_id = ? WHERE session_id = ?;', [idNuevo, idAnterior], (err,result)=>{
     if(err) throw err;
+    else{
+      console.log("actualizo session id");
+    }
+    
   });
 
   var sinRegistros = false;
@@ -186,7 +191,14 @@ app.post('/altaProducto', function(req, res){
     var id = req.body.id;
     var nombre = req.body.title;
     var url = req.body.permalink;
-    var activo = Boolean(req.body.status);
+    var activo;
+    if(req.body.status == "active"){
+      activo = true;
+    }
+    else{
+      activo = false;
+    }
+
     var nombrelista = req.body.nombrelista;
     var precio = req.body.price;
     var sessionId = req.body.sessionId;
@@ -336,6 +348,7 @@ cron.schedule("*/1 * * * *", function(){
 
 async function verificarPrecios(){
   var prods;
+
   var p1 = new Promise(function(resolve, reject){
     conexion.query('SELECT id, nombre, activo, precio, nombre_lista, idCliente FROM productos;', (err,result)=>{
       if(err) throw err;
@@ -357,10 +370,17 @@ async function verificarPrecios(){
         var p2 = new Promise(function(resolve, reject){
           fetch(linkAPI).then(data => data.text()).then(data =>{
             var j = JSON.parse(data);
-            
+            var estado;
+            if(j.status == "active"){
+              estado = true;
+            }
+            else{
+              estado = false;
+            }
+
             var atributosProducto = {
               price: j.price,
-              status: j.status
+              status: estado
             };
           
             resolve(atributosProducto);   
@@ -374,7 +394,7 @@ async function verificarPrecios(){
         }
         else if(atributos.price != productos[i].precio){
           console.log("el precio de " + productos[i].id + " cambio y es este: " + atributos.price); 
-          
+
           conexion.query('UPDATE productos SET precio = ? WHERE id = ?;', [atributos.price, productos[i].id], (err,result)=>{
             if(err) throw err;
           });
@@ -428,12 +448,29 @@ async function verificarPrecios(){
             }); 
           }
         }
-        else if(atributos.status == productos[i].activo){
-          console.log("El producto " + productos[i].id + " no cambio de estado, sigue: " + atributos.status);
+        if(atributos.status == productos[i].activo){
+          var estadoActual;
+          if(atributos.status == true){
+            estadoActual = "active";
+          }
+          else{
+            estadoActual = "paused";
+          }
+
+          console.log("El producto " + productos[i].id + " no cambio de estado, sigue: " + estadoActual);
         }
         else if(atributos.status != productos[i].activo){
-          console.log("El producto " + productos[i].id + " cambio de estado a " + atributos.status);
-        
+          var estadoActual;
+          if(atributos.status == true){
+            estadoActual = "active";
+          }
+          else{
+            estadoActual = "paused";
+          }
+
+          console.log("El producto " + productos[i].id + " cambio de estado a " + estadoActual);
+
+
           conexion.query('UPDATE productos SET activo = ? WHERE id = ?;', [atributos.status, productos[i].id], (err,result)=>{
             if(err) throw err;
           });
@@ -470,7 +507,9 @@ async function verificarPrecios(){
             });     
             const mailUsuario = await(p4);
 
-            var textoMail = "El producto " + productos[i].id + " - " + productos[i].nombre + " perteneciente a la lista " + productos[i].nombre_lista + " cambio de estado. Su estado actual es: " + atributos.status;
+
+
+            var textoMail = "El producto " + productos[i].id + " - " + productos[i].nombre + " perteneciente a la lista " + productos[i].nombre_lista + " cambio de estado. Su estado actual es: " + estadoActual;
             
             var mailOptions = {
               from: 'capytrack@gmail.com',
@@ -490,9 +529,66 @@ async function verificarPrecios(){
         }
     }
   }
-
+  
 }
 
+
+app.post('/productosCliente', (req, res)=>{
+  console.log(req.body);
+  
+  var idSession = req.body.idSession;
+
+  
+  devolverProductosCliente(idSession).then(productos => {
+    //console.log("productos: " + productos);
+    res.json({
+      status: 'success',
+      prods: productos,
+      sessionId: req.sessionID
+    });
+  });
+  
+
+  
+  
+});
+
+async function devolverProductosCliente(idSession){
+  var sessionId = idSession;
+  var p1 = new Promise(function(resolve, reject){
+    
+    conexion.query('SELECT idCliente FROM clientes WHERE session_id = ?;', sessionId , (err,result)=>{
+      var idCliente;
+      if(err) throw err;
+      else{
+        console.log("idCliente productosCliente: " + result.length);
+        idCliente = result[0].idCliente;
+            
+      }
+      resolve(idCliente);
+    });
+  });
+  
+  const idCliente = await (p1);
+
+  var p2 = new Promise(function(resolve, reject){
+    console.log("idCliente" + idCliente);
+    conexion.query('SELECT * FROM productos WHERE idCliente = ?;', idCliente , (err,result)=>{
+      var prods = [];
+      if(err) throw err;
+      else{       
+        prods = result;      
+      }
+      resolve (prods);
+    });
+  });
+
+  const productos = await (p2);
+
+  console.log("productos: " + productos[0]);
+  return productos;
+  
+}
 
 app.get('/', (req, res)=>{
   console.log(req.body);

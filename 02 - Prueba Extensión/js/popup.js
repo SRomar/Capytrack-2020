@@ -9,8 +9,216 @@ $(document).ready(function(){
   EventoAdministrarLista();
   eventoSelect();
   DesplegarProductos($( "#selectLista" ).val());
+  traerProductosServidor();
   
 });
+
+
+
+function traerProductosServidor(){
+  setTimeout(function(){
+    getearSessionId().then(id => {
+      if(id != 0){
+        //console.log("entro a id != 0");
+        var clienteServidor = {
+          idSession: id
+        }
+        var request = $.ajax({
+          type: "POST",
+          url: "http://localhost:3000/productosCliente",
+          data: clienteServidor,
+          error: function(xhr, status, error){
+            console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+          }
+        });
+        request.done(function(response) {
+          console.log("response traerProductosServidor: " + response.prods);
+          obtenerSessionIdABM(response.sessionId);
+          comparacionProductos(response.prods);
+        });
+      }
+      
+    });
+  },1000);
+}
+
+
+async function compararProductos(productosServidor){
+console.log("entro a comparar productos \n");
+  var p1 = new Promise(function(resolve, reject){  
+    var prods = [];   
+    chrome.storage.sync.get(null, function(items){
+      var allkeys = Object.keys(items);
+      
+      for(var i=0; i<allkeys.length; i++){
+
+        var p2 = new Promise(function(resolve, reject){
+          chrome.storage.sync.get(allkeys[i], function (lista) { //Obtiene la lista
+            $.map(lista, function(productosEnLista, nombreLista) { //Obtiene los productos en la lista
+              $.map(productosEnLista, function(producto, llaveProducto) {  //Separa a los productos
+                $.map(producto, function(datosProducto, categoryID) {
+                  prods.push(producto);
+                });
+              });
+            });
+
+            resolve(prods);
+          });           
+        });
+        async function traerProds(p2){
+          return await p2;
+        };  
+        var prods2 = traerExiste(p2);    
+      }
+        
+      resolve(prods2);       
+    });
+  });
+
+  const productosSync = await(p1);
+  console.log("productosSync: " + productosSync + "\n");
+
+  cont = 0;
+  productosSyncNuevos = [];
+
+  for(var i=0; i<productosSync.length; i++){
+    for(var j=0; j<productosServidor.length; j++){
+      if(productosSync[i].id == productoServidor[j].id){
+        if(productosSync[i].title != productosServidor[j].nombre ||
+           productosSync[i].status != productosServidor[j].activo ||
+           productosSync[i].price != productosServidor[j].precio){
+            actualizarProducto(productosSync[i], productosServidor[j]);
+            cont=0;
+        }
+        else{
+          cont=0;
+        }
+      }
+      else{
+        cont++;
+      }
+    }
+    if(cont == productosServidor.length-1){
+      productosSyncNuevos.push(productosSync[i]);
+    }
+  }
+  if(productosSyncNuevos.length != 0){
+    agregarProductosFaltantes(productosSyncNuevos);
+  }
+
+}
+
+async function actualizarProducto(productoSync, productoServidor){
+  console.log("entro a actualizarProducto \n");
+  var productosLista = [];
+  var listaNueva = {};
+  var listaSeleccionada = productoServidor.nombre_lista;
+  
+  chrome.storage.sync.get(listaSeleccionada, function (lista) { //Obtiene la lista
+            
+    $.map(lista, function(productosEnLista, listaSeleccionada) { //Obtiene los productos en la lista
+            
+            
+      $.map(productosEnLista, function(producto, llaveProducto) {  //Separa a los productos
+              
+              
+        $.map(producto, function(datosProducto, categoryID) { //Separa a los datos del producto
+          if(productoSync.id !== categoryID){
+            productosLista.push(producto);
+          }
+
+        });
+      });
+    });
+
+    listaNueva[listaSeleccionada] = productosLista;        
+    chrome.storage.sync.remove(listaSeleccionada);
+    chrome.storage.sync.set(listaNueva);
+    
+    var diccionarioProducto = {};       
+    var key = productoSync.id;  
+    diccionarioProducto[key]= productoServidor;   
+
+      
+
+    chrome.storage.sync.get(function(cfg) {
+      if(typeof(cfg[listaSeleccionada]) !== 'undefined' && cfg[listaSeleccionada] instanceof Array) { 
+        cfg[listaSeleccionada].push(diccionarioProducto);
+      } 
+     chrome.storage.sync.set(cfg); 
+     console.log("se seteo la lista con el productos nuevo");
+    });
+
+  });
+
+}
+
+async function agregarProductosFaltantes(productosSyncNuevos){
+  for(var k=0; k<productosSyncNuevos.length; k++){
+
+    var p1 = new Promise(function(resolve, reject){  
+      var listaProducto
+      chrome.storage.sync.get(null, function(items){
+        var allkeys = Object.keys(items);
+        
+        for(var i=0; i<allkeys.length; i++){
+  
+          var p2 = new Promise(function(resolve, reject){
+            chrome.storage.sync.get(allkeys[i], function (lista) { //Obtiene la lista
+              $.map(lista, function(productosEnLista, nombreLista) { //Obtiene los productos en la lista
+                $.map(productosEnLista, function(producto, llaveProducto) {  //Separa a los productos
+                  $.map(producto, function(datosProducto, categoryID) {
+                    if(productosSyncNuevos[k].id == categoryID){
+                      listaProducto = lista;
+                    }
+                  });
+                });
+              });
+  
+              resolve(listaProducto);
+            });           
+          });
+          async function traerLista(p2){
+            return await p2;
+          };  
+          var listaProducto2 = traerLista(p2);    
+        }
+          
+        resolve(listaProducto2);       
+      });
+    });
+    const lista = await (p1);
+
+    AgregarProductoNuevo(productosSyncNuevos[k], lista);
+  }
+}
+
+function AgregarProductoNuevo(productoNuevo, lista){
+
+    getearSessionId().then(id => {
+      var productoServidor = {
+        title: productoNuevo.title,
+        price: productoNuevo.price,
+        status: productoNuevo.status,
+        permalink: productoNuevo.permalink,
+        id: productoNuevo.id,
+        nombrelista: lista,
+        sessionId: id
+      }
+      var request = $.ajax({
+        type: "POST",
+        url: "http://localhost:3000/altaProducto",
+        data: productoServidor,
+        error: function(xhr, status, error){
+          console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+        }
+      });
+      request.done(function(response) {
+        console.log(response);
+        obtenerSessionIdABM(response.sessionId);
+      });
+    });
+}
 
 function mostrarBotonRegistrarse(){
   getearSessionId().then(id => {
@@ -28,7 +236,7 @@ function mostrarBotonRegistrarse(){
       });
       request.done(function(response) {
         console.log(response);
-        console.log("usuario ya registrado: " + response.usuario);
+        //console.log("usuario ya registrado: " + response.usuario);
         if(response.usuario == true){
           $('#btnRegistrarse').hide();       
         }
@@ -56,9 +264,9 @@ function eventoSelect(){
 function obtenerSessionIdABM(id){
   chrome.storage.local.get(['sessionId_NUEVO'], function(result){
     var sessionId_anterior = result.sessionId_NUEVO;
-    console.log("sessionId_anterior: " + sessionId_anterior);
+    //console.log("sessionId_anterior: " + sessionId_anterior);
     chrome.storage.local.set({'sessionId_NUEVO': id}, function(){
-      console.log("sessionId_NUEVO: " + id);
+    //console.log("sessionId_NUEVO: " + id);
     });
     var sessionIds = {
       idAnterior: sessionId_anterior,
@@ -77,33 +285,34 @@ function obtenerSessionIdABM(id){
 } 
 
 function obtenerSessionId(){
-  console.log("entro a obtenerSessionId");
-  fetch('http://localhost:3000/session').then(data => data.text()).then(data =>{
-    var i = data;
-    console.log("i: " + i);
-    chrome.storage.local.get(['sessionId_NUEVO'], function(result){
-      var sessionId_anterior = "";
-      if(result.sessionId_NUEVO !== undefined){
-        sessionId_anterior = result.sessionId_NUEVO;
-        console.log("sessionId_anterior: " + sessionId_anterior);
-      }
-      chrome.storage.local.set({'sessionId_NUEVO': i}, function() {
-        console.log('sessionId_NUEVO: ' + i);
-      });
-      var sessionIds = {
-        idAnterior: sessionId_anterior,
-        idNuevo: i 
-      }
-
-      $.ajax({
-        type: "POST",
-        url: "http://localhost:3000/updateSessionId",
-        data: sessionIds
-      });
-    });
-     
-  });
+  setTimeout(function(){
+    console.log("entro a obtenerSessionId");
+    fetch('http://localhost:3000/session').then(data => data.text()).then(data =>{
+      var i = data;
+      console.log("i: " + i);
+      chrome.storage.local.get(['sessionId_NUEVO'], function(result){
+        var sessionId_anterior = "";
+        if(result.sessionId_NUEVO !== undefined){
+          sessionId_anterior = result.sessionId_NUEVO;
+          console.log("sessionId_anterior: " + sessionId_anterior);
+        }
+        chrome.storage.local.set({'sessionId_NUEVO': i}, function() {
+          console.log('sessionId_NUEVO: ' + i);
+        });
+        var sessionIds = {
+          idAnterior: sessionId_anterior,
+          idNuevo: i 
+        }
   
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:3000/updateSessionId",
+          data: sessionIds
+        });
+      });
+       
+    });
+  }, 200);  
 }
 
 async function getearSessionId(){
@@ -114,7 +323,7 @@ async function getearSessionId(){
     });
   });
   const id = await(p);
-  console.log("id: " + id);
+  //console.log("id: " + id);
   if(id == undefined){
     return 0;
   }
@@ -189,7 +398,7 @@ function AgregarProducto(category_id){
       diccionariofoto = i.pictures;
       arregloFoto = diccionariofoto[Object.keys(diccionariofoto)[0]];
       foto = arregloFoto[Object.keys(arregloFoto)[2]];
-      console.log(foto);
+      //console.log(foto);
 
       //Se crea el producto
       var producto = [i.title, i.price, i.status, i.permalink, foto, i.id];
@@ -213,7 +422,7 @@ function AgregarProducto(category_id){
           }
         });
         request.done(function(response) {
-          console.log(response);
+          //console.log(response);
           obtenerSessionIdABM(response.sessionId);
         });
       });
@@ -275,7 +484,7 @@ async function VerificacionExistenciaProducto(){
             return await p3;
           };  
           var existe2 = traerExiste(p3); 
-          console.log("existe2: " + existe2);     
+          //console.log("existe2: " + existe2);     
         }
         
        resolve(existe2);
@@ -287,7 +496,7 @@ async function VerificacionExistenciaProducto(){
   const productoYaCargado = await p;
 
   //setTimeout(function(){
-    console.log("verificacion: " + productoYaCargado);
+    //console.log("verificacion: " + productoYaCargado);
 
     if(productoYaCargado == false){
       AgregarProducto(category_id);
@@ -359,7 +568,7 @@ function EventoCrearLista(){
               }
               });
               request.done(function(response) {
-                console.log(response);
+                //console.log(response);
                 obtenerSessionIdABM(response.sessionId);
               });
             });
@@ -394,7 +603,7 @@ function EventoListas(){
         
         $('#productosListaUL').empty()
         var nombreLista = $(this).text(); //Obtiene el nombre de li
-        console.log(nombreLista);
+        //console.log(nombreLista);
         DesplegarProductos(nombreLista);
       });  
     });
