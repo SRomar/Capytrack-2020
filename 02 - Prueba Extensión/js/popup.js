@@ -1,3 +1,4 @@
+
 var suscripcion = 0;
 //Llenar select
 $(document).ready(function(){
@@ -9,7 +10,8 @@ $(document).ready(function(){
   EventoPanelNuevaLista();
   EventoAdministrarLista();
   eventoSelect();
-  DesplegarProductos($( "#selectLista" ).val());
+
+  DesplegarProductos();
   obtenerSessionId();
 });
 
@@ -417,6 +419,7 @@ function obtenerListaSeleccionada(){
     lista = Object.values(result);
     if(typeof lista !== undefined){
       $("#selectLista").val(lista);
+
     }
   });
 
