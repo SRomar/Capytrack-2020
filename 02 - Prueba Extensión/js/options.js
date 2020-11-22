@@ -625,6 +625,7 @@ function setSuscripcion(){
       });
       request.done(function(response) {
         if(response.usuario == true){
+          console.log("ID GETSUSCRIP: "+id)
           getSuscripcion(id);
         }
       });

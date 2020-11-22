@@ -1,3 +1,4 @@
+
 var suscripcion = 0;
 
 $(document).ready(function(){
@@ -64,6 +65,113 @@ function EventoBotonesConfiguracionInformacionProducto(){
       });
     });
   });
+}
+
+function EventoNotificaciones(){
+  $('.toggle-control-notificacion :checkbox').each(function(idx, checkBox) {
+
+    nombre = "#" + checkBox.id;
+    getearSessionId().then(id => {
+      if(id != 0){
+        setTimeout(function (){
+        var sessionIdServidor = {
+          sessionId: id
+        }
+
+        direccion = "http://localhost:3000/getNotificar" + checkBox.id;
+        console.log(direccion);
+        var request = $.ajax({
+          type: "POST",
+          url: direccion,
+          data: sessionIdServidor,
+          error: function(xhr, status, error){
+            console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+          }
+        });
+        request.done(function(response) {
+          nombre2 = "#" + checkBox.id;
+          if(response.notificar == 0){
+          
+            $(nombre2).removeAttr('checked'); 
+          }
+        });
+      }, 200);
+      }
+    });
+
+  checkBox.addEventListener('click', event => {
+    setTimeout(function (){
+
+    nombreBoton = checkBox.id;
+
+    getearSessionId().then(id => {
+      if(id != 0){
+        var sessionIdServidor = {
+          sessionId: id
+        }
+
+        direccion = "http://localhost:3000/getNotificar" + checkBox.id;
+        console.log(direccion);
+        var request = $.ajax({
+          type: "POST",
+          url: direccion,
+          data: sessionIdServidor,
+          error: function(xhr, status, error){
+            console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+          }
+        });
+        request.done(function(response) {
+
+          console.log("Respuesta: "+response.notificar);
+          if(response.notificar == 1){
+            getearSessionId().then(id => {
+              if(id != 0){
+                var sessionIdServidor = {
+                  sessionId: id,
+                  notificar: 0
+                }
+                direccion2 = "http://localhost:3000/setNotificar" + checkBox.id;
+                console.log("Direccion 2"+ direccion);
+                $.ajax({
+                  type: "POST",
+                  url: direccion2,
+                  data: sessionIdServidor,
+                  error: function(xhr, status, error){
+                    console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+                  }
+                });
+              }
+            });
+          }else if(response.notificar == 0){
+
+            getearSessionId().then(id => {
+              if(id != 0){
+                var sessionIdServidor = {
+                  sessionId: id,
+                  notificar: 1
+                }
+                $.ajax({
+                  type: "POST",
+                  url: "http://localhost:3000/setNotificar" + nombreBoton,
+                  data: sessionIdServidor,
+                  error: function(xhr, status, error){
+                    console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
+    });
+  }, 1000);
+});
+
+});
+}
+
+function estadoBotonesNotificar(){
+
 }
 
 

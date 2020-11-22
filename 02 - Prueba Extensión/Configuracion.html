@@ -40,8 +40,8 @@
             <ul id="listaOpcionesConfig">
                 <li class="opcionConfiguracion" id="Temas">Temas</li>
                 <li class="opcionConfiguracion" id="Productos">Productos</li>
-                <li class="opcionConfiguracion" id="opcion2">Opcion 2</li>
-                <li class="opcionConfiguracion">Opcion 3</li>
+                <li class="opcionConfiguracion" id="Notificaciones">Notificaciones</li>
+
             </ul>
         </div>
             <div id="configOpciones">
@@ -56,6 +56,30 @@
                             <li id="texto">Texto <input type="color" id="textoInput"></li>
                         </ul>
                     </div>
+
+                    <div id="NotificacionesContenido" style="visibility:hidden;">
+                        <h3>Notificarme variaciones de...</h3>
+                        <div id="listaOpcionesNotificaciones">
+                            <div id="nombresOpcionesNotificaciones">
+                                <h3 class="h3InformacionProducto">Precio</h3>
+                                <h3 class="h3InformacionProducto">Estado</h3>
+                        </div>
+                        <dic id="botonesOpcionesNotificaciones">
+                            <div class="contenedorBotonInformacionProducto">
+                                <label class="toggle-control-notificacion" id="btnNotificacionPrecio">
+                                    <input type="checkbox" class="btnConfigInfProducto" checked="checked" id="Precio">
+                                    <span class="control"></span>
+                                </label>
+                            </div>
+                            <div class="contenedorBotonInformacionProducto" id="btnNotificacionEstado">
+                                <label class="toggle-control-notificacion">
+                                    <input type="checkbox" class="btnConfigInfProducto" checked="checked" id="Estado">
+                                    <span class="control"></span>
+                                </label>
+                            </div>
+                        </dic>
+                    </div>
+
                     <div id="ProductosContenido" style="visibility:hidden;">
                         <h3>Contenido visible en la información del producto</h3>
                         <div id="listaOpcionesInformacionProducto">
@@ -140,95 +164,7 @@
                                     </label>
                                 </div>
                             </dic>
-                           <!-- <li class="opcionInformacionProducto">
-                               <h3 class="h3InformacionProducto">Título</h3>
-                                <label class="toggle-control">
-                                    <input type="checkbox" class="btnConfigInfProducto" checked="checked">
-                                    <span class="control"></span>
-                                </label>
-                           </li>
-                           <li class="opcionInformacionProducto">
-                            <h3 class="h3InformacionProducto">Imágen</h3>
-                             <label class="toggle-control">
-                                 <input type="checkbox" class="btnConfigInfProducto" checked="checked">
-                                 <span class="control"></span>
-                             </label>
-                            </li>
-                            <li class="opcionInformacionProducto">
-                            <h3 class="h3InformacionProducto">Precio</h3>
-                                <label class="toggle-control">
-                                    <input type="checkbox" class="btnConfigInfProducto" checked="checked">
-                                    <span class="control"></span>
-                                </label>
-                            </li>
-                              <li class="opcionInformacionProducto">
-                            <h3 class="h3InformacionProducto">Estado</h3>
-                             <label class="toggle-control">
-                                 <input type="checkbox" class="btnConfigInfProducto" checked="checked">
-                                 <span class="control"></span>
-                             </label>
-                            </li>
-                            <li class="opcionInformacionProducto">
-                            <h3 class="h3InformacionProducto">URL</h3>
-                            <label class="toggle-control">
-                                <input type="checkbox" class="btnConfigInfProducto" checked="checked">
-                                <span class="control"></span>
-                            </label>
-                            </li>
-                            </li>
-                            <li class="opcionInformacionProducto">
-                            <h3 class="h3InformacionProducto">Localidad</h3>
-                            <label class="toggle-control">
-                                <input type="checkbox" class="btnConfigInfProducto" checked="checked">
-                                <span class="control"></span>
-                            </label>
-                            </li>    
-                            <li class="opcionInformacionProducto">
-                                <h3 class="h3InformacionProducto">Condición</h3>
-                                 <label class="toggle-control">
-                                     <input type="checkbox" class="btnConfigInfProducto" checked="checked">
-                                     <span class="control"></span>
-                                 </label>
-                                </li>
-                                <li class="opcionInformacionProducto">
-                                <h3 class="h3InformacionProducto">Cantidad Disponible </h3>
-                                <label class="toggle-control">
-                                    <input type="checkbox" class="btnConfigInfProducto" checked="checked">
-                                    <span class="control"></span>
-                                </label>
-                                </li>
-                                </li>
-                                <li class="opcionInformacionProducto">
-                                    <h3 class="h3InformacionProducto">Localidad</h3>
-                                    <label class="toggle-control">
-                                        <input type="checkbox" class="btnConfigInfProducto" checked="checked">
-                                        <span class="control"></span>
-                                    </label>
-                                    </li>    
-                                    <li class="opcionInformacionProducto">
-                                        <h3 class="h3InformacionProducto">Cuotas</h3>
-                                         <label class="toggle-control">
-                                             <input type="checkbox" class="btnConfigInfProducto" checked="checked">
-                                             <span class="control"></span>
-                                         </label>
-                                        </li>
-                                        <li class="opcionInformacionProducto">
-                                        <h3 class="h3InformacionProducto">Descripción</h3>
-                                        <label class="toggle-control">
-                                            <input type="checkbox" class="btnConfigInfProducto" checked="checked">
-                                            <span class="control"></span>
-                                        </label>
-                                        </li>
-                                        <li class="opcionInformacionProducto">
-                                            <h3 class="h3InformacionProducto">Envio</h3>
-                                            <label class="toggle-control">
-                                                <input type="checkbox" class="btnConfigInfProducto" checked="checked">
-                                                <span class="control"></span>
-                                            </label>
-                                            </li>
-                                        
-                        -->
-                           
+                                                   
                         </div>
                     </div>
             </div>

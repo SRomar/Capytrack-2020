@@ -164,6 +164,73 @@ app.post('/setSuscripcion', (req, res) =>{
 
 
 
+
+
+
+
+app.post('/getNotificarPrecio', (req, res) =>{
+  var sessionId = req.body.sessionId;
+
+conexion.query('SELECT idCliente FROM clientes WHERE session_id = ?;', sessionId, (err,result)=>{
+  if(err) throw err;
+  conexion.query('SELECT notificarPrecio from usuarios WHERE idCliente = ?;', [result[0].idCliente], (err,result)=>{
+    if(err) throw err;
+    else{
+      res.json({
+        notificar: result[0].notificarPrecio
+      });
+    }  
+  });
+}); 
+});
+
+app.post('/getNotificarEstado', (req, res) =>{
+  var sessionId = req.body.sessionId;
+
+conexion.query('SELECT idCliente FROM clientes WHERE session_id = ?;', sessionId, (err,result)=>{
+  if(err) throw err;
+  conexion.query('SELECT notificarEstado from usuarios WHERE idCliente = ?;', [result[0].idCliente], (err,result)=>{
+    if(err) throw err;
+    else{
+      res.json({
+        notificar: result[0].notificarEstado
+      });
+    }  
+  });
+}); 
+});
+
+
+
+app.post('/setNotificarPrecio', (req, res) =>{
+  var sessionId = req.body.sessionId;
+  var notificar = req.body.notificar;
+  conexion.query('SELECT idCliente FROM clientes WHERE session_id = ?;', sessionId, (err,result)=>{
+    if(err) throw err;
+    conexion.query('UPDATE usuarios SET notificarPrecio = ? WHERE idCliente = ?;', [notificar, result[0].idCliente], (err,result)=>{
+      if(err) throw err;
+      else{
+        console.log("\n\n Notificacion Precio actualizada \n\n");
+      }  
+    });
+  }); 
+});
+
+app.post('/setNotificarEstado', (req, res) =>{
+  var sessionId = req.body.sessionId;
+  var notificar = req.body.notificar;
+  conexion.query('SELECT idCliente FROM clientes WHERE session_id = ?;', sessionId, (err,result)=>{
+    if(err) throw err;
+    conexion.query('UPDATE usuarios SET notificarEstado = ? WHERE idCliente = ?;', [notificar, result[0].idCliente], (err,result)=>{
+      if(err) throw err;
+      else{
+        console.log("\n\n Notificacion Estado actualizada \n\n");
+      }  
+    });
+  }); 
+});
+
+
 app.post('/usuarioRegistrado', function(req, res){
     console.log(req.body);
 
@@ -438,11 +505,22 @@ async function verificarPrecios(){
           if(uRegistrado == true){
             var p4 = new Promise(function(resolve, reject){
               conexion.query('SELECT usuario FROM usuarios WHERE idCliente = ? AND suscripcion IN (?, ?);', [productos[i].idCliente, 2, 3] , (err,result)=>{
-                var mail; 
+                var mail = null; 
                 if(err) throw err;
                 else if(result.length > 0){
                     console.log("usuarios encontrados")
-                    mail = result[0].usuario;  
+                    conexion.query('SELECT notificarPrecio FROM usuarios WHERE idCliente = ?', productos[i].idCliente, (err,res)=>{
+                      if(err) throw err;
+                      else if(res[0].notificarPrecio == 1){
+                        mail = result[0].usuario;  
+                        console.log("Mail creado");
+                        resolve(mail);
+                      }else{
+                        console.log("NOTIFICAR PRECIO: "+res[0].notificarPrecio);
+                        console.log("El mail no se envio porque el usuario tiene desactiva esta opcion")
+                        mail = null;
+                      }
+                    });
                 }
                 else{
                   console.log("El mail no se envio");
@@ -516,7 +594,7 @@ async function validacionUsuario(usuario, contrasena, sessionId){
           var idCliente = result[0].idCliente;
           // console.log(idCliente);
           var p2 = new Promise(function(resolve, reject){
-            conexion.query('INSERT INTO usuarios (usuario, contrasena, idCliente, suscripcion) VALUES (?, ?, ?, ?);', [usuario, contrasena, idCliente, 0], (err,result)=>{
+            conexion.query('INSERT INTO usuarios (usuario, contrasena, idCliente, suscripcion, notificarPrecio, notificarEstado) VALUES (?, ?, ?, ?, ?, ?);', [usuario, contrasena, idCliente, 0, true, true], (err,result)=>{
               if(err) throw err;
               else{
                 var US = true;
