@@ -1,0 +1,163 @@
+:root {
+    --fondoPag: linear-gradient(360deg, rgb(31, 56, 73) 1%, var(--secundario) 100%);
+    --borde: #52093f;
+    --secundario: #4b7fa1;
+    --contenedor: linear-gradient(180deg, #ffffff 0%, #dbdbdb 100%);
+    --complementario: #ececec;
+    --lineas: #ffffff0a;
+    --texto: #ececec;
+    --texto2: #444444;
+    --fuente: 'Spinnaker';
+    --fuente2: 'Spartan', sans-serif;
+  } 
+
+html{
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    width: 280px;
+    background:  var(--fondoPag);
+    font-family: var(--fuente2);
+
+    align-content: center;
+    padding: 0px;
+    margin: 0px;
+}
+
+body{
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+
+
+    height: 100%;
+    width: 100%;
+    padding: 0px;
+    margin: 0 auto;
+}
+
+h1{
+    font-size: 22px;
+    font-family: var(--fuente);
+    font-weight: 500;
+    margin-top: 8px;
+    margin-bottom: 2px;
+    color: var(--texto); 
+}
+h3, span{
+    margin-bottom: 2px;
+    margin-top: 5px;
+    font-size: 15px;
+    font-family: var(--fuente2);
+    font-weight: 500;
+    color: var(--texto); 
+  
+}
+
+
+#contenedor, #contenedorNuevaLista{
+    height: 100%;
+    width: 100%;
+    text-align: center;
+}
+
+
+#btnPopup, #btnRegistrarse, #nuevaLista, #btnAgregarLista, #btnAdministrarLista, #btnCrearLista, #retroceso{
+    font-family: var(--fuente2);
+    font-weight: 600;
+    color: var(--texto2);
+    text-decoration: none;
+    border: none;
+    width: 260px;
+    margin: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    height: 25px;
+    /* border-radius: 10px; */
+    background: var(--contenedor);
+    box-shadow: 0px 1.92677px 1.92677px rgba(0, 0, 0, 0.25);
+}
+
+#btnAgregarLista{
+    margin-top: 1px;
+    margin-bottom: 6px;
+}
+
+#nombreLista{
+    width: 90.5%;
+    margin: 10px;
+    outline:none;
+    box-shadow: none;
+
+}
+
+#nuevaLista{
+    width: 47.3%;
+    height: 26px;
+    display: inline-block;
+    margin-right: 0px;
+}
+
+#selectLista{
+    font-family: var(--fuente2);
+    font-weight: 470;
+    font-size: 12px;
+    color: var(--texto2); 
+    background: var(--contenedor);
+    /* border-radius: 10px; */
+    width: 47.3%;
+    height: 27px;
+    display: inline-block;
+
+}
+
+#contenedorLista{
+    margin: 10px;
+    vertical-align: middle;
+    text-align: left;
+}
+
+
+
+#informacion{
+    margin-right: 10px;
+}
+
+#productosListaUL{
+    margin: 10px;
+    overflow-y: scroll;
+    overflow-x: scroll;
+    background-color: white;
+    width: calc(100%-10px);
+    height: 125px;
+    padding: 0px;
+
+}
+
+.productoEnLista{
+    font-family:  var(--fuente2);
+    text-decoration: none;
+    list-style-type: none;
+    color: var(--texto2);
+    background: var(--lineas);
+    font-size: 15px;
+    font-weight: 500;
+    width: 100%;
+    height: 8px;
+    padding-top: 10px;
+    padding-left: 10px;
+    margin-bottom: 35px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+li{
+    font-family: var(--fuente2);
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--texto); 
+    margin-bottom: 0px;
+}
+
+
+
+  
+  
