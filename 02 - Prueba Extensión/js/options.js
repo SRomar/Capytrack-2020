@@ -22,9 +22,7 @@ $(document).ready(function(){
 });
 
 
-function mensajeNoHayProductosEnLista(){
-
-
+async function mensajeNoHayProductosEnLista(){
   var p = new Promise(function(resolve, reject){
     chrome.storage.sync.get(listaSeleccionada, function (lista) { //Obtiene la lista
   

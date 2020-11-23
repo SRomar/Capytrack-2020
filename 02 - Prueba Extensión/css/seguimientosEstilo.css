@@ -92,6 +92,7 @@ html, body{
 }
 
 
+
 html{
     height: 100%;
     padding: 0px;
@@ -126,12 +127,14 @@ h3{
 }
 
 #header{ 
+    
     text-align: center;
     width: calc(100% - 20px);
     height: 90px;
     margin-bottom: 20px;
     padding-left: 20px;
     padding-top: 15px;
+    padding-bottom: 10px;
     font-family:  var(--fuente1);
     /* outline:5px solid var(--borde);
     background: var(--contenedor); */
@@ -143,21 +146,22 @@ h3{
 }
 
 #usuario{
+    display: block;
     width: 100%;
     text-align: right;
 }
 
 #nombreUsuario{
+
     font-family:  var(--fuente2);
     font-size: 15px;
     color: var(--texto2);
-    margin-right: 20px;
-    margin-top: 20px;
+    margin-right: 25px;
 }
 
 #capyCara{
     padding-top: 9px;
-    padding-left: 25px;
+    padding-left: 15px;
 }
 
 
