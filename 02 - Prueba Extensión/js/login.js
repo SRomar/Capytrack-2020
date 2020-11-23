@@ -2,9 +2,23 @@ $(document).ready(function(){
     EventoRegistrarse();
     EventoRetroceder();
     obtenerSessionId();
+    TodosLosBotones();
+
 });
 
-
+function TodosLosBotones(){
+  document.querySelectorAll('button').forEach(item => {
+    EventoIluminar("#"+item.id);
+  });
+}
+function EventoIluminar(idElemento){
+        $(idElemento).mouseover(function(){
+      $(idElemento).css("background", "linear-gradient(360deg, rgb(22, 27, 39) 1%, #4e5155 100%)");
+    });
+    $(idElemento).mouseleave(function(){
+      $(idElemento).css("background", "linear-gradient(360deg, rgb(22, 27, 39) 1%, #2e3542 100%)");
+    });
+}
 function obtenerSessionId(){
 
     getearSessionId().then(id => {
