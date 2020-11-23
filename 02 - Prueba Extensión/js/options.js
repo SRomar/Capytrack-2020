@@ -258,12 +258,14 @@ function EventoListas(){
           // if (/\s/.test(nombreLista)) {
           //   nombreLista = nombreLista.replace(/\s/g, "_");
           // }
+          var nombreLista = $(this).text();
           listaSeleccionada = nombreLista;
+          console.log("Click en lista: "+listaSeleccionada )
          
 
               
             $('#productosUl').empty()
-            var nombreLista = $(this).text();
+         
              DesplegarProductos(nombreLista);
           
           
@@ -520,6 +522,7 @@ function EventoEliminarProducto(itemProducto){
             });
   
             listaNueva[listaSeleccionada] = productosLista;        
+            console.log("Lista a eliminar: "+listaSeleccionada);
             chrome.storage.sync.remove(listaSeleccionada);
             chrome.storage.sync.set(listaNueva);
             console.log("elimino producto");
