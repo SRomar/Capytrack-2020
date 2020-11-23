@@ -124,6 +124,20 @@ h3{
     /* text-align: left; */
     /* display: flex; */
 }
+
+#usuario{
+    width: 100%;
+    text-align: right;
+}
+
+#nombreUsuario{
+    font-family:  var(--fuente2);
+    font-size: 15px;
+    color: var(--texto2);
+    margin-right: 20px;
+    margin-top: 20px;
+}
+
 #capyCara{
     padding-top: 9px;
     padding-left: 25px;
@@ -268,6 +282,8 @@ h3{
     vertical-align: middle;
     cursor: pointer;
 }
+
+
 
 #inp0{
     padding-top: 10px;

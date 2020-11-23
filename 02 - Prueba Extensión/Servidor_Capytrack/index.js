@@ -406,7 +406,6 @@ app.post('/usuarioRegistrado', function(req, res){
                       if(err) throw err;
                       else{
                         console.log("USUARIO REGISTRADO");
-                        console.log("mail: " + result[0].usuario);
                         res.json({
                           status: 'success',
                           usuario: true,
