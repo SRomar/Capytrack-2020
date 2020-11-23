@@ -2,7 +2,7 @@
 var suscripcion = 0;
 
 $(document).ready(function(){
-    setSuscripcion();
+   getSuscripcion();
   
     EventosBotones();
     EventosOpciones();
@@ -252,26 +252,13 @@ function estadoBotonesNotificar(){
   
 
 
-  function getSuscripcion(id){
-    var sessionUsuario = {
-      sessionId: id
-    }
-    var request = $.ajax({
-      type: "POST",
-      url: "http://localhost:3000/getSuscripcion",
-      data: sessionUsuario,
-      error: function(xhr, status, error){
-        console.log("Error al contactar con el servidor, xhr: " + xhr.status);
-      }
-      });
-      request.done(function(response) {
-        suscripcion = response.suscripcion;
-        redireccionar(suscripcion);
-      });
-  }
-  
-  
-  function setSuscripcion(){
+  function getSuscripcion(){
+
+
+
+
+
+
     getearSessionId().then(id => {
       if(id != 0){
         var sessionIdServidor = {
@@ -287,12 +274,32 @@ function estadoBotonesNotificar(){
         });
         request.done(function(response) {
           if(response.usuario == true){
-            getSuscripcion(id);
+            var sessionUsuario = {
+              sessionId: id
+            }
+            var request = $.ajax({
+              type: "POST",
+              url: "http://localhost:3000/getSuscripcion",
+              data: sessionUsuario,
+              error: function(xhr, status, error){
+                console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+              }
+              });
+              request.done(function(response) {
+                suscripcion = response.suscripcion;
+                redireccionar(suscripcion);
+              });
+        
+          }
+          else{
+            redireccionar(0);
           }
         });
       }
-    });
+    });  
   }
+  
+
 
   // function obtenerSessionId(){
   //   fetch('http://localhost:3000/session').then(data => data.text()).then(data =>{
