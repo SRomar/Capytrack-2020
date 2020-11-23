@@ -58,6 +58,20 @@
 
 
   
+#usuario{
+    display: block;
+    width: 100%;
+    text-align: right;
+}
+
+#nombreUsuario{
+
+    font-family:  var(--fuente2);
+    font-size: 15px;
+    color: var(--texto2);
+    margin-right: 25px;
+}
+
 
 
 html, body{
@@ -113,6 +127,8 @@ h3{
     height: 90px;
     margin-bottom: 20px;
     padding-left: 20px;
+    padding-bottom: 10px;
+
     padding-top: 15px;
     font-family:  var(--fuente1);
     /* outline:5px solid var(--borde);

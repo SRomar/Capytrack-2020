@@ -2,10 +2,50 @@ $(document).ready(function(){
 
     EventosBotones();
     EventoEnviar();
-  
+    mostrarUsuario();
+
   });
 
+  function mostrarUsuario(){
+    getearSessionId().then(id => {
+      if(id != 0){
+        var sessionIdServidor = {
+          sessionId: id
+        }
+        var request = $.ajax({
+          type: "POST",
+          url: "http://localhost:3000/usuarioRegistrado",
+          data: sessionIdServidor,
+          error: function(xhr, status, error){
+            console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+          }
+        });
+        request.done(function(response) {
+          
+          if(response.usuario == true){    
+            nombreUsuario.innerHTML = response.mail;     
+          }
+          else{
+            nombreUsuario.innerHTML = 'Usuario no registrado';
+          }
+        });
+      }
+    });
+  }
 
+
+
+  
+async function getearSessionId(){
+  var p = new Promise(function(resolve, reject){
+    chrome.storage.local.get(['sessionId_NUEVO'], function(result){
+      var id = result.sessionId_NUEVO;
+      resolve(id); 
+    });
+  });
+  const id = await(p);
+  return id;
+}
   function EventosBotones(){
     $(document).on('click','#btnSeguimientos', function() {
         window.location.replace("options.html");

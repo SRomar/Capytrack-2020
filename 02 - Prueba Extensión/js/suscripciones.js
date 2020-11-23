@@ -4,9 +4,36 @@ $(document).ready(function(){
     siRegistrado();
     EventosBotones();
     EventoBotonesPaquetes();
+    mostrarUsuario();
+
   });
 
-
+  function mostrarUsuario(){
+    getearSessionId().then(id => {
+      if(id != 0){
+        var sessionIdServidor = {
+          sessionId: id
+        }
+        var request = $.ajax({
+          type: "POST",
+          url: "http://localhost:3000/usuarioRegistrado",
+          data: sessionIdServidor,
+          error: function(xhr, status, error){
+            console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+          }
+        });
+        request.done(function(response) {
+          
+          if(response.usuario == true){    
+            nombreUsuario.innerHTML = response.mail;     
+          }
+          else{
+            nombreUsuario.innerHTML = 'Usuario no registrado';
+          }
+        });
+      }
+    });
+  }
   function EventosBotones(){
     $(document).on('click','#btnSeguimientos', function() {
         window.location.replace("options.html");

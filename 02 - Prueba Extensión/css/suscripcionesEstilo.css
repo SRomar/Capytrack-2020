@@ -27,6 +27,20 @@
   }  */
 
 
+  #usuario{
+    display: block;
+    width: 100%;
+    text-align: right;
+}
+
+#nombreUsuario{
+
+    font-family:  var(--fuente2);
+    font-size: 15px;
+    color: var(--texto2);
+    margin-right: 25px;
+}
+
 
   
 
@@ -78,7 +92,9 @@ h3{
     font-size: 20px;
 }
 
-#header{ 
+#header{
+    padding-bottom: 10px;
+ 
     text-align: center;
     width: calc(100% - 20px);
     height: 90px;
