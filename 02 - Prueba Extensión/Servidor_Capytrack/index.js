@@ -25,8 +25,8 @@ var transporter = nodemailer.createTransport({
 var options = {
   hots: 'localhost',
   port: 3306,
-  user: 'Velnias',
-  password: '/Velnias7',
+  user: 'root',
+  password: '123456',
   database: 'capytrack'
 };
 
@@ -34,8 +34,8 @@ var sessionStore = new MySQLStore(options);
 
 const conexion = mysql.createConnection({
   host: 'localhost',
-  user: 'Velnias',
-  password: '/Velnias7',
+  user: 'root',
+  password: '123456',
   database: 'capytrack'
 });
 
@@ -67,25 +67,7 @@ app.post('/session', (req, res) => {
   var id = req.sessionID;
   var sessionId = req.body.sessionId;
 
-  if(sessionId == 0){   
-    conexion.query('INSERT INTO clientes (session_id) VALUES (?);', id, (err,result)=>{
-      if(err) throw err;
-    });
-  }
-  else{
-    conexion.query('SELECT COUNT(*) AS count FROM clientes WHERE session_id = ?;', sessionId, (err,result)=>{
-      if(err) throw err;
-      else{
-        var contador = result[0].count;
-        if(contador == 0){
-          conexion.query('INSERT INTO clientes (session_id) VALUES (?);', sessionId, (err,result)=>{
-            if(err) throw err;
-          });
-        }
-      }
-    });
-  }
-
+  guardarSession(sessionId, id);
   
   res.json({
     status: 'success',
@@ -93,6 +75,42 @@ app.post('/session', (req, res) => {
   });
 
 });
+
+
+async function guardarSession(sessionId, id){
+  
+  if(sessionId == 0){   
+    conexion.query('INSERT INTO clientes (session_id) VALUES (?);', id, (err,result)=>{
+      if(err) throw err;
+    });
+  }
+  else{
+    
+    var p1 = new Promise(function(resolve, reject){
+      var contador;
+      console.log("entro a p1");
+      conexion.query('SELECT COUNT(*) AS count FROM clientes WHERE session_id = ?;', sessionId, (err,result)=>{
+        if(err) throw err;
+        else{
+          contador = result[0].count;
+          
+        }
+        resolve(contador);
+      });
+    });
+    const cont = await(p1);
+    console.log("cont: " + cont);
+    if(cont == 0){           
+      conexion.query('INSERT INTO clientes (session_id) VALUES (?);', sessionId, (err,result)=>{
+        if(err) throw err;
+      });
+    }
+      
+    
+    
+  }
+}
+
 
 // app.post('/updateSessionId', (req, res) => {
 //   var idAnterior = req.body.idAnterior;
@@ -384,12 +402,19 @@ app.post('/usuarioRegistrado', function(req, res){
                     });
                   }
                   else{
-                    console.log("USUARIO REGISTRADO");
-                    res.json({
-                      status: 'success',
-                      usuario: true,
-                      sessionId: req.sessionID
+                    conexion.query('SELECT usuario FROM usuarios WHERE idCliente = ?;', idCliente, (err,result)=>{
+                      if(err) throw err;
+                      else{
+                        console.log("USUARIO REGISTRADO");
+                        res.json({
+                          status: 'success',
+                          usuario: true,
+                          mail: result[0].usuario,
+                          sessionId: req.sessionID
+                        });
+                      }
                     });
+                    
                   }
                 }
               });
@@ -572,8 +597,9 @@ cron.schedule("*/1 * * * *", function(){
 
 async function verificarPrecios(){
   var prods;
+
   var p1 = new Promise(function(resolve, reject){
-    conexion.query('SELECT id, nombre, precio, nombre_lista, idCliente FROM productos;', (err,result)=>{
+    conexion.query('SELECT id, nombre, activo, precio, nombre_lista, idCliente FROM productos;', (err,result)=>{
       if(err) throw err;
       else{
         if(result != null){
@@ -593,19 +619,108 @@ async function verificarPrecios(){
         var p2 = new Promise(function(resolve, reject){
           fetch(linkAPI).then(data => data.text()).then(data =>{
             var j = JSON.parse(data);
-            resolve(j.price);   
+            var estado;
+            if(j.status == "active"){
+              estado = true;
+            }
+            else{
+              estado = false;
+            }
+
+            var atributosProducto = {
+              price: j.price,
+              status: estado
+            };
+          
+            resolve(atributosProducto);   
           });
         });
         
-        const precioActual = await p2;
+        const atributos = await p2;
 
-        if(precioActual == productos[i].precio){
-          console.log("el precio de " + productos[i].id + " sigue igual perri y es: " + precioActual);
+        if(atributos.price == productos[i].precio){
+          console.log("el precio de " + productos[i].id + " sigue igual perri y es: " + atributos.price);
         }
-        else{
-          console.log("el precio de " + productos[i].id + " cambio y es este: " + precioActual); 
+        else if(atributos.price != productos[i].precio){
+          console.log("el precio de " + productos[i].id + " cambio y es este: " + atributos.price); 
+
+          conexion.query('UPDATE productos SET precio = ? WHERE id = ?;', [atributos.price, productos[i].id], (err,result)=>{
+            if(err) throw err;
+          });
+
+          var mail;
+         
           
-          conexion.query('UPDATE productos SET precio = ? WHERE id = ?;', [precioActual, productos[i].id], (err,result)=>{
+          var usuarioRegistrado;
+          var p3 = new Promise(function(resolve, reject){
+            conexion.query('SELECT COUNT(*) AS count FROM usuarios WHERE idCliente = ?;', productos[i].idCliente , (err,result)=>{
+              if(err) throw err;
+              else{
+                if(result[0].count == 1){
+                  usuarioRegistrado = true;
+                }
+                else{
+                  usuarioRegistrado = false;
+                }     
+              }
+              resolve(usuarioRegistrado);
+            });
+          });
+          const uRegistrado = await(p3);
+
+          if(uRegistrado == true){
+            var p4 = new Promise(function(resolve, reject){
+              conexion.query('SELECT usuario FROM usuarios WHERE idCliente = ?;', productos[i].idCliente , (err,result)=>{
+                if(err) throw err;
+                else{
+                    mail = result[0].usuario;  
+                }
+                resolve(mail);
+              });
+            });     
+            const mailUsuario = await(p4);
+
+            var textoMail = "El precio del producto " + productos[i].id + " - " + productos[i].nombre + " perteneciente a la lista " + productos[i].nombre_lista + " cambio de precio. Su precio actual es de: " + atributos.price + "$";
+            
+            var mailOptions = {
+              from: 'capytrack@gmail.com',
+              to: mailUsuario,
+              subject: 'CAPYTRACK',
+              text: textoMail
+            };
+            transporter.sendMail(mailOptions, function(error, info){
+              if (error) {
+                console.log(error);
+              } else {
+                console.log('Email sent: ' + info.response);
+              }
+            }); 
+          }
+        }
+        if(atributos.status == productos[i].activo){
+          var estadoActual;
+          if(atributos.status == true){
+            estadoActual = "active";
+          }
+          else{
+            estadoActual = "paused";
+          }
+
+          console.log("El producto " + productos[i].id + " no cambio de estado, sigue: " + estadoActual);
+        }
+        else if(atributos.status != productos[i].activo){
+          var estadoActual;
+          if(atributos.status == true){
+            estadoActual = "active";
+          }
+          else{
+            estadoActual = "paused";
+          }
+
+          console.log("El producto " + productos[i].id + " cambio de estado a " + estadoActual);
+
+
+          conexion.query('UPDATE productos SET activo = ? WHERE id = ?;', [atributos.status, productos[i].id], (err,result)=>{
             if(err) throw err;
           });
 
@@ -683,9 +798,122 @@ async function verificarPrecios(){
         }
     }
   }
-
+  
 }
 
+
+app.post('/productosCliente', (req, res)=>{
+  
+  var idSession = req.body.idSession;
+
+  devolverProductosCliente(idSession).then(productos => {
+    res.json({
+      status: 'success',
+      prods: productos,
+      sessionId: req.sessionID
+    });
+  });
+
+});
+async function devolverProductosCliente(idSession){
+
+  var p1 = new Promise(function(resolve, reject){
+    
+    conexion.query('SELECT idCliente FROM clientes WHERE session_id = ?;', idSession , (err,result)=>{
+      var idCliente;
+      if(err) throw err;
+      else{
+        idCliente = result[0].idCliente;       
+      }
+      resolve(idCliente);
+    });
+  });
+  
+  const idCliente = await (p1);
+
+  var p2 = new Promise(function(resolve, reject){
+    console.log("idCliente: " + idCliente);
+    conexion.query('SELECT * FROM productos WHERE idCliente = ?;', idCliente , (err,result)=>{
+      var prods = [];
+      if(err) throw err;
+      else{
+        prods = result;      
+      }
+      resolve (prods);
+    });
+  });
+
+  const productos = await (p2);
+
+  return productos;
+  
+}
+
+/*
+app.get('/productosCliente', (req, res)=>{
+  conexion.query('SELECT id, activo, precio, nombre_lista FROM productos;', (err,result)=>{
+    if(err) throw err;
+    else{
+      res.send(result); 
+    }
+  });
+});
+*/
+/*
+app.post('/productosCliente', (req, res)=>{
+  console.log(req.body);
+  
+  var idSession = req.body.idSession;
+
+  
+  devolverProductosCliente(idSession).then(productos => {
+    //console.log("productos: " + productos);
+    res.json({
+      status: 'success',
+      prods: productos,
+      sessionId: req.sessionID
+    });
+  });
+});
+*/
+/*
+async function devolverProductosCliente(idSession){
+  var sessionId = idSession;
+  var p1 = new Promise(function(resolve, reject){
+    
+    conexion.query('SELECT idCliente FROM clientes WHERE session_id = ?;', sessionId , (err,result)=>{
+      var idCliente;
+      if(err) throw err;
+      else{
+        console.log("idCliente productosCliente: " + result.length);
+        idCliente = result[0].idCliente;
+            
+      }
+      resolve(idCliente);
+    });
+  });
+  
+  const idCliente = await (p1);
+
+  var p2 = new Promise(function(resolve, reject){
+    console.log("idCliente" + idCliente);
+    conexion.query('SELECT * FROM productos WHERE idCliente = ?;', idCliente , (err,result)=>{
+      var prods = [];
+      if(err) throw err;
+      else{       
+        prods = result;      
+      }
+      resolve (prods);
+    });
+  });
+
+  const productos = await (p2);
+
+  console.log("productos: " + productos[0]);
+  return productos;
+  
+}
+*/
 
 
 
@@ -773,6 +1001,7 @@ async function validacionUsuario(usuario, contrasena, sessionId){
   }
   
 }
+
 app.post('/altaUsuario', function(req, res){
   // console.log(req.body);
 

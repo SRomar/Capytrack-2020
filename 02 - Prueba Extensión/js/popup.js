@@ -14,7 +14,25 @@ $(document).ready(function(){
   DesplegarProductos();
   traerProductosServidor();
   TodosLosBotones();
+  mensajeNoExistenListas();
 });
+
+function mensajeNoExistenListas(){
+  chrome.storage.sync.get(null, function(items) {
+    var allKeys = Object.keys(items);
+    //console.log("allkeys.length: " + allKeys.length);
+    if(allKeys.length == 0){
+      $("#hayListas").text("No hay listas creadas");
+    }
+    else{
+      $("#hayListas").text("Información Lista");
+    }
+  });
+}
+
+
+  
+
 
 function TodosLosBotones(){
   document.querySelectorAll('button').forEach(item => {
@@ -34,30 +52,33 @@ function EventoIluminar(idElemento){
 }
 
 function traerProductosServidor(){
+  setTimeout(function(){
 
-  getearSessionId().then(id => {
-    if(id != 0){
-      console.log("entro a traerProductosSevidor,id igual a "+id);
-      var clienteServidor = {
-        idSession: id
-      }
-      var request = $.ajax({
-        type: "POST",
-        url: "http://localhost:3000/productosCliente",
-        data: clienteServidor,
-        error: function(xhr, status, error){
-          console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+  
+    getearSessionId().then(id => {
+      if(id != 0){
+        console.log("entro a traerProductosSevidor,id igual a "+id);
+        var clienteServidor = {
+          idSession: id
         }
-      });
-      request.done(function(response) {
-        // for(i=0; i<response.prods.length; i++){
-        //   console.log(response.prods[i].nombre) +"\n\n";
-        // }
-        // obtenerSessionIdABM(response.sessionId);
-        compararProductos(response.prods);
-      });
-    }
- });
+        var request = $.ajax({
+          type: "POST",
+          url: "http://localhost:3000/productosCliente",
+          data: clienteServidor,
+          error: function(xhr, status, error){
+            console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+          }
+        });
+        request.done(function(response) {
+          // for(i=0; i<response.prods.length; i++){
+          //   console.log(response.prods[i].nombre) +"\n\n";
+          // }
+          // obtenerSessionIdABM(response.sessionId);
+          compararProductos(response.prods);
+        });
+      }
+    });
+  }, 200);
 }
 
 async function compararProductos(productosServidor){
@@ -93,8 +114,8 @@ async function compararProductos(productosServidor){
     });
   
     const productosSync = await(p1);
-    console.log("productosSync: " + Object.values(productosSync));
-    console.log("productosServidor: " + Object.values(productosServidor));
+    //console.log("productosSync: " + Object.values(productosSync));
+    //console.log("productosServidor: " + Object.values(productosServidor));
   
   
   
@@ -332,7 +353,10 @@ function getSuscripcion(){
   });
 }
 
-function mostrarBotonRegistrarse(){
+
+
+/*
+function mostrarBotonRegistrarseraro(){
   getearSessionId().then(id => {
     if(id != 0){
       var sessionIdServidor = {
@@ -348,9 +372,11 @@ function mostrarBotonRegistrarse(){
       });
       request.done(function(response) {
         console.log(response);
-        // console.log("usuario ya registrado: " + response.usuario);
         if(response.usuario == true){
           $('#btnRegistrarse').hide();
+          
+          
+          
           getSuscripcion();
         }
         else{
@@ -364,15 +390,55 @@ function mostrarBotonRegistrarse(){
     }
     
   });
-}
 
-function eventoSelect(){
-  $('#selectLista').on('change', function() {
-    $('#productosListaUL').empty()
-    DesplegarProductos($(this).val());
-});
+  const productosSync = await(p1);
+
+
+  cont = 0;
+  productosSyncNuevos = [];
+
+  for(var i=0; i<productosSync.length; i++){
+    for(var j=0; j<productosServidor.length; j++){
+
+      var productoSync = Object.values(productosSync[i]);
+      var atributosProductoSync = productoSync[i];
+
+      if(atributosProductoSync[5] == productosServidor[j].id){
+        if(atributosProductoSync[0] != productosServidor[j].nombre ||
+          atributosProductoSync[1] != productosServidor[j].precio){
+            console.log("\n Un producto cambio de valor: \n Producto sync:" + JSON.stringify(productosSync[i]) + "\n Producto servicdor:" + JSON.stringify(productosServidor[j]) +"\n");
+            actualizarProducto(atributosProductoSync, productosServidor[j]);
+
+          cont=0;
+        }
+        else{
+          if((atributosProductoSync[2] == "active" && productosServidor[j].activo == 0) || (atributosProductoSync[2] == "paused" && productosServidor[j].activo == 1)){
+            console.log("\n Un producto cambio de valor: \n Producto sync:" + JSON.stringify(productosSync[i]) + "\n Producto servicdor:" + JSON.stringify(productosServidor[j]) +"\n");
+            actualizarProducto(atributosProductoSync, productosServidor[j]);
+          }
+          else{
+            console.log("ids iguales pero no hubo cambios");
+            cont=0;
+          }          
+        }
+      }
+      else{
+        cont++;
+      }
+    }
+    if(cont == productosServidor.length){
+      console.log("cont: " + cont + "\n productosServidor.length: " + productosServidor.length);
+      productosSyncNuevos.push(productosSync[i]);
+    }
+  }
+  console.log("productosSyncNuevos: " + productosSyncNuevos);
+  if(productosSyncNuevos.length !== 0){
+    console.log("productosSyncNuevos: " + productosSyncNuevos.length);
+    //agregarProductosFaltantes(productosSyncNuevos);
+  }
 
 }
+*/
 
 
 function funcionesOcultasjeje(){
@@ -431,6 +497,46 @@ function funcionesOcultasjeje(){
 // }
 }
 
+
+
+function mostrarBotonRegistrarse(){
+  getearSessionId().then(id => {
+    if(id != 0){
+      var sessionIdServidor = {
+        sessionId: id
+      }
+      var request = $.ajax({
+        type: "POST",
+        url: "http://localhost:3000/usuarioRegistrado",
+        data: sessionIdServidor,
+        error: function(xhr, status, error){
+          console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+        }
+      });
+      request.done(function(response) {
+        if(response.usuario == true){
+          $('#btnRegistrarse').hide(); 
+          $('#mailUsuario').text(response.mail);      
+        }
+        else{
+          $('#btnRegistrarse').show();
+        }
+      });
+    }
+    else{
+      $('#btnRegistrarse').show();
+    }
+    
+  });
+}
+
+function eventoSelect(){
+  $('#selectLista').on('change', function() {
+    $('#productosListaUL').empty()
+    DesplegarProductos($(this).val());
+});
+
+}
 
 function obtenerSessionId(){
   setTimeout(function(){
@@ -870,6 +976,7 @@ function creacionLista(Lista, nombre){
       // obtenerSessionIdABM(response.sessionId);
     });
   });
+  mensajeNoExistenListas();
   $("#contenedorNuevaLista").hide();
   $("#contenedor").show();    
 }

@@ -117,12 +117,16 @@ function EventoRegistrarse(){
                   });
                   request.done(function(response) {
                     console.log(response);
-                    // obtenerSessionIdABM(response.sessionId);
-                    if(response.usuarioRegistrado == false){
+                    //obtenerSessionIdABM(response.sessionId);
+                    if(response.usuarioRegistrado == "usuario_no_registrado"){
                       alert("El nombre de usuario ya esta en uso!");
                     }
-                    else{
+                    else if(response.usuarioRegistrado == "usuario_registrado"){
                       alert("Registrado con éxito!");
+                      window.close();
+                    }
+                    else if(response.usuarioRegistrado == "usuario_inicio_sesion"){
+                      alert("Inició sesión con éxito!");
                       window.close();
                     }
                   });

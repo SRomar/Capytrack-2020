@@ -16,7 +16,71 @@ $(document).ready(function(){
   EventoIluminar();
   obtenerSessionId();
 
+  mostrarUsuario();
+  mensajeNoExistenListas();
 });
+
+
+function mensajeNoHayProductosEnLista(){
+  var a = 0;
+  chrome.storage.sync.get(listaSeleccionada, function (lista) { //Obtiene la lista
+  
+    $.map(lista, function(productosEnLista, nombreProducto) { //Obtiene los productos en la lista
+  
+      if(productosEnLista.length == 0){
+        alert("no se agregaron productos");
+        a = 1;
+      }       
+    });
+
+    if(a == 1){
+      return true;
+    }
+    else{
+      return false;
+    }
+  });
+
+}
+
+function mensajeNoExistenListas(){
+  chrome.storage.sync.get(null, function(items) {
+    var allKeys = Object.keys(items);
+    if(allKeys.length == 0){
+      alert("no hay listas");
+    }
+  });
+}
+
+
+
+function mostrarUsuario(){
+  getearSessionId().then(id => {
+    if(id != 0){
+      var sessionIdServidor = {
+        sessionId: id
+      }
+      var request = $.ajax({
+        type: "POST",
+        url: "http://localhost:3000/usuarioRegistrado",
+        data: sessionIdServidor,
+        error: function(xhr, status, error){
+          console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+        }
+      });
+      request.done(function(response) {
+        
+        if(response.usuario == true){    
+          nombreUsuario.innerHTML = response.mail;     
+        }
+        else{
+          nombreUsuario.innerHTML = 'Usuario no registrado';
+        }
+      });
+    }
+  });
+}
+
 
 async function getearSessionId(){
   var p = new Promise(function(resolve, reject){
@@ -187,7 +251,14 @@ function EventoListas(){
           //   nombreLista = nombreLista.replace(/\s/g, "_");
           // }
           listaSeleccionada = nombreLista;
-          DesplegarProductos(nombreLista);
+         
+          if(mensajeNoHayProductosEnLista() == false){
+            console.log("mensajeNoHayProductosEnLista(): " + mensajeNoHayProductosEnLista());
+             DesplegarProductos(nombreLista);
+          }
+          
+          
+          
         });  
       });
       });
