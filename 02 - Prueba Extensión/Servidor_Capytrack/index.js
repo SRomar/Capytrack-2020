@@ -416,6 +416,7 @@ app.post('/altaProducto', function(req, res){
     var id = req.body.id;
     var nombre = req.body.title;
     var url = req.body.permalink;
+    var img = req.body.img;
     var activo = Boolean(req.body.status);
     var nombrelista = req.body.nombrelista;
     var precio = req.body.price;
@@ -430,7 +431,7 @@ app.post('/altaProducto', function(req, res){
       else{
         var idCliente = result[0].idCliente;
         // console.log("idCliente: " + idCliente);
-        conexion.query('INSERT INTO productos (id, nombre, url, activo, nombre_lista, precio, idCliente, localidad, envio_gratis, cantidad_disponible, garantia) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', [id, nombre, url, activo, nombrelista, precio, idCliente, localidad, envioGratis, cantidadDisponible, garantia], (err,result)=>{
+        conexion.query('INSERT INTO productos (id, nombre, url, activo, nombre_lista, precio, idCliente, localidad, envio_gratis, cantidad_disponible, garantia, img) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', [id, nombre, url, activo, nombrelista, precio, idCliente, localidad, envioGratis, cantidadDisponible, garantia, img], (err,result)=>{
           if(err) throw err;
         });
       }
