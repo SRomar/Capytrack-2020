@@ -25,8 +25,8 @@ var transporter = nodemailer.createTransport({
 var options = {
   hots: 'localhost',
   port: 3306,
-  user: 'Velnias',
-  password: '/Velnias7',
+  user: 'root',
+  password: '123456',
   database: 'capytrack'
 };
 
@@ -34,8 +34,8 @@ var sessionStore = new MySQLStore(options);
 
 const conexion = mysql.createConnection({
   host: 'localhost',
-  user: 'Velnias',
-  password: '/Velnias7',
+  user: 'root',
+  password: '123456',
   database: 'capytrack'
 });
 
@@ -67,25 +67,7 @@ app.post('/session', (req, res) => {
   var id = req.sessionID;
   var sessionId = req.body.sessionId;
 
-  if(sessionId == 0){   
-    conexion.query('INSERT INTO clientes (session_id) VALUES (?);', id, (err,result)=>{
-      if(err) throw err;
-    });
-  }
-  else{
-    conexion.query('SELECT COUNT(*) AS count FROM clientes WHERE session_id = ?;', sessionId, (err,result)=>{
-      if(err) throw err;
-      else{
-        var contador = result[0].count;
-        if(contador == 0){
-          conexion.query('INSERT INTO clientes (session_id) VALUES (?);', sessionId, (err,result)=>{
-            if(err) throw err;
-          });
-        }
-      }
-    });
-  }
-
+  guardarSession(sessionId, id);
   
   res.json({
     status: 'success',
@@ -93,6 +75,42 @@ app.post('/session', (req, res) => {
   });
 
 });
+
+
+async function guardarSession(sessionId, id){
+  
+  if(sessionId == 0){   
+    conexion.query('INSERT INTO clientes (session_id) VALUES (?);', id, (err,result)=>{
+      if(err) throw err;
+    });
+  }
+  else{
+    
+    var p1 = new Promise(function(resolve, reject){
+      var contador;
+      console.log("entro a p1");
+      conexion.query('SELECT COUNT(*) AS count FROM clientes WHERE session_id = ?;', sessionId, (err,result)=>{
+        if(err) throw err;
+        else{
+          contador = result[0].count;
+          
+        }
+        resolve(contador);
+      });
+    });
+    const cont = await(p1);
+    console.log("cont: " + cont);
+    if(cont == 0){           
+      conexion.query('INSERT INTO clientes (session_id) VALUES (?);', sessionId, (err,result)=>{
+        if(err) throw err;
+      });
+    }
+      
+    
+    
+  }
+}
+
 
 // app.post('/updateSessionId', (req, res) => {
 //   var idAnterior = req.body.idAnterior;
@@ -384,12 +402,20 @@ app.post('/usuarioRegistrado', function(req, res){
                     });
                   }
                   else{
-                    console.log("USUARIO REGISTRADO");
-                    res.json({
-                      status: 'success',
-                      usuario: true,
-                      sessionId: req.sessionID
+                    conexion.query('SELECT usuario FROM usuarios WHERE idCliente = ?;', idCliente, (err,result)=>{
+                      if(err) throw err;
+                      else{
+                        console.log("USUARIO REGISTRADO");
+                        console.log("mail: " + result[0].usuario);
+                        res.json({
+                          status: 'success',
+                          usuario: true,
+                          mail: result[0].usuario,
+                          sessionId: req.sessionID
+                        });
+                      }
                     });
+                    
                   }
                 }
               });

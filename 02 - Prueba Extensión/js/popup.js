@@ -18,30 +18,33 @@ $(document).ready(function(){
 
 
 function traerProductosServidor(){
+  setTimeout(function(){
 
-  getearSessionId().then(id => {
-    if(id != 0){
-      console.log("entro a traerProductosSevidor,id igual a "+id);
-      var clienteServidor = {
-        idSession: id
-      }
-      var request = $.ajax({
-        type: "POST",
-        url: "http://localhost:3000/productosCliente",
-        data: clienteServidor,
-        error: function(xhr, status, error){
-          console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+  
+    getearSessionId().then(id => {
+      if(id != 0){
+        console.log("entro a traerProductosSevidor,id igual a "+id);
+        var clienteServidor = {
+          idSession: id
         }
-      });
-      request.done(function(response) {
-        // for(i=0; i<response.prods.length; i++){
-        //   console.log(response.prods[i].nombre) +"\n\n";
-        // }
-        // obtenerSessionIdABM(response.sessionId);
-        compararProductos(response.prods);
-      });
-    }
- });
+        var request = $.ajax({
+          type: "POST",
+          url: "http://localhost:3000/productosCliente",
+          data: clienteServidor,
+          error: function(xhr, status, error){
+            console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+          }
+        });
+        request.done(function(response) {
+          // for(i=0; i<response.prods.length; i++){
+          //   console.log(response.prods[i].nombre) +"\n\n";
+          // }
+          // obtenerSessionIdABM(response.sessionId);
+          compararProductos(response.prods);
+        });
+      }
+    });
+  }, 200);
 }
 
 async function compararProductos(productosServidor){
@@ -77,8 +80,8 @@ async function compararProductos(productosServidor){
     });
   
     const productosSync = await(p1);
-    console.log("productosSync: " + Object.values(productosSync));
-    console.log("productosServidor: " + Object.values(productosServidor));
+    //console.log("productosSync: " + Object.values(productosSync));
+    //console.log("productosServidor: " + Object.values(productosServidor));
   
   
   
@@ -316,7 +319,8 @@ function getSuscripcion(){
   });
 }
 
-function mostrarBotonRegistrarse(){
+/*
+function mostrarBotonRegistrarseraro(){
   getearSessionId().then(id => {
     if(id != 0){
       var sessionIdServidor = {
@@ -332,9 +336,11 @@ function mostrarBotonRegistrarse(){
       });
       request.done(function(response) {
         console.log(response);
-        // console.log("usuario ya registrado: " + response.usuario);
         if(response.usuario == true){
           $('#btnRegistrarse').hide();
+          
+          
+          
           getSuscripcion();
         }
         else{
@@ -396,6 +402,7 @@ function mostrarBotonRegistrarse(){
   }
 
 }
+*/
 
 
 function funcionesOcultasjeje(){
@@ -472,7 +479,8 @@ function mostrarBotonRegistrarse(){
       });
       request.done(function(response) {
         if(response.usuario == true){
-          $('#btnRegistrarse').hide();       
+          $('#btnRegistrarse').hide(); 
+          $('#mailUsuario').text(response.mail);      
         }
         else{
           $('#btnRegistrarse').show();

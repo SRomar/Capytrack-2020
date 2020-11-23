@@ -157,6 +157,13 @@ li{
     margin-bottom: 0px;
 }
 
+#mailUsuario{
+    font-family: var(--fuente2);
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--texto);
+}
+
 
 
   
