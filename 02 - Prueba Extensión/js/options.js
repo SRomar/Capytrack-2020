@@ -3,10 +3,12 @@ var animacion1Ejecutada = false;
 var animacion2Ejecutada = false; 
 var elementoAnterior = "";
 var productoAnterior = "";
+var suscripcion = 0;
 
 
 $(document).ready(function(){
-
+  setSuscripcion();
+  
   EventosBotones();
   DesplegarListas();
   EventoListas();
@@ -28,31 +30,32 @@ async function getearSessionId(){
   return id;
 }
 
-function obtenerSessionIdABM(id){
-  chrome.storage.local.get(['sessionId_NUEVO'], function(result){
-    var sessionId_anterior = result.sessionId_NUEVO;
-    console.log("sessionId_anterior: " + sessionId_anterior);
-    chrome.storage.local.set({'sessionId_NUEVO': id}, function(){
-      console.log("sessionId_NUEVO: " + id);
-    });
-    var sessionIds = {
-      idAnterior: sessionId_anterior,
-      idNuevo: id
-    }
 
-    $.ajax({
-      type: "POST",
-      url: "http://localhost:3000/updateSessionId",
-      data: sessionIds
-    });
 
-  });
+// function obtenerSessionIdABM(id){
+//   chrome.storage.local.get(['sessionId_NUEVO'], function(result){
+//     var sessionId_anterior = result.sessionId_NUEVO;
+//     console.log("sessionId_anterior: " + sessionId_anterior);
+//     chrome.storage.local.set({'sessionId_NUEVO': id}, function(){
+//       console.log("sessionId_NUEVO: " + id);
+//     });
+//     var sessionIds = {
+//       idAnterior: sessionId_anterior,
+//       idNuevo: id
+//     }
+
+//     $.ajax({
+//       type: "POST",
+//       url: "http://localhost:3000/updateSessionId",
+//       data: sessionIds
+//     });
+
+//   });
  
 
-} 
+// } 
 
 function obtenerSessionId(){
-  setTimeout(function(){
     getearSessionId().then(id => {
       var SI;
       if(id === undefined){
@@ -79,21 +82,7 @@ function obtenerSessionId(){
         }
       });
     });
-    
-    /*
-    fetch('http://localhost:3000/session').then(data => data.text()).then(data =>{
-      var i = data;
-      chrome.storage.local.get(['sessionId_NUEVO'], function(result){
-        if(result.sessionId_NUEVO === undefined){
-          chrome.storage.local.set({'sessionId_NUEVO': i}, function() {
-            console.log('sessionId_NUEVO: ' + i);
-          });
-        }      
-      });      
-    });*/
-  }, 200);  
-}
-
+  }
 
 function EventosBotones(){
   $(document).on('click','#btnSeguimientos', function() {
@@ -182,11 +171,17 @@ function DesplegarProductos(nombreLista){
 function EventoProducto(idProducto, datosProducto){
      try {
         $(idProducto).on('click', function() {
-          $('#contenedorImagen').empty()
-          $("#contenedorImagen").append('<img src="'+datosProducto[4]+'" class="imagenProducto" alt="celular"></img>');
+          $('#inp1').empty()
+          $("#inp1").append('<img src="'+datosProducto[4]+'" class="imagenProducto" alt="celular"></img>');
           nombre.innerHTML = datosProducto[0];
           estado.innerHTML = datosProducto[2];      
           precio.innerHTML = datosProducto[1];
+          localidad.innerHTML = datosProducto[6];
+          condicion.innerHTML = datosProducto[7];
+          envioGratis.innerHTML = datosProducto[8];
+          cantidadDisponible.innerHTML = datosProducto[9];
+          garantia.innerHTML = datosProducto[10];
+          productID.innerHTML = datosProducto[5];
           urlProducto.innerHTML = '<a href="'+datosProducto[3]+'">ver</a>';
       });
      } catch (err) {
@@ -307,6 +302,8 @@ function EventoCambiarNombreLista(){
                     }
                   });
                   request.done(function(response) {
+                    console.log(response);
+                    // obtenerSessionIdABM(response.sessionId);
                   });
                 });
                 
@@ -378,6 +375,8 @@ function EventoEliminarProducto(itemProducto){
                 data: productoServidor
               });
               request.done(function(response) {
+                console.log(response);
+                // obtenerSessionIdABM(response.sessionId);
               });
             });
   
@@ -419,6 +418,8 @@ function EventoEliminarLista(itemLista){
             data: listaServidor
           });
           request.done(function(response) {
+            console.log(response);
+            // obtenerSessionIdABM(response.sessionId);
           });
         });
         chrome.storage.sync.remove(itemLista);
@@ -533,11 +534,12 @@ function Animacion2(idElemento){
   try {
     $(idElemento).click(function() {
       if (!animacion2Ejecutada) {
+        
         $('.informacion').show();
         $(".listas").addClass('animacion2');
         $(".productos").addClass('animacion2');
         $(".informacion").addClass('animacion2');
-  
+        ConfiguracionInformacionProducto();
         setTimeout(function() {
           $(".listas").removeClass('animacion2');
           $(".informacion").removeClass('animacion2');
@@ -558,3 +560,75 @@ function Animacion2(idElemento){
     console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
   }
  }
+
+
+ function ConfiguracionInformacionProducto(){
+  chrome.storage.local.get(['ConfiguracionInformacionProducto'], function(result) {
+  if(typeof result.ConfiguracionInformacionProducto == "undefined" || typeof result.ConfiguracionInformacionProducto == null){
+    CrearConfiguracionInformacionProductoPorDefecto();
+    ConfiguracionInformacionProducto();
+  } else{
+    AplicarConfiguracionInformacionProducto(result);
+  }
+  });
+}
+function CrearConfiguracionInformacionProductoPorDefecto(){
+  var value = [true, true, true, true, true, false, false, false, false, false, false];
+  chrome.storage.local.set({'ConfiguracionInformacionProducto': value}, function() {    
+  });
+}
+
+function AplicarConfiguracionInformacionProducto(result){
+
+    for(i=0; i<Object.keys(result.ConfiguracionInformacionProducto).length; i++){
+      if(!result.ConfiguracionInformacionProducto[i]){
+        var elementoInformacion = '#inp' + i;
+        console.log(elementoInformacion);
+        $(elementoInformacion).hide();
+      }
+    }
+}
+
+
+
+function getSuscripcion(id){
+  var sessionUsuario = {
+    sessionId: id
+  }
+  var request = $.ajax({
+    type: "POST",
+    url: "http://localhost:3000/getSuscripcion",
+    data: sessionUsuario,
+    error: function(xhr, status, error){
+      console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+    }
+    });
+    request.done(function(response) {
+      suscripcion = response.suscripcion;
+    });
+}
+
+
+function setSuscripcion(){
+  getearSessionId().then(id => {
+    if(id != 0){
+      var sessionIdServidor = {
+        sessionId: id
+      }
+      var request = $.ajax({
+        type: "POST",
+        url: "http://localhost:3000/usuarioRegistrado",
+        data: sessionIdServidor,
+        error: function(xhr, status, error){
+          console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+        }
+      });
+      request.done(function(response) {
+        if(response.usuario == true){
+          console.log("ID GETSUSCRIP: "+id)
+          getSuscripcion(id);
+        }
+      });
+    }
+  });
+}
