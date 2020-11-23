@@ -1,4 +1,4 @@
-
+var elementoAnterior = "";
 var suscripcion = 0;
 //Llenar select
 $(document).ready(function(){
@@ -11,9 +11,9 @@ $(document).ready(function(){
   EventoPanelNuevaLista();
   EventoAdministrarLista();
   eventoSelect();
-
   DesplegarProductos();
   traerProductosServidor();
+  TodosLosBotones();
   mensajeNoExistenListas();
 });
 
@@ -30,6 +30,26 @@ function mensajeNoExistenListas(){
   });
 }
 
+
+  
+
+
+function TodosLosBotones(){
+  document.querySelectorAll('button').forEach(item => {
+    EventoIluminar("#"+item.id);
+  });
+}
+function EventoIluminar(idElemento){
+        $(idElemento).mouseover(function(){
+      $(idElemento).css("background", "linear-gradient(180deg, #e4e4e4 0%, #adadad 100%)");
+      console.log(idElemento);
+    });
+    $(idElemento).mouseleave(function(){
+      $(idElemento).css("background", "linear-gradient(180deg, #ffffff 0%, #dbdbdb 100%)");
+      
+    
+    });
+}
 
 function traerProductosServidor(){
   setTimeout(function(){
@@ -831,6 +851,7 @@ function EventoPanelNuevaLista(){
     $("#contenedorNuevaLista").show();
     EventoBotonRetroceso();
     EventoCrearLista();
+    TodosLosBotones();
   });
 }
 
@@ -925,6 +946,10 @@ function EventoCrearLista(){
 }
 
 function creacionLista(Lista, nombre){
+
+  // if (/\s/.test(nombre)) {
+  //   nombre = nombre.replace(/\s/g, "_");
+  // }
   Lista[nombre]= [];
   chrome.storage.sync.set(Lista);
   chrome.storage.local.set({'ListaSeleccionada': nombre});
