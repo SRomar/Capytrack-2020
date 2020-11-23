@@ -129,7 +129,7 @@ console.log("entro a comparar productos");
   
   if(productosSyncNuevos.length !== 0){
     console.log("productosSyncNuevos: " + productosSyncNuevos.length);
-    //agregarProductosFaltantes(productosSyncNuevos);
+    agregarProductosFaltantes(productosSyncNuevos);
   }
 
 }
