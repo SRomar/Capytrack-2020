@@ -27,9 +27,8 @@ DROP TABLE IF EXISTS `clientes`;
 CREATE TABLE `clientes` (
   `idCliente` int NOT NULL AUTO_INCREMENT,
   `session_id` varchar(128) NOT NULL,
-
   PRIMARY KEY (`idCliente`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -78,7 +77,7 @@ CREATE TABLE `productos` (
   `id` varchar(20) NOT NULL,
   `nombre` varchar(200) DEFAULT NULL,
   `url` varchar(200) DEFAULT NULL,
-  `activo` tinyint DEFAULT NULL,
+  `activo` varchar(60) DEFAULT NULL,
   `precio` float DEFAULT NULL,
   `nombre_lista` varchar(60) DEFAULT NULL,
   `idCliente` int NOT NULL,
@@ -93,7 +92,7 @@ CREATE TABLE `productos` (
   KEY `nombre_lista` (`nombre_lista`),
   CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`idCliente`) REFERENCES `clientes` (`idCliente`),
   CONSTRAINT `productos_ibfk_2` FOREIGN KEY (`nombre_lista`) REFERENCES `listas` (`nombre`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -109,26 +108,7 @@ UNLOCK TABLES;
 -- Table structure for table `sessions`
 --
 
-DROP TABLE IF EXISTS `sessions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `sessions` (
-  `session_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `expires` int unsigned DEFAULT NULL,
-  `data` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  PRIMARY KEY (`session_id`),
-  UNIQUE KEY `session_id_UNIQUE` (`session_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `sessions`
---
-
-LOCK TABLES `sessions` WRITE;
-/*!40000 ALTER TABLE `sessions` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sessions` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `usuarios`
@@ -142,6 +122,8 @@ CREATE TABLE `usuarios` (
   `contrasena` varchar(45) NOT NULL,
   `idCliente` int NOT NULL,
   `suscripcion` int DEFAULT NULL,
+  `notificarPrecio` tinyint DEFAULT NULL,
+  `notificarEstado` tinyint DEFAULT NULL,
   PRIMARY KEY (`usuario`),
   KEY `Foreign_Key_Clientes_idx` (`idCliente`),
   CONSTRAINT `FK_Clientes_Usuarios` FOREIGN KEY (`idCliente`) REFERENCES `clientes` (`idCliente`)
@@ -166,4 +148,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-11-21 14:35:22
+-- Dump completed on 2020-11-21 20:28:10

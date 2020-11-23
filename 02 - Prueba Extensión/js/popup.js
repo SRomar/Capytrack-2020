@@ -93,12 +93,47 @@ async function compararProductos(productosServidor){
         console.log("productoSync: " + productoSync);
         console.log("productoSync[0]: " + productoSync[0]);
         console.log(productoSync.title + " " + productosServidor[j].nombre);
+
         
         console.log("atributosProductoSync[5]: " + atributosProductoSync[5] + "\n productosServidor[j].id: " + productosServidor[j].id);
+
+        
+        var estado;
+        if(atributosProductoSync[2] == "active"){
+          estado = 1;
+        }else{
+          estado = 0;
+        }
+
+        
+        var envioGratis;
+        if(atributosProductoSync[8] == "true"){
+          envioGratis = 0;
+        }else{
+          envioGratis = 1;
+        }
+
+        console.log("ID Sync: " + atributosProductoSync[5] +" | "+"ID ServidorP: "+ productosServidor[j].id +
+        "\n nombre Sync: " + atributosProductoSync[0] +" | "+"nombre ServidorP: "+ productosServidor[j].nombre+
+        "\n estado Sync: " + estado +" | "+"estado ServidorP: "+ productosServidor[j].activo+
+        "\n precio Sync: " + atributosProductoSync[1] +" | "+"precio ServidorP: "+ productosServidor[j].precio+
+        "\n precio Sync: " + atributosProductoSync[3] +" | "+"precio ServidorP: "+ productosServidor[j].url +
+        "\n precio Sync: " + atributosProductoSync[4] +" | "+"precio ServidorP: "+ productosServidor[j].img +
+        "\n precio Sync: " + atributosProductoSync[6] +" | "+"precio ServidorP: "+ productosServidor[j].localidad +
+        "\n precio Sync: " + envioGratis +" | "+"precio ServidorP: "+ productosServidor[j].envio_gratis +
+        "\n precio Sync: " + atributosProductoSync[9]  +" | "+"precio ServidorP: "+ productosServidor[j].cantidad_disponible);
+
+
+
         if(atributosProductoSync[5] == productosServidor[j].id){
           if(atributosProductoSync[0] != productosServidor[j].nombre ||
-            atributosProductoSync[2] != productosServidor[j].activo  ||
-            atributosProductoSync[1] != productosServidor[j].precio){
+            estado != productosServidor[j].activo  ||
+            atributosProductoSync[1] != productosServidor[j].precio ||
+            atributosProductoSync[3] != productosServidor[j].url ||
+            atributosProductoSync[4] != productosServidor[j].img ||
+            atributosProductoSync[6] != productosServidor[j].localidad ||
+            envioGratis != productosServidor[j].envio_gratis ||
+            atributosProductoSync[9] != productosServidor[j].cantidad_disponible){
               console.log("\n\n\n Un producto cambio de valor: \n Producto sync:" + productosSync[i] + "\n Producto servicdor:" +productosServidor[j] +"\n");
               actualizarProducto(atributosProductoSync, productosServidor[j]);
   
@@ -147,7 +182,9 @@ async function compararProductos(productosServidor){
           });
         });
       });
-  
+
+      productosLista.push(productoSync);
+
       listaNueva[listaSeleccionada] = productosLista;        
       chrome.storage.sync.remove(listaSeleccionada);
       chrome.storage.sync.set(listaNueva);
@@ -155,10 +192,27 @@ async function compararProductos(productosServidor){
       var diccionarioProducto = {};       
       var key = productoSync[5];  
   
-      diccionarioProducto[key]= productoServidor;   
-  
-        
-  
+      var status;
+      if(productoServidor.activo == 1){
+        status = "active";
+      }
+      else{
+        status = "paused";
+      }
+
+      var envio;
+      if(productoServidor.envio_gratis == 1){
+        envio = "false";
+      }
+      else{
+        envio = "true";
+      }
+
+
+      var productoActualizado = [productoServidor.nombre, productoServidor.precio, status, productoServidor.url, productoServidor.img, productoSync[5], productoServidor.localidad, productoSync[7], envio, productoServidor.cantidad_disponible, productoSync[10]];
+
+      diccionarioProducto[key]= productoActualizado;  
+ 
       chrome.storage.sync.get(function(cfg) {
         if(typeof(cfg[listaSeleccionada]) !== 'undefined' && cfg[listaSeleccionada] instanceof Array) { 
           cfg[listaSeleccionada].push(diccionarioProducto);
@@ -514,6 +568,7 @@ function AgregarProducto(category_id){
           status: i.status,
           permalink: i.permalink,
           id: i.id,
+          img: foto,
           localidad: localidad,
           envioGratis: i.shipping.free_shipping,
           cantidadDisponible: i.available_quantity,

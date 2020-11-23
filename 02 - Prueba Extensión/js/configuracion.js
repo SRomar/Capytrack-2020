@@ -294,33 +294,63 @@ function estadoBotonesNotificar(){
     });
   }
 
-  function obtenerSessionId(){
-    fetch('http://localhost:3000/session').then(data => data.text()).then(data =>{
-      var i = data;
-      console.log("i: " + i);
-      chrome.storage.local.get(['sessionId_NUEVO'], function(result){
-        var sessionId_anterior = "";
-        if(result.sessionId_NUEVO !== undefined){
-          sessionId_anterior = result.sessionId_NUEVO;
-          console.log("sessionId_anterior: " + sessionId_anterior);
-        }
-        chrome.storage.local.set({'sessionId_NUEVO': i}, function() {
-          console.log('sessionId_NUEVO: ' + i);
-        });
-        var sessionIds = {
-          idAnterior: sessionId_anterior,
-          idNuevo: i 
-        }
+  // function obtenerSessionId(){
+  //   fetch('http://localhost:3000/session').then(data => data.text()).then(data =>{
+  //     var i = data;
+  //     console.log("i: " + i);
+  //     chrome.storage.local.get(['sessionId_NUEVO'], function(result){
+  //       var sessionId_anterior = "";
+  //       if(result.sessionId_NUEVO !== undefined){
+  //         sessionId_anterior = result.sessionId_NUEVO;
+  //         console.log("sessionId_anterior: " + sessionId_anterior);
+  //       }
+  //       chrome.storage.local.set({'sessionId_NUEVO': i}, function() {
+  //         console.log('sessionId_NUEVO: ' + i);
+  //       });
+  //       var sessionIds = {
+  //         idAnterior: sessionId_anterior,
+  //         idNuevo: i 
+  //       }
   
-        $.ajax({
+  //       $.ajax({
+  //         type: "POST",
+  //         url: "http://localhost:3000/updateSessionId",
+  //         data: sessionIds
+  //       });
+  //     });
+       
+  //   });
+  // }
+
+  function obtenerSessionId(){
+    
+      getearSessionId().then(id => {
+        var SI;
+        if(id === undefined){
+          SI = 0;
+        }
+        else{
+          SI = id;
+        }
+        var sessionId = {
+          sessionId: SI
+        }
+    
+        var request = $.ajax({
           type: "POST",
-          url: "http://localhost:3000/updateSessionId",
-          data: sessionIds
+          url: "http://localhost:3000/session",
+          data: sessionId,
+          error: function(xhr, status, error){
+            console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+          }
+        });
+        request.done(function(response) {
+          if(SI == 0){
+            chrome.storage.local.set({'sessionId_NUEVO': response.sessionID});
+          }
         });
       });
-       
-    });
-  }
+    }  
   
 
   async function getearSessionId(){
@@ -334,4 +364,3 @@ function estadoBotonesNotificar(){
     return id;
   }
   
-    

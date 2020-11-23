@@ -28,7 +28,7 @@ CREATE TABLE `clientes` (
   `idCliente` int NOT NULL AUTO_INCREMENT,
   `session_id` varchar(128) NOT NULL,
   PRIMARY KEY (`idCliente`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -76,23 +76,24 @@ CREATE TABLE `productos` (
   `idProducto` int NOT NULL AUTO_INCREMENT,
   `id` varchar(20) NOT NULL,
   `nombre` varchar(200) DEFAULT NULL,
-  `url` varchar(200) DEFAULT NULL,
-  `activo` tinyint DEFAULT NULL,
+  `url` varchar(500) DEFAULT NULL,
+  `activo` varchar(60) DEFAULT NULL,
   `precio` float DEFAULT NULL,
   `nombre_lista` varchar(60) DEFAULT NULL,
   `idCliente` int NOT NULL,
   `localidad` varchar(200) DEFAULT NULL,
   `condicion` varchar(45) DEFAULT NULL,
-  `envio_gratis` varchar(200) DEFAULT NULL,
+  `envio_gratis` tinyint DEFAULT NULL,
   `cantidad_disponible` int DEFAULT NULL,
   `garantia` varchar(200) DEFAULT NULL,
+  `img` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`idProducto`),
   UNIQUE KEY `idProducto_UNIQUE` (`idProducto`),
   KEY `idCliente` (`idCliente`),
   KEY `nombre_lista` (`nombre_lista`),
   CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`idCliente`) REFERENCES `clientes` (`idCliente`),
   CONSTRAINT `productos_ibfk_2` FOREIGN KEY (`nombre_lista`) REFERENCES `listas` (`nombre`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -102,31 +103,6 @@ CREATE TABLE `productos` (
 LOCK TABLES `productos` WRITE;
 /*!40000 ALTER TABLE `productos` DISABLE KEYS */;
 /*!40000 ALTER TABLE `productos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sessions`
---
-
-DROP TABLE IF EXISTS `sessions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `sessions` (
-  `session_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `expires` int unsigned DEFAULT NULL,
-  `data` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  PRIMARY KEY (`session_id`),
-  UNIQUE KEY `session_id_UNIQUE` (`session_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sessions`
---
-
-LOCK TABLES `sessions` WRITE;
-/*!40000 ALTER TABLE `sessions` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sessions` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -140,6 +116,9 @@ CREATE TABLE `usuarios` (
   `usuario` varchar(45) NOT NULL,
   `contrasena` varchar(45) NOT NULL,
   `idCliente` int NOT NULL,
+  `suscripcion` int DEFAULT NULL,
+  `notificarPrecio` tinyint DEFAULT NULL,
+  `notificarEstado` tinyint DEFAULT NULL,
   PRIMARY KEY (`usuario`),
   KEY `Foreign_Key_Clientes_idx` (`idCliente`),
   CONSTRAINT `FK_Clientes_Usuarios` FOREIGN KEY (`idCliente`) REFERENCES `clientes` (`idCliente`)
@@ -164,4 +143,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-11-21  1:10:18
+-- Dump completed on 2020-11-22 23:16:59
