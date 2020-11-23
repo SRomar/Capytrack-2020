@@ -55,6 +55,8 @@ function traerProductosServidor(){
 
 async function compararProductos(productosServidor){
 console.log("entro a comparar productos");
+
+
   var p1 = new Promise(function(resolve, reject){     
     chrome.storage.sync.get(null, function(items){
       var allkeys = Object.keys(items);
@@ -86,9 +88,6 @@ console.log("entro a comparar productos");
   });
 
   const productosSync = await(p1);
-  console.log("productosSync: " + Object.values(productosSync));
-  console.log("productosServidor: " + Object.values(productosServidor));
-
 
 
   cont = 0;
@@ -98,23 +97,25 @@ console.log("entro a comparar productos");
     for(var j=0; j<productosServidor.length; j++){
 
       var productoSync = Object.values(productosSync[i]);
-      var atributosProductoSync = productoSync[0];
-      console.log("productoSync: " + productoSync);
-      console.log("productoSync[0]: " + productoSync[0]);
-      console.log(productoSync.title + " " + productosServidor[j].nombre);
-      
-      console.log("atributosProductoSync[5]: " + atributosProductoSync[5] + "\n productosServidor[j].id: " + productosServidor[j].id);
+      var atributosProductoSync = productoSync[i];
+
       if(atributosProductoSync[5] == productosServidor[j].id){
         if(atributosProductoSync[0] != productosServidor[j].nombre ||
-          atributosProductoSync[2] != productosServidor[j].activo  ||
           atributosProductoSync[1] != productosServidor[j].precio){
-            console.log("\n\n\n Un producto cambio de valor: \n Producto sync:" + productosSync[i] + "\n Producto servicdor:" +productosServidor[j] +"\n");
+            console.log("\n Un producto cambio de valor: \n Producto sync:" + JSON.stringify(productosSync[i]) + "\n Producto servicdor:" + JSON.stringify(productosServidor[j]) +"\n");
             actualizarProducto(atributosProductoSync, productosServidor[j]);
 
-            cont=0;
+          cont=0;
         }
         else{
-          cont=0;
+          if((atributosProductoSync[2] == "active" && productosServidor[j].activo == 0) || (atributosProductoSync[2] == "paused" && productosServidor[j].activo == 1)){
+            console.log("\n Un producto cambio de valor: \n Producto sync:" + JSON.stringify(productosSync[i]) + "\n Producto servicdor:" + JSON.stringify(productosServidor[j]) +"\n");
+            actualizarProducto(atributosProductoSync, productosServidor[j]);
+          }
+          else{
+            console.log("ids iguales pero no hubo cambios");
+            cont=0;
+          }          
         }
       }
       else{
@@ -126,10 +127,10 @@ console.log("entro a comparar productos");
       productosSyncNuevos.push(productosSync[i]);
     }
   }
-  
+  console.log("productosSyncNuevos: " + productosSyncNuevos);
   if(productosSyncNuevos.length !== 0){
     console.log("productosSyncNuevos: " + productosSyncNuevos.length);
-    agregarProductosFaltantes(productosSyncNuevos);
+    //agregarProductosFaltantes(productosSyncNuevos);
   }
 
 }
@@ -164,7 +165,17 @@ async function actualizarProducto(productoSync, productoServidor){
     var diccionarioProducto = {};       
     var key = productoSync[5];  
 
-    diccionarioProducto[key]= productoServidor;   
+    var status;
+    if(productoServidor.activo == 1){
+      status = "active";
+    }
+    else{
+      status = "paused";
+    }
+
+    var productoActualizado = [productoServidor.nombre, productoServidor.precio, status, productoServidor.url, productoSync[4], productoSync[5]];
+
+    diccionarioProducto[key]= productoActualizado;   
 
       
 

@@ -561,7 +561,6 @@ app.post('/productosCliente', (req, res)=>{
   
   var idSession = req.body.idSession;
 
-  console.log("\n Entro a productosCliente en busca del cliente con id: "+ idSession);
   devolverProductosCliente(idSession).then(productos => {
     res.json({
       status: 'success',
@@ -572,7 +571,7 @@ app.post('/productosCliente', (req, res)=>{
 
 });
 async function devolverProductosCliente(idSession){
-  
+
   var p1 = new Promise(function(resolve, reject){
     
     conexion.query('SELECT idCliente FROM clientes WHERE session_id = ?;', idSession , (err,result)=>{
@@ -592,7 +591,7 @@ async function devolverProductosCliente(idSession){
     conexion.query('SELECT * FROM productos WHERE idCliente = ?;', idCliente , (err,result)=>{
       var prods = [];
       if(err) throw err;
-      else{       
+      else{
         prods = result;      
       }
       resolve (prods);
@@ -601,7 +600,6 @@ async function devolverProductosCliente(idSession){
 
   const productos = await (p2);
 
-  console.log("productos: " + Object.values(productos));
   return productos;
   
 }
