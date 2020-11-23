@@ -11,7 +11,6 @@ $(document).ready(function(){
   EventoPanelNuevaLista();
   EventoAdministrarLista();
   eventoSelect();
-  DesplegarProductos();
   traerProductosServidor();
   TodosLosBotones();
   mensajeNoExistenListas();
@@ -531,6 +530,7 @@ function mostrarBotonRegistrarse(){
 }
 
 function eventoSelect(){
+
   $('#selectLista').on('change', function() {
     $('#productosListaUL').empty()
     DesplegarProductos($(this).val());
@@ -726,8 +726,9 @@ function AgregarProducto(category_id){
         chrome.storage.sync.set(cfg); 
       });
 
-      DesplegarProductos();
-
+      setTimeout(function(){
+      DesplegarProductos(valorLista);
+      },200);
     } else{
       alert('No hay listas!');
      }
@@ -868,7 +869,7 @@ function obtenerListaSeleccionada(){
     lista = Object.values(result);
     if(typeof lista !== undefined){
       $("#selectLista").val(lista);
-
+      DesplegarProductos(lista);
     }
   });
 
