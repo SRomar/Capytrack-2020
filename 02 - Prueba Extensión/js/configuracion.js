@@ -1,4 +1,3 @@
-
 var suscripcion = 0;
 
 $(document).ready(function(){
@@ -175,27 +174,68 @@ function estadoBotonesNotificar(){
 }
 
 
-  function EventosBotones(){
-      try {
-        $(document).on('click','#btnSeguimientos', function() {
-            window.location.replace("options.html");
-          });
-          
-        $(document).on('click','#btnSuscripciones', function() {
-            window.location.replace("suscripciones.html");
-        });
+function EventosBotones(){
+  $(document).on('click','#btnSeguimientos', function() {
+      window.location.replace("options.html");
+    });
+    $("#btnSeguimientos").mouseover(function(){
+
+      $("#btnSeguimientos").css("background", "linear-gradient(360deg, rgb(22, 27, 39) 1%, #4e5155 100%)");
+    
+    });
+    $("#btnSeguimientos").mouseleave(function(){
       
-        $(document).on('click','#btnConfiguracion', function() {
-          window.location.replace("configuracion.html");
-        });
-          
-        $(document).on('click','#btnContacto', function() {
-          window.location.replace("contacto.html");
-        });
-      } catch (err) {
-        console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
-      }
-  }
+      $("#btnSeguimientos").css("background", "linear-gradient(360deg, rgb(22, 27, 39) 1%, #2e3542 100%)");
+    
+    });
+    
+  $(document).on('click','#btnSuscripciones', function() {
+      window.location.replace("suscripciones.html");
+  });
+
+  $("#btnSuscripciones").mouseover(function(){
+
+    $("#btnSuscripciones").css("background", "linear-gradient(360deg, rgb(22, 27, 39) 1%, #4e5155 100%)");
+  
+  });
+  $("#btnSuscripciones").mouseleave(function(){
+      
+    $("#btnSuscripciones").css("background", "linear-gradient(360deg, rgb(22, 27, 39) 1%, #2e3542 100%)");
+  
+  });
+
+  $(document).on('click','#btnConfiguracion', function() {
+    window.location.replace("configuracion.html");
+  });
+    
+  $("#btnConfiguracion").mouseover(function(){
+
+    $("#btnConfiguracion").css("background", "linear-gradient(360deg, rgb(22, 27, 39) 1%, #4e5155 100%)");
+  
+  });
+  // $("#btnConfiguracion").mouseleave(function(){
+      
+  //   $("#btnConfiguracion").css("background", "linear-gradient(360deg, rgb(22, 27, 39) 1%, #2e3542 100%)");
+  
+  // });
+
+  $(document).on('click','#btnContacto', function() {
+    window.location.replace("contacto.html");
+});
+
+$("#btnContacto").mouseover(function(){
+
+  $("#btnContacto").css("background", "linear-gradient(360deg, rgb(22, 27, 39) 1%, #4e5155 100%)");
+
+});
+$("#btnContacto").mouseleave(function(){
+      
+  $("#btnContacto").css("background", "linear-gradient(360deg, rgb(22, 27, 39) 1%, #2e3542 100%)");
+
+});
+
+}
+
 
   function EventosOpciones(){
     try {
