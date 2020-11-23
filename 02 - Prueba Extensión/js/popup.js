@@ -14,7 +14,21 @@ $(document).ready(function(){
 
   DesplegarProductos();
   traerProductosServidor();
+  mensajeNoExistenListas();
 });
+
+function mensajeNoExistenListas(){
+  chrome.storage.sync.get(null, function(items) {
+    var allKeys = Object.keys(items);
+    //console.log("allkeys.length: " + allKeys.length);
+    if(allKeys.length == 0){
+      $("#hayListas").text("No hay listas creadas");
+    }
+    else{
+      $("#hayListas").text("Información Lista");
+    }
+  });
+}
 
 
 function traerProductosServidor(){
@@ -318,6 +332,8 @@ function getSuscripcion(){
       }
   });
 }
+
+
 
 /*
 function mostrarBotonRegistrarseraro(){
@@ -935,6 +951,7 @@ function creacionLista(Lista, nombre){
       // obtenerSessionIdABM(response.sessionId);
     });
   });
+  mensajeNoExistenListas();
   $("#contenedorNuevaLista").hide();
   $("#contenedor").show();    
 }

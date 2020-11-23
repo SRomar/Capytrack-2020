@@ -18,7 +18,41 @@ $(document).ready(function(){
   obtenerSessionId();
 
   mostrarUsuario();
+  mensajeNoExistenListas();
 });
+
+
+function mensajeNoHayProductosEnLista(){
+  var a = 0;
+  chrome.storage.sync.get(listaSeleccionada, function (lista) { //Obtiene la lista
+  
+    $.map(lista, function(productosEnLista, nombreProducto) { //Obtiene los productos en la lista
+  
+      if(productosEnLista.length == 0){
+        alert("no se agregaron productos");
+        a = 1;
+      }       
+    });
+
+    if(a == 1){
+      return true;
+    }
+    else{
+      return false;
+    }
+  });
+
+}
+
+function mensajeNoExistenListas(){
+  chrome.storage.sync.get(null, function(items) {
+    var allKeys = Object.keys(items);
+    if(allKeys.length == 0){
+      alert("no hay listas");
+    }
+  });
+}
+
 
 
 function mostrarUsuario(){
@@ -161,7 +195,14 @@ function EventoListas(){
           $('#productosUl').empty()
           var nombreLista = $(this).text(); //Obtiene el nombre de li
           listaSeleccionada = nombreLista;
-          DesplegarProductos(nombreLista);
+         
+          if(mensajeNoHayProductosEnLista() == false){
+            console.log("mensajeNoHayProductosEnLista(): " + mensajeNoHayProductosEnLista());
+             DesplegarProductos(nombreLista);
+          }
+          
+          
+          
         });  
       });
       });
