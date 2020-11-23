@@ -54,7 +54,7 @@ h3, span{
 
 
 #contenedor, #contenedorNuevaLista{
-    height: 100%;
+    height: 100px;
     width: 100%;
     text-align: center;
 }

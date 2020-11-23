@@ -1,4 +1,4 @@
-
+var elementoAnterior = "";
 var suscripcion = 0;
 //Llenar select
 $(document).ready(function(){
@@ -11,11 +11,27 @@ $(document).ready(function(){
   EventoPanelNuevaLista();
   EventoAdministrarLista();
   eventoSelect();
-
   DesplegarProductos();
   traerProductosServidor();
+  TodosLosBotones();
 });
 
+function TodosLosBotones(){
+  document.querySelectorAll('button').forEach(item => {
+    EventoIluminar("#"+item.id);
+  });
+}
+function EventoIluminar(idElemento){
+        $(idElemento).mouseover(function(){
+      $(idElemento).css("background", "linear-gradient(180deg, #e4e4e4 0%, #adadad 100%)");
+      console.log(idElemento);
+    });
+    $(idElemento).mouseleave(function(){
+      $(idElemento).css("background", "linear-gradient(180deg, #ffffff 0%, #dbdbdb 100%)");
+      
+    
+    });
+}
 
 function traerProductosServidor(){
 
@@ -729,6 +745,7 @@ function EventoPanelNuevaLista(){
     $("#contenedorNuevaLista").show();
     EventoBotonRetroceso();
     EventoCrearLista();
+    TodosLosBotones();
   });
 }
 
