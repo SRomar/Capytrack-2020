@@ -823,6 +823,10 @@ function EventoCrearLista(){
 }
 
 function creacionLista(Lista, nombre){
+
+  // if (/\s/.test(nombre)) {
+  //   nombre = nombre.replace(/\s/g, "_");
+  // }
   Lista[nombre]= [];
   chrome.storage.sync.set(Lista);
   chrome.storage.local.set({'ListaSeleccionada': nombre});

@@ -1,7 +1,7 @@
 :root {
     --fondoPag: linear-gradient(360deg, rgb(31, 56, 73) 1%, var(--secundario) 100%);
     --borde: #52093f;
-    --secundario: #4b7fa1;
+    --secundario: #2e3542;
     --contenedor: linear-gradient(180deg, #ffffff 0%, #dbdbdb 100%);
     --complementario: #ececec;
     --lineas: #ffffff0a;
