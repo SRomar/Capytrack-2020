@@ -2,7 +2,7 @@
 /*Azul oscuro*/
 :root {
     --fondoPag: radial-gradient(50% 50% at 50% 50%, #201C24 0%, #08070A 100%);
-    --borde: #ffffff05;
+    --borde: #b1b1b1a1;
     --secundario: #2e3542;
     /*1f2d46*/
     --contenedor: linear-gradient(360deg, rgb(22, 27, 39) 1%, var(--secundario) 100%);

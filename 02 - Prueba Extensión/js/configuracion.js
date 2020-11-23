@@ -1,13 +1,55 @@
 var suscripcion = 0;
+var elementoAnterior = "";
+
 
 $(document).ready(function(){
-   getSuscripcion();
-  
+
+    getSuscripcion();
     EventosBotones();
     EventosOpciones();
+    todasLasOpciones();
+
     ConfiguracionInformacionProducto();
-    
+
   });
+
+  function todasLasOpciones(){
+    document.querySelectorAll('.opcionConfiguracion').forEach(item => {
+      EventoIluminar("#"+item.id);
+    });
+  }
+
+  function EventoIluminar(idElemento){
+  
+    
+      console.log(idElemento);
+      
+        $(idElemento).mouseover(function(){
+          if(elementoAnterior != idElemento){
+          $(idElemento).css("background", "#b1b1b12c");
+          console.log(idElemento);
+
+          }
+        });
+        $(idElemento).mouseleave(function(){
+          if(elementoAnterior != idElemento){
+          $(idElemento).css("background", "#ffffff0a");
+          }
+        
+        });
+        $(idElemento).click(function(){
+          $(idElemento).css("background", "#b1b1b156");     
+          if(elementoAnterior != idElemento){
+            $(elementoAnterior).css("background", "#ffffff0a");
+            elementoAnterior = idElemento;
+          }
+          
+        });
+    
+
+  
+}
+
 
   function redireccionar(suscripcion){
     if(suscripcion<2){
@@ -255,6 +297,7 @@ $("#btnContacto").mouseleave(function(){
     } catch (err) {
       console.log("Fallo en "+ arguments.callee.name +", error: " + err.message);
     }
+    EventoIluminar();
 
   }
 
