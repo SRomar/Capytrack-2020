@@ -587,7 +587,7 @@ app.post('/modificarLista', function(req, res){
 
 
 //cuando se habilite, poner "/" antes del 1
-cron.schedule("*/1 * * * *", function(){
+cron.schedule("*/10 *  * * * *", function(){
   console.log("schedule running...");
   
   verificarPrecios();
