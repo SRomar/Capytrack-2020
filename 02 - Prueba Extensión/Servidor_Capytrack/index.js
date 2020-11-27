@@ -1028,13 +1028,13 @@ app.listen(3000, () => {
 
 //Envio de mail
 
-/*
-// app.post('/enviarMail', function(req, res){
-//   
-//   res.json({
-//     status: 'success'
-//   });
-// });
+
+ app.post('/enviarMail', function(req, res){
+   
+   res.json({
+    status: 'success'
+   });
+   });
 
 app.post('/reciboMail', function(req, res){
   transporter.sendMail(req.body, function(error, info){
@@ -1048,4 +1048,3 @@ app.post('/reciboMail', function(req, res){
     status: 'success'
   });
 });
-*/

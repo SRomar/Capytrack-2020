@@ -211,7 +211,8 @@ async function compararProductos(productosServidor){
                 
                 
           $.map(producto, function(datosProducto, categoryID) { //Separa a los datos del producto
-            if(productoSync[5] !== categoryID){
+            console.log("***productoSync ID: "+ productoSync[5] + "categoryID: "+ categoryID)
+            if(productoSync[5] != categoryID){
               productosLista.push(producto);
             }
   
@@ -219,7 +220,6 @@ async function compararProductos(productosServidor){
         });
       });
 
-      productosLista.push(productoSync);
 
       listaNueva[listaSeleccionada] = productosLista;        
       chrome.storage.sync.remove(listaSeleccionada);
@@ -248,13 +248,18 @@ async function compararProductos(productosServidor){
       var productoActualizado = [productoServidor.nombre, productoServidor.precio, status, productoServidor.url, productoServidor.img, productoSync[5], productoServidor.localidad, productoSync[7], envio, productoServidor.cantidad_disponible, productoSync[10]];
 
       diccionarioProducto[key]= productoActualizado;  
- 
+      
+
+      
       chrome.storage.sync.get(function(cfg) {
         if(typeof(cfg[listaSeleccionada]) !== 'undefined' && cfg[listaSeleccionada] instanceof Array) { 
           cfg[listaSeleccionada].push(diccionarioProducto);
+          console.log("diccionarioProducto: "+ diccionarioProducto+
+                      "\ndiccionarioproducto[key]"+    diccionarioProducto[key]+
+                      "\nproductoActualizado: "+ productoActualizado+
+                      "\nlistaSeleccionada: "+listaSeleccionada);
         } 
        chrome.storage.sync.set(cfg); 
-       console.log("se seteo la lista con el productos nuevo");
       });
   
     });

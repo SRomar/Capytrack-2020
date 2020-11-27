@@ -128,14 +128,14 @@ async function getearSessionId(){
               text: 'Mensaje de: '+mail+'\n\nMensaje: '+mensaje,
               // text: 'Mensaje de: '+"""+'\n\nMensaje: '+mensaje
             };
-            //   $.ajax({
-            //   type: "POST",
-            //   url: "http://localhost:3000/reciboMail",
-            //   data: mailOptions,
-            //   error: function(xhr, status, error){
-            //       console.log("Error al contactar con el servidor, xhr: " + xhr.status);
-            //   }
-            // });
+              $.ajax({
+              type: "POST",
+              url: "http://localhost:3000/reciboMail",
+              data: mailOptions,
+              error: function(xhr, status, error){
+                  console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+              }
+            });
            }
           });
       } catch (err) {

@@ -9,6 +9,7 @@ var suscripcion = 0;
 $(document).ready(function(){
   mensajeNoExistenListas();
   mensajeNoHayProductosEnLista();
+  traerProductosServidor();
   setSuscripcion();
   EventosBotones();
   DesplegarListas();
@@ -20,6 +21,290 @@ $(document).ready(function(){
   mostrarUsuario();
 
 });
+
+function traerProductosServidor(){
+  setTimeout(function(){
+
+  
+    getearSessionId().then(id => {
+      if(id != 0){
+        console.log("entro a traerProductosSevidor,id igual a "+id);
+        var clienteServidor = {
+          idSession: id
+        }
+        var request = $.ajax({
+          type: "POST",
+          url: "http://localhost:3000/productosCliente",
+          data: clienteServidor,
+          error: function(xhr, status, error){
+            console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+          }
+        });
+        request.done(function(response) {
+          // for(i=0; i<response.prods.length; i++){
+          //   console.log(response.prods[i].nombre) +"\n\n";
+          // }
+          // obtenerSessionIdABM(response.sessionId);
+          compararProductos(response.prods);
+        });
+      }
+    });
+  }, 200);
+}
+
+async function compararProductos(productosServidor){
+  console.log("entro a comparar productos");
+    var p1 = new Promise(function(resolve, reject){     
+      chrome.storage.sync.get(null, function(items){
+        var allkeys = Object.keys(items);
+        
+        for(var i=0; i<allkeys.length; i++){
+  
+          var p2 = new Promise(function(resolve, reject){
+            var prods = [];
+            chrome.storage.sync.get(allkeys[i], function (lista) { //Obtiene la lista
+              $.map(lista, function(productosEnLista, nombreLista) { //Obtiene los productos en la lista
+                $.map(productosEnLista, function(producto, llaveProducto) {  //Separa a los productos
+                  $.map(producto, function(datosProducto, categoryID) {
+                    prods.push(producto);
+                  });
+                });
+              });
+  
+              resolve(prods);
+            });           
+          });
+          async function traerProds(p2){
+            return await (p2);
+          };  
+          var prods2 = traerProds(p2);    
+        }
+          
+        resolve(prods2);       
+      });
+    });
+  
+    const productosSync = await(p1);
+    //console.log("productosSync: " + Object.values(productosSync));
+    //console.log("productosServidor: " + Object.values(productosServidor));
+  
+  
+  
+    cont = 0;
+    productosSyncNuevos = [];
+  
+    for(var i=0; i<productosSync.length; i++){
+      for(var j=0; j<productosServidor.length; j++){
+  
+        var productoSync = Object.values(productosSync[i]);
+        var atributosProductoSync = productoSync[0];
+        console.log("productoSync: " + productoSync);
+        console.log("productoSync[0]: " + productoSync[0]);
+        console.log(productoSync.title + " " + productosServidor[j].nombre);
+
+        
+        console.log("atributosProductoSync[5]: " + atributosProductoSync[5] + "\n productosServidor[j].id: " + productosServidor[j].id);
+
+        
+        var estado;
+        if(atributosProductoSync[2] == "active"){
+          estado = 1;
+        }else{
+          estado = 0;
+        }
+
+        
+        var envioGratis;
+        if(atributosProductoSync[8] == "true"){
+          envioGratis = 0;
+        }else{
+          envioGratis = 1;
+        }
+
+        console.log("ID Sync: " + atributosProductoSync[5] +" | "+"ID ServidorP: "+ productosServidor[j].id +
+        "\n nombre Sync: " + atributosProductoSync[0] +" | "+"nombre ServidorP: "+ productosServidor[j].nombre+
+        "\n estado Sync: " + estado +" | "+"estado ServidorP: "+ productosServidor[j].activo+
+        "\n precio Sync: " + atributosProductoSync[1] +" | "+"precio ServidorP: "+ productosServidor[j].precio+
+        "\n precio Sync: " + atributosProductoSync[3] +" | "+"precio ServidorP: "+ productosServidor[j].url +
+        "\n precio Sync: " + atributosProductoSync[4] +" | "+"precio ServidorP: "+ productosServidor[j].img +
+        "\n precio Sync: " + atributosProductoSync[6] +" | "+"precio ServidorP: "+ productosServidor[j].localidad +
+        "\n precio Sync: " + envioGratis +" | "+"precio ServidorP: "+ productosServidor[j].envio_gratis +
+        "\n precio Sync: " + atributosProductoSync[9]  +" | "+"precio ServidorP: "+ productosServidor[j].cantidad_disponible);
+
+
+
+        if(atributosProductoSync[5] == productosServidor[j].id){
+          if(atributosProductoSync[0] != productosServidor[j].nombre ||
+            estado != productosServidor[j].activo  ||
+            atributosProductoSync[1] != productosServidor[j].precio ||
+            atributosProductoSync[3] != productosServidor[j].url ||
+            atributosProductoSync[4] != productosServidor[j].img ||
+            atributosProductoSync[6] != productosServidor[j].localidad ||
+            envioGratis != productosServidor[j].envio_gratis ||
+            atributosProductoSync[9] != productosServidor[j].cantidad_disponible){
+              console.log("\n\n\n Un producto cambio de valor: \n Producto sync:" + productosSync[i] + "\n Producto servicdor:" +productosServidor[j] +"\n");
+              actualizarProducto(atributosProductoSync, productosServidor[j]);
+  
+              cont=0;
+          }
+          else{
+            cont=0;
+          }
+        }
+        else{
+          cont++;
+        }
+      }
+      if(cont == productosServidor.length){
+        console.log("cont: " + cont + "\n productosServidor.length: " + productosServidor.length);
+        productosSyncNuevos.push(productosSync[i]);
+      }
+    }
+    
+    if(productosSyncNuevos.length !== 0){
+      console.log("productosSyncNuevos: " + productosSyncNuevos.length);
+      agregarProductosFaltantes(productosSyncNuevos);
+    }
+  
+  }
+
+  async function actualizarProducto(productoSync, productoServidor){
+    console.log("entro a actualizarProducto \n");
+    var productosLista = [];
+    var listaNueva = {};
+    var listaSeleccionada = productoServidor.nombre_lista;
+    
+    chrome.storage.sync.get(listaSeleccionada, function (lista) { //Obtiene la lista
+              
+      $.map(lista, function(productosEnLista, listaSeleccionada) { //Obtiene los productos en la lista
+              
+              
+        $.map(productosEnLista, function(producto, llaveProducto) {  //Separa a los productos
+                
+                
+          $.map(producto, function(datosProducto, categoryID) { //Separa a los datos del producto
+            console.log("***productoSync ID: "+ productoSync[5] + "categoryID: "+ categoryID)
+            if(productoSync[5] != categoryID){
+              productosLista.push(producto);
+            }
+  
+          });
+        });
+      });
+
+
+      listaNueva[listaSeleccionada] = productosLista;        
+      chrome.storage.sync.remove(listaSeleccionada);
+      chrome.storage.sync.set(listaNueva);
+      
+      var diccionarioProducto = {};       
+      var key = productoSync[5];  
+  
+      var status;
+      if(productoServidor.activo == 1){
+        status = "active";
+      }
+      else{
+        status = "paused";
+      }
+
+      var envio;
+      if(productoServidor.envio_gratis == 1){
+        envio = "false";
+      }
+      else{
+        envio = "true";
+      }
+
+
+      var productoActualizado = [productoServidor.nombre, productoServidor.precio, status, productoServidor.url, productoServidor.img, productoSync[5], productoServidor.localidad, productoSync[7], envio, productoServidor.cantidad_disponible, productoSync[10]];
+
+      diccionarioProducto[key]= productoActualizado;  
+      
+
+      
+      chrome.storage.sync.get(function(cfg) {
+        if(typeof(cfg[listaSeleccionada]) !== 'undefined' && cfg[listaSeleccionada] instanceof Array) { 
+          cfg[listaSeleccionada].push(diccionarioProducto);
+          console.log("diccionarioProducto: "+ diccionarioProducto+
+                      "\ndiccionarioproducto[key]"+    diccionarioProducto[key]+
+                      "\nproductoActualizado: "+ productoActualizado+
+                      "\nlistaSeleccionada: "+listaSeleccionada);
+        } 
+       chrome.storage.sync.set(cfg); 
+      });
+  
+    });
+  
+  }
+  
+
+  async function agregarProductosFaltantes(productosSyncNuevos){
+    for(var k=0; k<productosSyncNuevos.length; k++){
+  
+      var p1 = new Promise(function(resolve, reject){  
+        var listaProducto
+        chrome.storage.sync.get(null, function(items){
+          var allkeys = Object.keys(items);
+          
+          for(var i=0; i<allkeys.length; i++){
+    
+            var p2 = new Promise(function(resolve, reject){
+              chrome.storage.sync.get(allkeys[i], function (lista) { //Obtiene la lista
+                $.map(lista, function(productosEnLista, nombreLista) { //Obtiene los productos en la lista
+                  $.map(productosEnLista, function(producto, llaveProducto) {  //Separa a los productos
+                    $.map(producto, function(datosProducto, categoryID) {
+                      if(productosSyncNuevos[k].id == categoryID){
+                        listaProducto = lista;
+                      }
+                    });
+                  });
+                });
+    
+                resolve(listaProducto);
+              });           
+            });
+            async function traerLista(p2){
+              return await p2;
+            };  
+            var listaProducto2 = traerLista(p2);    
+          }
+            
+          resolve(listaProducto2);       
+        });
+      });
+      const lista = await (p1);
+  
+      AgregarProductoNuevo(productosSyncNuevos[k], lista);
+    }
+  }
+
+  function AgregarProductoNuevo(productoNuevo, lista){
+  
+    getearSessionId().then(id => {
+      var productoServidor = {
+        title: productoNuevo.title,
+        price: productoNuevo.price,
+        status: productoNuevo.status,
+        permalink: productoNuevo.permalink,
+        id: productoNuevo.id,
+        nombrelista: lista,
+        sessionId: id
+      }
+      var request = $.ajax({
+        type: "POST",
+        url: "http://localhost:3000/altaProducto",
+        data: productoServidor,
+        error: function(xhr, status, error){
+          console.log("Error al contactar con el servidor, xhr: " + xhr.status);
+        }
+      });
+      request.done(function(response) {
+        console.log(response);
+        // obtenerSessionIdABM(response.sessionId);
+      });
+    });
+}
 
 
 async function mensajeNoHayProductosEnLista(){
