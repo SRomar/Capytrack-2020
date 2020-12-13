@@ -335,7 +335,6 @@ async function mensajeNoHayProductosEnLista(){
       });
   });
 var respuesta = await(p);
-    console.log("respuesta "+ respuesta);
       if(respuesta == false){
         $(".productos").remove();
         $(".informacion").remove();
@@ -343,7 +342,6 @@ var respuesta = await(p);
         animacionX = false; 
       }
       else{
-        console.log("animacion seteada a TRUE")
         animacionX = true; 
       }     
 }
@@ -533,7 +531,6 @@ function DesplegarListas(){
 
 
               if(animacionX == true){
-                console.log("animacion  "+ animacionX);
                 EventoIluminar("#"+id);
                 Animacion("#"+id);
             }
