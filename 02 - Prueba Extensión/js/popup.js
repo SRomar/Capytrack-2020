@@ -356,7 +356,9 @@ function getSuscripcion(){
         }
         });
         request.done(function(response) {
-          suscripcion = response.suscripcion;
+          if(typeof suscripcion != undefined){
+            suscripcion = response.suscripcion;
+          }
         });
       }else{
         suscripcion = 0;

@@ -180,7 +180,7 @@ app.post('/getSuscripcion', (req, res) =>{
     if(err) throw err;
     conexion.query('SELECT suscripcion from usuarios WHERE idCliente = ?;', [result[0].idCliente], (err,result)=>{
       if(err) throw err;
-      else{
+      else if(result.length>0){
         res.json({
           suscripcion: result[0].suscripcion
         });

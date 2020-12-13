@@ -4,10 +4,12 @@ var animacion2Ejecutada = false;
 var elementoAnterior = "";
 var productoAnterior = "";
 var suscripcion = 0;
+var animacionX = true; 
 
 
 $(document).ready(function(){
   mensajeNoExistenListas();
+  mensajeNoHayProductosEnLista();
   traerProductosServidor();
   setSuscripcion();
   EventosBotones();
@@ -23,8 +25,6 @@ $(document).ready(function(){
 
 function traerProductosServidor(){
   setTimeout(function(){
-
-  
     getearSessionId().then(id => {
       if(id != 0){
         // console.log("entro a traerProductosSevidor,id igual a "+id);
@@ -314,7 +314,7 @@ async function mensajeNoHayProductosEnLista(){
           var p3 = new Promise(function(resolve, reject){
             chrome.storage.sync.get(allkeys[i], function (lista) { //Obtiene la lista
               $.map(lista, function(productosEnLista, nombreLista) { //Obtiene los productos en la lista
-                console.log(productosEnLista.length);
+                // console.log(productosEnLista.length);
                   if(productosEnLista.length == 0){
                     existe = false;
                     resolve(existe);
@@ -334,14 +334,18 @@ async function mensajeNoHayProductosEnLista(){
        resolve(existe2);
       });
   });
-respuesta = await(p);
-
+var respuesta = await(p);
+    console.log("respuesta "+ respuesta);
       if(respuesta == false){
         $(".productos").remove();
         $(".informacion").remove();
         alert("no se agregaron productos");
+        animacionX = false; 
       }
-      return(respuesta);
+      else{
+        console.log("animacion seteada a TRUE")
+        animacionX = true; 
+      }     
 }
 
 function mensajeNoExistenListas(){
@@ -528,13 +532,12 @@ function DesplegarListas(){
               $("#listasUl").append('<li class="elementoLista" id="'+id+'">'+allKeys[i]+'</li>');
 
 
-            if(mensajeNoHayProductosEnLista() == true){
-              EventoIluminar("#"+id);
-              Animacion("#"+id);
+              if(animacionX == true){
+                console.log("animacion  "+ animacionX);
+                EventoIluminar("#"+id);
+                Animacion("#"+id);
             }
-           
-           
-              
+
           }
       });
   } catch(err){
@@ -947,7 +950,6 @@ function Animacion(idElemento){
     $(idElemento).click(function() {
       if (!animacion1Ejecutada) {    
         $('.productos').show();
-  
         $(".listas").addClass('animacion');
         $(".productos").addClass('animacion');
   
