@@ -98,8 +98,14 @@ async function compararProductos(productosServidor){
                   });
                 });
               });
-  
-              resolve(prods);
+              if (typeof prods !== 'undefined' && prods.length > 0) {
+                resolve(prods);
+               }
+               else{
+                 console.log('No hay productos!!');
+                 resolve(0);
+               }
+          
             });           
           });
           async function traerProds(p2){
@@ -120,7 +126,7 @@ async function compararProductos(productosServidor){
   
     cont = 0;
     productosSyncNuevos = [];
-  
+    if(productosSync !== 0){
     for(var i=0; i<productosSync.length; i++){
       for(var j=0; j<productosServidor.length; j++){
   
@@ -188,7 +194,7 @@ async function compararProductos(productosServidor){
         productosSyncNuevos.push(productosSync[i]);
       }
     }
-    
+  }
     if(productosSyncNuevos.length !== 0){
       console.log("productosSyncNuevos: " + productosSyncNuevos.length);
       agregarProductosFaltantes(productosSyncNuevos);
