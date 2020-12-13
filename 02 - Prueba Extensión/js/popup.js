@@ -543,7 +543,8 @@ function mostrarBotonRegistrarse(){
 function eventoSelect(){
 
   $('#selectLista').on('change', function() {
-    $('#productosListaUL').empty()
+    $('#productosListaUL').empty();
+    chrome.storage.local.set({'ListaSeleccionada': $(this).val()});
     DesplegarProductos($(this).val());
 });
 
@@ -658,6 +659,7 @@ function CapturaCategoryID(url){
 }
 
 function AgregarProducto(category_id){
+  
   var linkAPI = "https://api.mercadolibre.com/items/" + category_id + "?include_attributes=all";
               
   fetch(linkAPI).then(data => data.text()).then(data =>{
@@ -739,6 +741,7 @@ function AgregarProducto(category_id){
 
       setTimeout(function(){
       DesplegarProductos(valorLista);
+
       },200);
     } else{
       alert('No hay listas!');
@@ -851,7 +854,15 @@ async function VerificacionExistenciaProducto(){
 
 function EventoAgregarProductoLista(){
   $("#btnAgregarLista").click(function(){
-    VerificacionExistenciaProducto();
+    chrome.storage.sync.get(null, function(items) {
+      var allKeys = Object.keys(items);
+      if(allKeys.length == 0){
+        alert("No hay listas!")        
+      }
+      else{
+        VerificacionExistenciaProducto();
+      }
+    });
   });
   
 }
@@ -1027,7 +1038,6 @@ function EventoListas(){
 function DesplegarProductos(nombreLista){
 
   try {
-    chrome.storage.local.set({'ListaSeleccionada': nombreLista});
     $('#productosListaUL').empty()
     chrome.storage.sync.get(nombreLista, function (lista) { //Obtiene la lista
       var total = 0;
