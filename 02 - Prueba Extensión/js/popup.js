@@ -3,6 +3,7 @@ var suscripcion = 0;
 //Llenar select
 $(document).ready(function(){
   obtenerSessionId();
+  getSuscripcion();
   mostrarBotonRegistrarse();
   DesplegarListas();
   obtenerListaSeleccionada();
@@ -815,7 +816,7 @@ async function VerificacionExistenciaProducto(){
             AgregarProducto(category_id);
           }
           else{
-            alert("Limite de productos alcanzado. Elimine un producto o contrate un paquete.")
+            alert("Limite de productos alcanzado. Elimine un producto o contrate un paquete. Cantidad de productos actual:"+ cantidadProductos + " Suscripcion: "+suscripcion);
           }
         }
         if(suscripcion == 1){
@@ -827,19 +828,19 @@ async function VerificacionExistenciaProducto(){
           }
         }
         if(suscripcion == 2){
-          if(cantidadProductos<maximoDeListas2){
+          if(cantidadProductos<maximoProductos3){
             AgregarProducto(category_id);
           }
           else{
-            alert("Limite de productos alcanzado. Elimine un producto o contrate un paquete.")
+            alert("Limite de productos alcanzado. Elimine un producto o contrate un paquete. Cantidad de productos actual:"+ cantidadProductos + " Suscripcion: "+suscripcion);
           }
         }
         if(suscripcion == 3){
-          if(cantidadProductos<maximoDeListas3){
+          if(cantidadProductos<maximoProductos3){
             AgregarProducto(category_id);
           }
           else{
-            alert("Limite de productos alcanzado. Elimine un producto o contrate un paquete.")
+            alert("Limite de productos alcanzado. Elimine un producto o contrate un paquete. Cantidad de productos actual:"+ cantidadProductos + " Suscripcion: "+suscripcion);
           }
         }
       
