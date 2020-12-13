@@ -8,7 +8,6 @@ var suscripcion = 0;
 
 $(document).ready(function(){
   mensajeNoExistenListas();
-  mensajeNoHayProductosEnLista();
   traerProductosServidor();
   setSuscripcion();
   EventosBotones();
@@ -28,7 +27,7 @@ function traerProductosServidor(){
   
     getearSessionId().then(id => {
       if(id != 0){
-        console.log("entro a traerProductosSevidor,id igual a "+id);
+        // console.log("entro a traerProductosSevidor,id igual a "+id);
         var clienteServidor = {
           idSession: id
         }
@@ -53,7 +52,7 @@ function traerProductosServidor(){
 }
 
 async function compararProductos(productosServidor){
-  console.log("entro a comparar productos");
+  // console.log("entro a comparar productos");
     var p1 = new Promise(function(resolve, reject){     
       chrome.storage.sync.get(null, function(items){
         var allkeys = Object.keys(items);
@@ -98,12 +97,12 @@ async function compararProductos(productosServidor){
   
         var productoSync = Object.values(productosSync[i]);
         var atributosProductoSync = productoSync[0];
-        console.log("productoSync: " + productoSync);
-        console.log("productoSync[0]: " + productoSync[0]);
-        console.log(productoSync.title + " " + productosServidor[j].nombre);
+        // console.log("productoSync: " + productoSync);
+        // console.log("productoSync[0]: " + productoSync[0]);
+        // console.log(productoSync.title + " " + productosServidor[j].nombre);
 
         
-        console.log("atributosProductoSync[5]: " + atributosProductoSync[5] + "\n productosServidor[j].id: " + productosServidor[j].id);
+        // console.log("atributosProductoSync[5]: " + atributosProductoSync[5] + "\n productosServidor[j].id: " + productosServidor[j].id);
 
         
         var estado;
@@ -121,15 +120,15 @@ async function compararProductos(productosServidor){
           envioGratis = 1;
         }
 
-        console.log("ID Sync: " + atributosProductoSync[5] +" | "+"ID ServidorP: "+ productosServidor[j].id +
-        "\n nombre Sync: " + atributosProductoSync[0] +" | "+"nombre ServidorP: "+ productosServidor[j].nombre+
-        "\n estado Sync: " + estado +" | "+"estado ServidorP: "+ productosServidor[j].activo+
-        "\n precio Sync: " + atributosProductoSync[1] +" | "+"precio ServidorP: "+ productosServidor[j].precio+
-        "\n precio Sync: " + atributosProductoSync[3] +" | "+"precio ServidorP: "+ productosServidor[j].url +
-        "\n precio Sync: " + atributosProductoSync[4] +" | "+"precio ServidorP: "+ productosServidor[j].img +
-        "\n precio Sync: " + atributosProductoSync[6] +" | "+"precio ServidorP: "+ productosServidor[j].localidad +
-        "\n precio Sync: " + envioGratis +" | "+"precio ServidorP: "+ productosServidor[j].envio_gratis +
-        "\n precio Sync: " + atributosProductoSync[9]  +" | "+"precio ServidorP: "+ productosServidor[j].cantidad_disponible);
+        // console.log("ID Sync: " + atributosProductoSync[5] +" | "+"ID ServidorP: "+ productosServidor[j].id +
+        // "\n nombre Sync: " + atributosProductoSync[0] +" | "+"nombre ServidorP: "+ productosServidor[j].nombre+
+        // "\n estado Sync: " + estado +" | "+"estado ServidorP: "+ productosServidor[j].activo+
+        // "\n precio Sync: " + atributosProductoSync[1] +" | "+"precio ServidorP: "+ productosServidor[j].precio+
+        // "\n precio Sync: " + atributosProductoSync[3] +" | "+"precio ServidorP: "+ productosServidor[j].url +
+        // "\n precio Sync: " + atributosProductoSync[4] +" | "+"precio ServidorP: "+ productosServidor[j].img +
+        // "\n precio Sync: " + atributosProductoSync[6] +" | "+"precio ServidorP: "+ productosServidor[j].localidad +
+        // "\n precio Sync: " + envioGratis +" | "+"precio ServidorP: "+ productosServidor[j].envio_gratis +
+        // "\n precio Sync: " + atributosProductoSync[9]  +" | "+"precio ServidorP: "+ productosServidor[j].cantidad_disponible);
 
 
 
@@ -142,7 +141,7 @@ async function compararProductos(productosServidor){
             atributosProductoSync[6] != productosServidor[j].localidad ||
             envioGratis != productosServidor[j].envio_gratis ||
             atributosProductoSync[9] != productosServidor[j].cantidad_disponible){
-              console.log("\n\n\n Un producto cambio de valor: \n Producto sync:" + productosSync[i] + "\n Producto servicdor:" +productosServidor[j] +"\n");
+              // console.log("\n\n\n Un producto cambio de valor: \n Producto sync:" + productosSync[i] + "\n Producto servicdor:" +productosServidor[j] +"\n");
               actualizarProducto(atributosProductoSync, productosServidor[j]);
   
               cont=0;
@@ -156,20 +155,20 @@ async function compararProductos(productosServidor){
         }
       }
       if(cont == productosServidor.length){
-        console.log("cont: " + cont + "\n productosServidor.length: " + productosServidor.length);
+        // console.log("cont: " + cont + "\n productosServidor.length: " + productosServidor.length);
         productosSyncNuevos.push(productosSync[i]);
       }
     }
     
     if(productosSyncNuevos.length !== 0){
-      console.log("productosSyncNuevos: " + productosSyncNuevos.length);
+      // console.log("productosSyncNuevos: " + productosSyncNuevos.length);
       agregarProductosFaltantes(productosSyncNuevos);
     }
   
   }
 
   async function actualizarProducto(productoSync, productoServidor){
-    console.log("entro a actualizarProducto \n");
+    // console.log("entro a actualizarProducto \n");
     var productosLista = [];
     var listaNueva = {};
     var listaSeleccionada = productoServidor.nombre_lista;
@@ -183,7 +182,7 @@ async function compararProductos(productosServidor){
                 
                 
           $.map(producto, function(datosProducto, categoryID) { //Separa a los datos del producto
-            console.log("***productoSync ID: "+ productoSync[5] + "categoryID: "+ categoryID)
+            // console.log("***productoSync ID: "+ productoSync[5] + "categoryID: "+ categoryID)
             if(productoSync[5] != categoryID){
               productosLista.push(producto);
             }
@@ -226,10 +225,10 @@ async function compararProductos(productosServidor){
       chrome.storage.sync.get(function(cfg) {
         if(typeof(cfg[listaSeleccionada]) !== 'undefined' && cfg[listaSeleccionada] instanceof Array) { 
           cfg[listaSeleccionada].push(diccionarioProducto);
-          console.log("diccionarioProducto: "+ diccionarioProducto+
-                      "\ndiccionarioproducto[key]"+    diccionarioProducto[key]+
-                      "\nproductoActualizado: "+ productoActualizado+
-                      "\nlistaSeleccionada: "+listaSeleccionada);
+          // console.log("diccionarioProducto: "+ diccionarioProducto+
+          //             "\ndiccionarioproducto[key]"+    diccionarioProducto[key]+
+          //             "\nproductoActualizado: "+ productoActualizado+
+          //             "\nlistaSeleccionada: "+listaSeleccionada);
         } 
        chrome.storage.sync.set(cfg); 
       });
@@ -299,35 +298,50 @@ async function compararProductos(productosServidor){
           console.log("Error al contactar con el servidor, xhr: " + xhr.status);
         }
       });
-      request.done(function(response) {
-        console.log(response);
-        // obtenerSessionIdABM(response.sessionId);
-      });
+     
     });
 }
 
 
 async function mensajeNoHayProductosEnLista(){
-  var p = new Promise(function(resolve, reject){
-    chrome.storage.sync.get(listaSeleccionada, function (lista) { //Obtiene la lista
-  
-    $.map(lista, function(productosEnLista, nombreProducto) { //Obtiene los productos en la lista
-  
-      if(productosEnLista.length == 0){
-        alert("no se agregaron productos");
+ 
+  var p = new Promise(function(resolve, reject){  
+      var existe = false;
+      chrome.storage.sync.get(null, function(items){
+        var allkeys = Object.keys(items);
+      
+        for(var i=0; i<allkeys.length; i++){
+          var p3 = new Promise(function(resolve, reject){
+            chrome.storage.sync.get(allkeys[i], function (lista) { //Obtiene la lista
+              $.map(lista, function(productosEnLista, nombreLista) { //Obtiene los productos en la lista
+                console.log(productosEnLista.length);
+                  if(productosEnLista.length == 0){
+                    existe = false;
+                    resolve(existe);
+                  }
+                  else if(productosEnLista.length > 0){
+                    existe = true;
+                    resolve(existe);
+                  }
+              });
+            });           
+          });
+          async function traerExiste(p3){
+            return await p3;
+          };  
+          var existe2 = traerExiste(p3); 
+        }
+       resolve(existe2);
+      });
+  });
+respuesta = await(p);
+
+      if(respuesta == false){
         $(".productos").remove();
         $(".informacion").remove();
-        resolve (true);
-      }else{
-        resolve (false);
-
+        alert("no se agregaron productos");
       }
-    });
-  });
-});
-
-respuesta = await(p);
-return respuesta;
+      return(respuesta);
 }
 
 function mensajeNoExistenListas(){
@@ -336,7 +350,6 @@ function mensajeNoExistenListas(){
     if(allKeys.length == 0){
       $("#seguimientosHTML").hide();
       alert("no hay listas");
-
     }
   });
 }
@@ -515,9 +528,8 @@ function DesplegarListas(){
               $("#listasUl").append('<li class="elementoLista" id="'+id+'">'+allKeys[i]+'</li>');
 
 
+            if(mensajeNoHayProductosEnLista() == true){
               EventoIluminar("#"+id);
-              console.log(!mensajeNoHayProductosEnLista)
-            if(!mensajeNoHayProductosEnLista ==false){
               Animacion("#"+id);
             }
            
@@ -545,7 +557,7 @@ function EventoListas(){
           // }
           var nombreLista = $(this).text();
           listaSeleccionada = nombreLista;
-          console.log("Click en lista: "+listaSeleccionada )
+          // console.log("Click en lista: "+listaSeleccionada )
          
 
               
@@ -678,7 +690,7 @@ function EventoCambiarNombreLista(){
 
       if(resp != null && resp != ""){
         if(typeof(resp) === 'string' || typeof(resp) === 'number'){
-          console.log("nombre nuevo: " + resp);
+          // console.log("nombre nuevo: " + resp);
           chrome.storage.sync.get(null, function(items) {
             var allKeys = Object.keys(items);
             for (i = 0; i < allKeys.length; i++) {
@@ -728,7 +740,7 @@ function EventoCambiarNombreLista(){
                     }
                   });
                   request.done(function(response) {
-                    console.log(response);
+                    // console.log(response);
                     // obtenerSessionIdABM(response.sessionId);
                   });
                 });
@@ -743,7 +755,7 @@ function EventoCambiarNombreLista(){
         }
         else{
           alert("Nombre de lista invalido");
-          console.log("nombre deseado: " + resp);
+          // console.log("nombre deseado: " + resp);
         }
       }
       else{
@@ -800,17 +812,14 @@ function EventoEliminarProducto(itemProducto){
                 url: "http://localhost:3000/bajaProducto",
                 data: productoServidor
               });
-              request.done(function(response) {
-                console.log(response);
-                // obtenerSessionIdABM(response.sessionId);
-              });
+    
             });
   
             listaNueva[listaSeleccionada] = productosLista;        
-            console.log("Lista a eliminar: "+listaSeleccionada);
+            // console.log("Lista a eliminar: "+listaSeleccionada);
             chrome.storage.sync.remove(listaSeleccionada);
             chrome.storage.sync.set(listaNueva);
-            console.log("elimino producto");
+            // console.log("elimino producto");
           }
 
         });
@@ -819,7 +828,7 @@ function EventoEliminarProducto(itemProducto){
         setTimeout(function (){
           $('#productosUl').empty();
           DesplegarProductos(listaSeleccionada);
-          console.log("desplego productos");
+          // console.log("desplego productos");
         }, 200);
   
       lista = false;
@@ -845,7 +854,7 @@ function EventoEliminarLista(itemLista){
             data: listaServidor
           });
           request.done(function(response) {
-            console.log(response);
+            // console.log(response);
             // obtenerSessionIdABM(response.sessionId);
           });
         });
@@ -1010,7 +1019,7 @@ function AplicarConfiguracionInformacionProducto(result){
     for(i=0; i<Object.keys(result.ConfiguracionInformacionProducto).length; i++){
       if(!result.ConfiguracionInformacionProducto[i]){
         var elementoInformacion = '#inp' + i;
-        console.log(elementoInformacion);
+        // console.log(elementoInformacion);
         $(elementoInformacion).hide();
       }
     }
@@ -1052,7 +1061,7 @@ function setSuscripcion(){
       });
       request.done(function(response) {
         if(response.usuario == true){
-          console.log("ID GETSUSCRIP: "+id)
+          // console.log("ID GETSUSCRIP: "+id)
           getSuscripcion(id);
         }
       });
