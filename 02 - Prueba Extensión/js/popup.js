@@ -6,7 +6,7 @@ $(document).ready(function(){
   getSuscripcion();
   mostrarBotonRegistrarse();
   DesplegarListas();
-  obtenerListaSeleccionada();
+  // obtenerListaSeleccionada();
 
   EventoAgregarProductoLista();
   EventoPanelNuevaLista();
@@ -29,11 +29,6 @@ function mensajeNoExistenListas(){
     }
   });
 }
-
-
-  
-
-
 function TodosLosBotones(){
   document.querySelectorAll('button').forEach(item => {
     EventoIluminar("#"+item.id);
@@ -615,7 +610,6 @@ async function getearSessionId(){
 }
 
 function DesplegarListas(){
-  
     chrome.storage.sync.get(null, function(items) {
         var allKeys = Object.keys(items);
         $('#selectLista').empty();
@@ -623,7 +617,7 @@ function DesplegarListas(){
           $("#selectLista").append(new Option(allKeys[i], allKeys[i]));
         }
     });
-  
+    obtenerListaSeleccionada();
 }
 
 function CapturaCategoryID(url){
