@@ -17,16 +17,16 @@ const { Console } = require('console');
 var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'capytrack@gmail.com',
-    pass: '/Capytrack20'
+    user: '*****',
+    pass: '*****'
   }
 });
 
 var options = {
   hots: 'localhost',
   port: 3306,
-  user: 'Velnias',
-  password: '/Velnias7',
+  user: '****',
+  password: '****',
   database: 'capytrack'
 };
 
@@ -34,8 +34,8 @@ var sessionStore = new MySQLStore(options);
 
 const conexion = mysql.createConnection({
   host: 'localhost',
-  user: 'Velnias',
-  password: '/Velnias7',
+  user: '****',
+  password: '****',
   database: 'capytrack'
 });
 
